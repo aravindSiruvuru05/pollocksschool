@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "912970363581",
+    "firebase_url": "https://pollocksschool-23fd6.firebaseio.com",
+    "project_id": "pollocksschool-23fd6",
+    "storage_bucket": "pollocksschool-23fd6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912970363581:android:954ab00aad3c84850ffdd4",
+        "android_client_info": {
+          "package_name": "com.pollocks.pollocksschool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912970363581-pniuj26bu5pmpfotq616rplju1j7rip5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pollocks.pollocksschool",
+            "certificate_hash": "51d07e5992e8b42f653281bf8d8fc8a29a367dd8"
+          }
+        },
+        {
+          "client_id": "912970363581-kc6a0vpcgs2h6otttcuqfvs99js6kp2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwNkJVXH34VJ4u_jDxP8JCRqWazKZ8NE0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912970363581-kc6a0vpcgs2h6otttcuqfvs99js6kp2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
