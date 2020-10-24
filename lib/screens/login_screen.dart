@@ -3,6 +3,8 @@ import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 
+import 'main_screen.dart';
+
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _useridEditingController = TextEditingController();
@@ -57,16 +59,22 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(
-                      height: SizeConfig.heightMultiplier * 1.7,
+                      height: SizeConfig.heightMultiplier * 2.5,
                     ),
                     PrimaryButton(
                       onTap: () {
                         if (_formKey.currentState.validate()) {
                           final userId = _useridEditingController.text;
                           print(userId);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MainScreen()),
+                        );
                         }
                       },
                       text: "Login",
+                    ),
+                    SizedBox(
+                      height: SizeConfig.heightMultiplier * 5,
                     ),
                   ],
                 ),

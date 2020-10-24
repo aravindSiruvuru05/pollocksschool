@@ -36,7 +36,7 @@ class _PrimaryTextFormFieldState extends State<PrimaryTextFormField> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(seconds: 5),
-      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 0.7),
+      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 0.5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: AppTheme.primaryTextFieldColor,
