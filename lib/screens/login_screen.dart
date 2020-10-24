@@ -5,6 +5,8 @@ import 'package:pollocksschool/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _useridEditingController = TextEditingController();
+  TextEditingController _passwordEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     PrimaryTextFormField(
                       labelText: "Enter User Id",
+                      controller: _useridEditingController,
                       isObscureText: false,
                       prefixIcon: Icons.account_circle,
                       validator: (value) {
@@ -41,6 +44,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     PrimaryTextFormField(
                       labelText: "Enter Password",
+                      controller: _passwordEditingController,
                       isObscureText: true,
                       prefixIcon: Icons.lock_outline,
                       validator: (value) {
@@ -58,7 +62,8 @@ class LoginScreen extends StatelessWidget {
                     PrimaryButton(
                       onTap: () {
                         if (_formKey.currentState.validate()) {
-                          print("validated");
+                          final userId = _useridEditingController.text;
+                          print(userId);
                         }
                       },
                       text: "Login",
