@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>912970363581-gdrdfm3uqpv34s1pora16e5heiom9kov.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.912970363581-gdrdfm3uqpv34s1pora16e5heiom9kov</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>912970363581-pniuj26bu5pmpfotq616rplju1j7rip5.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB88SBzmShtKAosPw6XQEZpwFgKLruCupY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>912970363581</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.pollocks.pollocksschool</string>
+	<key>PROJECT_ID</key>
+	<string>pollocksschool-23fd6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>pollocksschool-23fd6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:912970363581:ios:e23c3cee80dcc6720ffdd4</string>
+	<key>DATABASE_URL</key>
+	<string>https://pollocksschool-23fd6.firebaseio.com</string>
+</dict>
+</plist>
