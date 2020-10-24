@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/screens/login_screen.dart';
 
 import 'screens/screens.dart';
 import 'utils/config/size_config.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
-              home: MainScreen(),
+              home: LoginScreen(),
             );
           },
         );
