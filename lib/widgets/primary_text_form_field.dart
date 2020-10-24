@@ -7,13 +7,15 @@ class PrimaryTextFormField extends StatefulWidget {
   final Function validator;
   final String labelText;
   final bool isObscureText;
+  final TextEditingController controller;
 
   const PrimaryTextFormField(
       {Key key,
       @required this.prefixIcon,
       @required this.validator,
       @required this.labelText,
-      @required this.isObscureText})
+      @required this.isObscureText,
+      this.controller})
       : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class _PrimaryTextFormFieldState extends State<PrimaryTextFormField> {
                 spreadRadius: 4.0)
           ]),
       child: TextFormField(
+        controller: widget.controller,
         obscureText: widget.isObscureText,
         focusNode: focusNode,
         decoration: InputDecoration(
