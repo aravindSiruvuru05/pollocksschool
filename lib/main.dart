@@ -1,14 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
-import 'package:pollocksschool/screens/login_screen.dart';
 import 'package:provider/provider.dart';
-
 import 'screens/screens.dart';
 import 'utils/config/size_config.dart';
 import 'utils/config/styling.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,
-                home: LoginScreen(),
+                home: AuthToggleScreen(),
               ),
             );
           },

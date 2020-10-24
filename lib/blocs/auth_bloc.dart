@@ -1,33 +1,31 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-
+import 'package:pollocksschool/models/user_model.dart';
 import 'bloc.dart';
 
 class AuthBloc extends Bloc {
-  var val;
-
+  UserModel _currentUser = UserModel();
   final _isAuthenticated = StreamController<bool>();
 
   Stream<bool> get isAuthStream => _isAuthenticated.stream;
 
-  AuthBloc(){
-    val = 1;
-    print(FirebaseAuth.instance.currentUser.toString());
+  UserModel get getCurrentUser => _currentUser;
 
+  AuthBloc() {
+    checkCurrentUser();
   }
 
-  void _onCurrentUserChanged() {
-
-  }
-
-  void signInWithGoogle() async {
-    val += 1;
-    _isAuthenticated.sink.add(val);
+  void checkCurrentUser() async {
+    User _user = FirebaseAuth.instance.currentUser;
+    final _userExist = _user != null ? true : false;
+    print(_user);
+    if (_userExist) _currentUser.mobile = _user.phoneNumber;
+    _isAuthenticated.sink.add(_userExist);
   }
 
   void signOut() async {
-
+    await FirebaseAuth.instance.signOut();
+    _isAuthenticated.sink.add(false);
   }
 
   @override

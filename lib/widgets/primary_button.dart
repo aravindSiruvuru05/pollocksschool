@@ -7,14 +7,9 @@ class PrimaryButton extends StatelessWidget {
   final Function onTap;
 
   const PrimaryButton({
-    Key key,
-    @required GlobalKey<FormState> formKey,
     @required this.text,
     this.onTap,
-  })  : _formKey = formKey,
-        super(key: key);
-
-  final GlobalKey<FormState> _formKey;
+  });
 
   @override
   Widget build(BuildContext context) {

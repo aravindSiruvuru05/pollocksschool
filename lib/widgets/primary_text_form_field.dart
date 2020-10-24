@@ -36,7 +36,7 @@ class _PrimaryTextFormFieldState extends State<PrimaryTextFormField> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(seconds: 5),
-      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 0.5),
+      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 0.7),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: AppTheme.primaryTextFieldColor,
@@ -50,11 +50,9 @@ class _PrimaryTextFormFieldState extends State<PrimaryTextFormField> {
         obscureText: widget.isObscureText,
         focusNode: focusNode,
         decoration: InputDecoration(
-          labelText: widget.labelText,
-          labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? AppTheme.primaryColor
-                  : AppTheme.primaryColor.withOpacity(0.5),
+          hintText: widget.labelText,
+          hintStyle: TextStyle(
+              color: AppTheme.primaryColor.withOpacity(0.5),
               fontSize: AppTheme.lightTextTheme.headline4.fontSize),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           prefixIcon: Icon(
