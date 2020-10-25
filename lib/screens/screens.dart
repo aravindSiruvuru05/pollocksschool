@@ -5,3 +5,4 @@ export 'dashboard_screen.dart';
 export 'profile_screen.dart';
 export 'login_screen.dart';
 export 'auth_toggle.dart';
+export 'phone_auth_screen.dart';

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/auth_bloc.dart';
+import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/phone_authentication_manager.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
-
-import 'main_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -13,18 +12,21 @@ class LoginScreen extends StatelessWidget {
   TextEditingController _passwordEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    AuthBloc authBloc = Provider.of<AuthBloc>(context);
     return Scaffold(
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
-        child: Container(
-            padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2.2),
-            child: Form(
-              key: _formKey,
-              child: Center(
-                child: ListView(
-                  shrinkWrap: true,
+        child: SingleChildScrollView(
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2.2),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image(
                       image: AssetImage(Strings.getLogoImagePath),
@@ -62,24 +64,34 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 2.5,
                     ),
-                    PrimaryButton(
-                      onTap: () {
-                        if (_formKey.currentState.validate()) {
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                    StreamBuilder<LoadingState>(
+                        initialData: LoadingState.NORMAL,
+                        stream: authBloc.loginButtonState,
+                        builder: (context, snapshot) {
+                          final state = snapshot.data;
+                          return PrimaryButton(
+                            onTap: () {
+                              if (_formKey.currentState.validate()) {
+                                authBloc.loginButtonStateSink
+                                    .add(LoadingState.LOADING);
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
 
-                          PhoneAuthenticationManager.loginUser(
-                              "+919381786863", context);
-                        }
-                      },
-                      text: "Login",
-                    ),
+                                PhoneAuthenticationManager.loginUser(
+                                    "+16505553434", context);
+                              }
+                            },
+                            text: "Login",
+                            state: state,
+                          );
+                        }),
                     SizedBox(
                       height: SizeConfig.heightMultiplier * 5,
                     ),
                   ],
                 ),
-              ),
-            )),
+              )),
+        ),
       ),
     );
   }

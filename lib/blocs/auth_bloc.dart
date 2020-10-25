@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pollocksschool/blocs/loading_bloc.dart';
 import 'package:pollocksschool/models/user_model.dart';
-import 'bloc.dart';
 
-class AuthBloc extends Bloc {
+class AuthBloc extends LoadingBloc {
   UserModel _currentUser = UserModel();
   final _isAuthenticated = StreamController<bool>();
 
@@ -19,7 +19,7 @@ class AuthBloc extends Bloc {
     User _user = FirebaseAuth.instance.currentUser;
     final _userExist = _user != null ? true : false;
     print(_user);
-    if (_userExist) _currentUser.mobile = _user.phoneNumber;
+    if (_userExist) loginButtonStateSink.add(LoadingState.DONE);
     _isAuthenticated.sink.add(_userExist);
   }
 
