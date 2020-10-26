@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
-import 'package:pollocksschool/blocs/loading_bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
@@ -12,9 +14,11 @@ import 'package:provider/provider.dart';
 
 class PhoneAuthScreen extends StatelessWidget {
   final String verificationId;
+
   PhoneAuthScreen({this.verificationId});
 
   final TextEditingController _pinEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     FirebaseAuth _auth = FirebaseAuth.instance;
@@ -57,7 +61,9 @@ class PhoneAuthScreen extends StatelessWidget {
                       if (user != null) {
                         authBloc.otpCancelButtonStateSink
                             .add(LoadingState.DONE);
-                        authBloc.checkCurrentUser();
+                        Timer(Duration(milliseconds: 500), () {
+                          authBloc.checkCurrentUser();
+                        });
                       } else {
                         authBloc.otpCancelButtonStateSink
                             .add(LoadingState.NORMAL);
@@ -66,11 +72,14 @@ class PhoneAuthScreen extends StatelessWidget {
                             text: "error ",
                             ok: () => Navigator.pop(context));
                       }
-                      Navigator.pop(context);
+                      Timer(Duration(milliseconds: 300), () {
+                        Navigator.pop(context);
+                      });
                     } catch (e) {
                       _pinEditingController.clear();
                       authBloc.otpCancelButtonStateSink
                           .add(LoadingState.NORMAL);
+                      print(e.message);
                       DialogPopUps.showCommonDialog(
                           context: context,
                           text: e.toString(),
@@ -106,6 +115,4 @@ class PhoneAuthScreen extends StatelessWidget {
       ),
     );
   }
-
-  _onSubmitTapped() {}
 }

@@ -8,13 +8,14 @@ class AuthToggleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
     return StreamBuilder<bool>(
-        stream: authBloc.isAuthStream,
-        builder: (context, snapshot) {
-          final isAuthenticated = snapshot.data;
-          if (isAuthenticated == null || isAuthenticated == false) {
-            return LoginScreen();
-          }
-          return MainScreen();
-        });
+      stream: authBloc.isAuthStream,
+      builder: (context, snapshot) {
+        final isAuthenticated = snapshot.data;
+        if (isAuthenticated == null || isAuthenticated == false) {
+          return LoginScreen();
+        }
+        return MainScreen();
+      },
+    );
   }
 }

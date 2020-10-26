@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/widgets/primary_button.dart';
 
 class DialogPopUps {
@@ -17,6 +18,7 @@ class DialogPopUps {
                   ? PrimaryButton(
                       text: "OK",
                       onTap: ok,
+                      state: LoadingState.NORMAL,
                     )
                   : SizedBox.shrink(),
             ],

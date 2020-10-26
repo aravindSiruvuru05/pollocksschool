@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/loading_bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 
