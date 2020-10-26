@@ -10,7 +10,7 @@ class AuthBloc extends Bloc {
   FirebaseAuth _firebaseAuth;
   CollectionReference _userCollectionRef;
 
-  UserModel _currentUser = UserModel();
+  UserModel _currentUser;
   final _isAuthenticated = StreamController<bool>();
 
   // login button --------------
@@ -41,19 +41,32 @@ class AuthBloc extends Bloc {
     _userCollectionRef = FirebaseFirestore.instance.collection("user");
   }
 
-  Future<UserModel> getUserDataWithIdPassword(String id,String password) async{
+  Future<bool> isUserExist(String id) async{
     final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("$id").get();
-//    UserModel userModel = UserModel.fromJson(json)
-    print(_userDocSnapshot);
-    return UserModel();
+    return _userDocSnapshot.exists ? true : false ;
+  }
+
+  Future<UserModel> isValidUser(String id,String password) async{
+    try{
+      final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("$id").get();
+      final result = _userDocSnapshot.data();
+      if(result["id"] == id && result["password"] == password) {
+        _currentUser = UserModel.fromJson(result);
+        return _currentUser;
+      }
+      return null ;
+    } catch (e){
+      print("======= $e");
+    }
   }
 
   void checkCurrentUser() async {
     User _user = _firebaseAuth.currentUser;
     final _userExist = _user != null ? true : false;
-
     if (_userExist) loginButtonStateSink.add(LoadingState.DONE);
-    _isAuthenticated.sink.add(_userExist);
+    Timer(Duration(milliseconds: 250), (){
+      _isAuthenticated.sink.add(_userExist);
+    });
   }
 
   void signOut() async {

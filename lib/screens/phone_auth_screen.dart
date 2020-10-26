@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/models/user_model.dart';
 import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
@@ -22,6 +23,8 @@ class PhoneAuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseAuth _auth = FirebaseAuth.instance;
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
+    final UserModel currentUser = authBloc.getCurrentUser;
+
     return Scaffold(
       body: Container(
         padding:
@@ -31,7 +34,7 @@ class PhoneAuthScreen extends StatelessWidget {
             shrinkWrap: true,
             children: [
               Text(
-                "OTP sent successfully to +9195333***",
+                "OTP sent successfully to ${currentUser.countrycode}${currentUser.phonenumber.substring(0,4)}***",
                 style: AppTheme.lightTextTheme.headline6,
               ),
               SizedBox(
@@ -60,9 +63,6 @@ class PhoneAuthScreen extends StatelessWidget {
                       if (user != null) {
                         authBloc.otpCancelButtonStateSink
                             .add(LoadingState.DONE);
-                        Timer(Duration(milliseconds: 500), () {
-                          authBloc.checkCurrentUser();
-                        });
                       } else {
                         authBloc.otpCancelButtonStateSink
                             .add(LoadingState.NORMAL);
@@ -73,6 +73,9 @@ class PhoneAuthScreen extends StatelessWidget {
                       }
                       Timer(Duration(milliseconds: 300), () {
                         Navigator.pop(context);
+                        Timer(Duration(milliseconds: 500), () {
+                          authBloc.checkCurrentUser();
+                        });
                       });
                     } catch (e) {
                       _pinEditingController.clear();
@@ -102,6 +105,12 @@ class PhoneAuthScreen extends StatelessWidget {
                       builder: (context, snapshot) {
                         final state = snapshot.data;
                         return SecondaryButton(
+                          onTap: () { 
+                            Navigator.pop(context);
+                            Timer(Duration(milliseconds: 300),(){
+                              authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                            });
+                          },
                           text: "Cancel",
                           state: state,
                         );

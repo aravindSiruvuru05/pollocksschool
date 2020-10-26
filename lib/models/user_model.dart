@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
 
   String branch;
@@ -30,17 +32,17 @@ class UserModel {
     this.sections
   });
 
-  UserModel.fromJson(Map<String, dynamic> json)
+  UserModel.fromJson(Map<String,dynamic> json)
       : this.id = json['id'],
         this.email = json['email'],
         this.branch = json['branch'],
         this.countrycode = json['countrycode'],
-        this.creationTime = json['creationTime'] as DateTime,
+        this.creationTime = DateTime.tryParse(json['creationTime'].toString()),
         this.dob = json['dob'],
         this.firstname = json['firstname'],
         this.gender = json['gender'],
         this.lastname = json['lastname'],
-        this.lastSignInTime = json['lastSignInTime'] as DateTime,
+        this.lastSignInTime = DateTime.tryParse(json['lastSignInTime'].toString()),
         this.phonenumber = json['phonenumber'],
         this.photourl = json['photourl'],
         this.sections = json['sections'] as List<String>;

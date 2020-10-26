@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/models/user_model.dart';
+import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/phone_authentication_manager.dart';
@@ -23,6 +25,7 @@ class LoginScreen extends StatelessWidget {
         },
         child: SingleChildScrollView(
           child: Container(
+            color: Colors.white,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2.2),
@@ -35,6 +38,7 @@ class LoginScreen extends StatelessWidget {
                       final state = snapshot.data;
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: LoadingState.NORMAL == state ? CrossAxisAlignment.stretch : CrossAxisAlignment.center ,
                         children: <Widget>[
                           Image(
                             image: AssetImage(Strings.getLogoImagePath),
@@ -75,14 +79,31 @@ class LoginScreen extends StatelessWidget {
                           PrimaryButton(
                             onTap: () async{
                               if (_formKey.currentState.validate())  {
+                                final id = _useridEditingController.text;
+                                final password = _passwordEditingController.text;
                                 authBloc.loginButtonStateSink
                                     .add(LoadingState.LOADING);
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                await authBloc.getUserDataWithIdPassword(_useridEditingController.text,_passwordEditingController.text);
-//                                PhoneAuthenticationManager.loginUser(
-//                                    "+16505553434", context);
-
+                                final _userExist = await authBloc.isUserExist(id);
+                                if(!_userExist){
+                                  authBloc.loginButtonStateSink
+                                      .add(LoadingState.NORMAL);
+                                  DialogPopUps.showCommonDialog(text: "invalid User id",ok: () => Navigator.pop(context),context: context);
+                                  return;
+                                }
+                                UserModel user = await authBloc.isValidUser(id,password);
+                                if(user == null) {
+                                  authBloc.loginButtonStateSink
+                                      .add(LoadingState.NORMAL);
+                                  DialogPopUps.showCommonDialog(text: "Incorrect Password",ok: () => Navigator.pop(context),context: context);
+                                  _passwordEditingController.clear();
+                                  return;
+                                }
+                                print("before login");
+                                await PhoneAuthenticationManager.loginUser(
+                                    "+91${authBloc.getCurrentUser.phonenumber}", context);
+                                print("after");
                               }
                             },
                             text: "Login",

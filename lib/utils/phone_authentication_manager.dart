@@ -7,7 +7,7 @@ import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:provider/provider.dart';
 
 class PhoneAuthenticationManager {
-  static void loginUser(String phone, BuildContext context) async {
+  static Future<void> loginUser(String phone, BuildContext context) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     AuthBloc authBloc = Provider.of<AuthBloc>(context, listen: false);
     _auth.verifyPhoneNumber(
@@ -35,7 +35,9 @@ class PhoneAuthenticationManager {
               MaterialPageRoute(
                   builder: (context) => PhoneAuthScreen(
                         verificationId: verificationId,
-                      )));
+                      ),
+              ),
+          );
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print(verificationId);
