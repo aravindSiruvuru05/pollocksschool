@@ -45,5 +45,5 @@ class UserModel {
         this.lastSignInTime = DateTime.tryParse(json['lastSignInTime'].toString()),
         this.phonenumber = json['phonenumber'],
         this.photourl = json['photourl'],
-        this.sections = json['sections'] as List<String>;
+        this.sections =( json['sections'] as List<dynamic>).map((e) => e.toString()).toList();
 }

@@ -41,6 +41,7 @@ class PhoneAuthenticationManager {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print(verificationId);
-        });
+        },
+    );
   }
 }

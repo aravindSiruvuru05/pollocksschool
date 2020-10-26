@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
@@ -110,7 +109,7 @@ class _SideBarState extends State<SideBar>
                       ),
                       ListTile(
                         title: Text(
-                          "Prateek",
+                          "${authBloc.getCurrentUser.firstname} ${authBloc.getCurrentUser.lastname}",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: SizeConfig.heightMultiplier * 4,

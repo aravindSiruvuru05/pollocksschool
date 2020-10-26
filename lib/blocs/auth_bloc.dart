@@ -63,7 +63,16 @@ class AuthBloc extends Bloc {
   void checkCurrentUser() async {
     User _user = _firebaseAuth.currentUser;
     final _userExist = _user != null ? true : false;
-    if (_userExist) loginButtonStateSink.add(LoadingState.DONE);
+    if(_userExist) {
+      final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("${_user.phoneNumber.substring(3)}").get();
+      final result = _userDocSnapshot.data();
+      _currentUser = UserModel.fromJson(result);
+    print("=======");
+      print(_user.phoneNumber.substring(3));
+      loginButtonStateSink.add(LoadingState.DONE);
+    } else {
+      loginButtonStateSink.add(LoadingState.NORMAL);
+    }
     Timer(Duration(milliseconds: 250), (){
       _isAuthenticated.sink.add(_userExist);
     });

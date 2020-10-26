@@ -7,6 +7,7 @@ class AuthToggleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
+    authBloc.checkCurrentUser();
     return StreamBuilder<bool>(
       stream: authBloc.isAuthStream,
       builder: (context, snapshot) {
