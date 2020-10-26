@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
 
 class AuthBloc extends Bloc {
+
+  FirebaseAuth _firebaseAuth;
+  CollectionReference _userCollectionRef;
+
   UserModel _currentUser = UserModel();
   final _isAuthenticated = StreamController<bool>();
 
@@ -28,19 +33,31 @@ class AuthBloc extends Bloc {
   UserModel get getCurrentUser => _currentUser;
 
   AuthBloc() {
-    checkCurrentUser();
+    _firebaseInit();
+  }
+
+  _firebaseInit(){
+    _firebaseAuth= FirebaseAuth.instance;
+    _userCollectionRef = FirebaseFirestore.instance.collection("user");
+  }
+
+  Future<UserModel> getUserDataWithIdPassword(String id,String password) async{
+    final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("$id").get();
+//    UserModel userModel = UserModel.fromJson(json)
+    print(_userDocSnapshot);
+    return UserModel();
   }
 
   void checkCurrentUser() async {
-    User _user = FirebaseAuth.instance.currentUser;
+    User _user = _firebaseAuth.currentUser;
     final _userExist = _user != null ? true : false;
-    print(_user);
+
     if (_userExist) loginButtonStateSink.add(LoadingState.DONE);
     _isAuthenticated.sink.add(_userExist);
   }
 
   void signOut() async {
-    await FirebaseAuth.instance.signOut();
+    await _firebaseAuth.signOut();
     _isAuthenticated.sink.add(false);
   }
 

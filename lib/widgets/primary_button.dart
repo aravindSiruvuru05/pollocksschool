@@ -19,15 +19,16 @@ class PrimaryButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-          padding: LoadingState.NORMAL != state
-              ? null
-              : EdgeInsets.all(SizeConfig.heightMultiplier * 1.7),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryColor,
-            borderRadius:
-                BorderRadius.circular(SizeConfig.heightMultiplier * 3),
-          ),
-          child: buildPrimaryButtonChild()),
+        padding: LoadingState.NORMAL != state
+            ? null
+            : EdgeInsets.all(SizeConfig.heightMultiplier * 1.7),
+        decoration: BoxDecoration(
+          color: AppTheme.primaryColor,
+          borderRadius:
+          BorderRadius.circular(SizeConfig.heightMultiplier * 3),
+        ),
+        child: buildPrimaryButtonChild(),
+      ),
     );
   }
 
@@ -41,15 +42,15 @@ class PrimaryButton extends StatelessWidget {
       );
     } else if (state == LoadingState.LOADING) {
       return CircularProgressIndicator(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.accentColor,
         valueColor: new AlwaysStoppedAnimation<Color>(
-            AppTheme.unSelectedTabBackgroundColor),
+            AppTheme.primaryColor),
       );
     } else {
       return Icon(
         Icons.check_circle,
         color: Colors.white,
-        size: 50,
+        size: SizeConfig.heightMultiplier * 5,
       );
     }
   }

@@ -73,15 +73,16 @@ class LoginScreen extends StatelessWidget {
                             height: SizeConfig.heightMultiplier * 2.5,
                           ),
                           PrimaryButton(
-                            onTap: () {
-                              if (_formKey.currentState.validate()) {
+                            onTap: () async{
+                              if (_formKey.currentState.validate())  {
                                 authBloc.loginButtonStateSink
                                     .add(LoadingState.LOADING);
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
+                                await authBloc.getUserDataWithIdPassword(_useridEditingController.text,_passwordEditingController.text);
+//                                PhoneAuthenticationManager.loginUser(
+//                                    "+16505553434", context);
 
-                                PhoneAuthenticationManager.loginUser(
-                                    "+16505553434", context);
                               }
                             },
                             text: "Login",

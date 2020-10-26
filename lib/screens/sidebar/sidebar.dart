@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
+import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:provider/provider.dart';
 
@@ -68,8 +69,8 @@ class _SideBarState extends State<SideBar>
           top: 0,
           bottom: 0,
           left:
-              isSideBarOpenedAsync.data ? screenWidth * 0.05 : screenWidth - 45,
-          right: isSideBarOpenedAsync.data ? -screenWidth * 0.05 : -screenWidth,
+              isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth - 45,
+          right: isSideBarOpenedAsync.data ? -screenWidth * 0.1 : -screenWidth,
           child: Row(
             children: <Widget>[
               Align(
@@ -112,14 +113,14 @@ class _SideBarState extends State<SideBar>
                           "Prateek",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 30,
+                              fontSize: SizeConfig.heightMultiplier * 4,
                               fontWeight: FontWeight.w800),
                         ),
                         subtitle: Text(
                           "class : 1A",
                           style: TextStyle(
-                            color: Color(0xFF1BB5FD),
-                            fontSize: 18,
+                            color: AppTheme.primaryshadeColor,
+                            fontSize: SizeConfig.heightMultiplier * 2,
                           ),
                         ),
                         leading: CircleAvatar(
@@ -133,13 +134,13 @@ class _SideBarState extends State<SideBar>
                       Divider(
                         height: 64,
                         thickness: 0.5,
-                        color: Colors.white.withOpacity(0.3),
+                        color: AppTheme.accentColor,
                         indent: 32,
                         endIndent: 32,
                       ),
                       MenuItem(
-                        icon: Icons.home,
-                        title: "Home",
+                        icon: Icons.account_circle,
+                        title: "My Profile",
                         onTap: () {
                           onIconPressed();
                         },

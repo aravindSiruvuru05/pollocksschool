@@ -4,7 +4,7 @@ import 'package:pollocksschool/widgets/primary_button.dart';
 
 class DialogPopUps {
   static void showCommonDialog(
-      {BuildContext context, String text, Function ok, Function cancel}) {
+      {BuildContext context, String text, Function ok, Function cancel,}) {
     showDialog(
         context: context,
         barrierDismissible: false,

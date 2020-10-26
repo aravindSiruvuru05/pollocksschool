@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/utils/config/size_config.dart';
+import 'package:pollocksschool/utils/config/styling.dart';
 
 class MenuItem extends StatelessWidget {
   final IconData icon;
@@ -12,20 +14,20 @@ class MenuItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(SizeConfig.heightMultiplier),
         child: Row(
           children: <Widget>[
             Icon(
               icon,
-              color: Colors.cyan,
+              color: AppTheme.accentColor,
               size: 30,
             ),
             SizedBox(
-              width: 20,
+              width: SizeConfig.heightMultiplier * 2,
             ),
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 26, color: Colors.white),
+              style: TextStyle(fontWeight: FontWeight.w300, fontSize: SizeConfig.textMultiplier * 3, color: AppTheme.accentColor),
             )
           ],
         ),
