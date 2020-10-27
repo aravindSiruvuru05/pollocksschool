@@ -15,9 +15,11 @@ class PhoneAuthenticationManager {
         phoneNumber: phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) async {
-          UserCredential result = await _auth.signInWithCredential(credential);
 
-          if (result.user != null) {
+          UserCredential result = await _auth.signInWithCredential(credential);
+          User user = result.user;
+          if (user != null) {
+            if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
             authBloc.checkCurrentUser();
           } else {
             DialogPopUps.showCommonDialog(context: context, text: "verification complete and error fetching user ");

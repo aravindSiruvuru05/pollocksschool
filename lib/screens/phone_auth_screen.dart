@@ -51,16 +51,18 @@ class PhoneAuthScreen extends StatelessWidget {
                 onChanged: (val) async {
                   if (val.length == 6) {
                     try {
-                      authBloc.otpCancelButtonStateSink
-                          .add(LoadingState.LOADING);
+                      authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                      authBloc.otpCancelButtonStateSink.add(LoadingState.LOADING);
                       AuthCredential credential = PhoneAuthProvider.credential(
                           verificationId: verificationId, smsCode: val);
 
                       UserCredential result =
                           await _auth.signInWithCredential(credential);
-
+                      print("=============");
+                      print(result.user);
                       User user = result.user;
                       if (user != null) {
+                       if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
                         authBloc.otpCancelButtonStateSink
                             .add(LoadingState.DONE);
                       } else {
@@ -73,9 +75,7 @@ class PhoneAuthScreen extends StatelessWidget {
                       }
                       Timer(Duration(milliseconds: 300), () {
                         Navigator.pop(context);
-                        Timer(Duration(milliseconds: 500), () {
-                          authBloc.checkCurrentUser();
-                        });
+                        authBloc.checkCurrentUser();
                       });
                     } catch (e) {
                       _pinEditingController.clear();
