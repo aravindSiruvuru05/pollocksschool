@@ -109,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                                   return;
                                 }
                                 await PhoneAuthenticationManager.loginUser(
-                                    "+91${authBloc.getCurrentUser.phonenumber}", context);
+                                    "${authBloc.getCurrentUser.countrycode}${authBloc.getCurrentUser.phonenumber}", context);
                               }
                             },
                             text: "Login",

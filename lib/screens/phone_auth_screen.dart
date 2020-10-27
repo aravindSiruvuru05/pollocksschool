@@ -6,6 +6,7 @@ import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
+import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/utils.dart';
@@ -34,7 +35,7 @@ class PhoneAuthScreen extends StatelessWidget {
             shrinkWrap: true,
             children: [
               Text(
-                "OTP sent successfully to ${currentUser.countrycode}${currentUser.phonenumber.substring(0,4)}***",
+                "OTP sent successfully to ${currentUser.countrycode}${currentUser.phonenumber.substring(0,7)}***",
                 style: AppTheme.lightTextTheme.headline6,
               ),
               SizedBox(
