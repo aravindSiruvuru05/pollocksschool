@@ -5,6 +5,8 @@ import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 
+import 'sidebar/sidebar_layout.dart';
+
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -36,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
       MenuScreen(),
       DashboardScreen(),
       MenuScreen(),
-      MenuScreen(),
+      SideBarLayout()
     ];
 
     _bottomBarItemList = [

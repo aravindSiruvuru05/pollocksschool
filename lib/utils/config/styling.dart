@@ -4,17 +4,17 @@ import 'size_config.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color appBackgroundColor = Color(0xFFFFFFFF);
-  static const Color primaryColor = Color(0xFF0B0C49);
+  static const Color appBackgroundColor = Color(0xFFf1f6f9);
+  static const Color accentColor = Color(0xFF9ba4b4);
+  static const Color primaryColor = Color(0xFF14274e);
+  static const Color primaryshadeColor = Color(0xFF394867);
   static const Color primaryTextFieldColor = Color.fromRGBO(245, 242, 252, 1);
 
-  static const Color topBarBackgroundColor = Color(0xFFFFD974);
-  static const Color selectedTabBackgroundColor = Color(0xFFFFC442);
-  static const Color unSelectedTabBackgroundColor = Color(0xFFFF34FC);
-  static const Color subTitleTextColor = Color(0xFF9F988F);
 
   static final ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: AppTheme.appBackgroundColor,
+    primaryColor: primaryColor,
+    accentColor: accentColor,
     brightness: Brightness.light,
     textTheme: lightTextTheme,
   );
@@ -36,7 +36,7 @@ class AppTheme {
 
   // Error text
   static final TextStyle _subTitleLight = TextStyle(
-    color: subTitleTextColor,
+    color: Colors.black87,
     fontSize: 1.5 * SizeConfig.textMultiplier,
   );
 
