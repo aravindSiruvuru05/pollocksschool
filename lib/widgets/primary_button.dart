@@ -19,9 +19,8 @@ class PrimaryButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: LoadingState.NORMAL != state
-            ? null
-            : EdgeInsets.all(SizeConfig.heightMultiplier * 1.7),
+        padding: LoadingState.NORMAL == state
+            ?  EdgeInsets.all(SizeConfig.heightMultiplier * 1.7) : null,
         decoration: BoxDecoration(
           color: AppTheme.primaryColor,
           borderRadius:

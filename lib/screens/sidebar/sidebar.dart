@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:provider/provider.dart';
@@ -165,7 +166,10 @@ class _SideBarState extends State<SideBar>
                       MenuItem(
                         icon: Icons.exit_to_app,
                         title: "Logout",
-                        onTap: () => authBloc.signOut(),
+                        onTap: () {
+                          authBloc.signOut();
+                          authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                          },
                       ),
                     ],
                   ),

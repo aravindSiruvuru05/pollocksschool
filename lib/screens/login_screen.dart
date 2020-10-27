@@ -1,11 +1,15 @@
+import 'dart:io';
+
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
+import 'package:pollocksschool/blocs/internet_connectivity_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
-import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/phone_authentication_manager.dart';
+import 'package:pollocksschool/utils/utils.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +36,7 @@ class LoginScreen extends StatelessWidget {
               child: Form(
                 key: _formKey,
                 child: StreamBuilder<LoadingState>(
-                    initialData: LoadingState.NORMAL,
+                  initialData: LoadingState.NORMAL,
                     stream: authBloc.loginButtonState,
                     builder: (context, snapshot) {
                       final state = snapshot.data;
@@ -79,10 +83,14 @@ class LoginScreen extends StatelessWidget {
                           PrimaryButton(
                             onTap: () async{
                               if (_formKey.currentState.validate())  {
+                                authBloc.loginButtonStateSink.add(LoadingState.LOADING);
+                                if(!await InternetConnectivity.isConnectedToInternet()) {
+                                  authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                                  DialogPopUps.showCommonDialog(text: "Please make sure your are Connected to internet",ok: () => Navigator.pop(context),context: context);
+                                  return;
+                                }
                                 final id = _useridEditingController.text;
                                 final password = _passwordEditingController.text;
-                                authBloc.loginButtonStateSink
-                                    .add(LoadingState.LOADING);
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
                                 final _userExist = await authBloc.isUserExist(id);
@@ -100,10 +108,8 @@ class LoginScreen extends StatelessWidget {
                                   _passwordEditingController.clear();
                                   return;
                                 }
-                                print("before login");
                                 await PhoneAuthenticationManager.loginUser(
                                     "+91${authBloc.getCurrentUser.phonenumber}", context);
-                                print("after");
                               }
                             },
                             text: "Login",

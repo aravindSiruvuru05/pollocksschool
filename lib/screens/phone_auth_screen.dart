@@ -6,9 +6,9 @@ import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
-import 'package:pollocksschool/utils/DialogPopups.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
+import 'package:pollocksschool/utils/utils.dart';
 import 'package:pollocksschool/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 

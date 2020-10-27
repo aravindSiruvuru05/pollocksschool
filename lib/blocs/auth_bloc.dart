@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
@@ -50,8 +51,10 @@ class AuthBloc extends Bloc {
     try{
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("$id").get();
       final result = _userDocSnapshot.data();
+
       if(result["id"] == id && result["password"] == password) {
         _currentUser = UserModel.fromJson(result);
+        print(result);
         return _currentUser;
       }
       return null ;
@@ -60,6 +63,7 @@ class AuthBloc extends Bloc {
     }
   }
 
+  // this method is the last one to trigger even sign in or sign out
   void checkCurrentUser() async {
     User _user = _firebaseAuth.currentUser;
     final _userExist = _user != null ? true : false;
@@ -67,13 +71,13 @@ class AuthBloc extends Bloc {
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc("${_user.phoneNumber.substring(3)}").get();
       final result = _userDocSnapshot.data();
       _currentUser = UserModel.fromJson(result);
-    print("=======");
-      print(_user.phoneNumber.substring(3));
+
       loginButtonStateSink.add(LoadingState.DONE);
     } else {
+      print("s====");
       loginButtonStateSink.add(LoadingState.NORMAL);
     }
-    Timer(Duration(milliseconds: 250), (){
+    Timer(Duration(milliseconds: 200), (){
       _isAuthenticated.sink.add(_userExist);
     });
   }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
 
@@ -45,5 +44,7 @@ class UserModel {
         this.lastSignInTime = DateTime.tryParse(json['lastSignInTime'].toString()),
         this.phonenumber = json['phonenumber'],
         this.photourl = json['photourl'],
-        this.sections =( json['sections'] as List<dynamic>).map((e) => e.toString()).toList();
+//        this.sections =(json['sections'] as List<dynamic>).map((e) => "$e").toList()  ;
+        this.sections = json["sections"] != null ? new List<String>.from(json["sections"].map((x) => x.toString())) : List<String>();
+
 }
