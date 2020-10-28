@@ -36,6 +36,7 @@ dependencies:
   firebase_core: ^0.5.0+1
   connectivity: ^2.0.0
   data_connection_checker: ^0.3.4
+  flutter_spinkit: ^4.1.2+1
 
 
 dev_dependencies:
