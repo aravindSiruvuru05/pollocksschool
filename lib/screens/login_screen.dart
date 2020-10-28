@@ -65,6 +65,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           PrimaryTextFormField(
                             labelText: "Enter Password",
+
                             controller: _passwordEditingController,
                             isObscureText: true,
                             prefixIcon: Icons.lock_outline,

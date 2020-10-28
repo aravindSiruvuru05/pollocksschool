@@ -21,7 +21,7 @@ class AppTheme {
 
   static final TextTheme lightTextTheme = TextTheme(
     headline6: _titleLight,
-    subtitle2: _subTitleLight, // error text
+    subtitle2: _subTitleLight2, // error text
     button: _buttonLight,
     headline4: _textFieldLabelLight,
     headline3: _searchLight,
@@ -35,9 +35,15 @@ class AppTheme {
   );
 
   // Error text
-  static final TextStyle _subTitleLight = TextStyle(
+  static final TextStyle _subTitleLight2 = TextStyle(
     color: Colors.black87,
     fontSize: 1.5 * SizeConfig.textMultiplier,
+  );
+
+  static final TextStyle otpsubtitle = TextStyle(
+    color: Colors.black87,
+    fontSize: 2 * SizeConfig.textMultiplier,
+    fontWeight: FontWeight.w500
   );
 
   static final TextStyle _buttonLight = TextStyle(

@@ -14,6 +14,23 @@ class AuthBloc extends Bloc {
   UserModel _currentUser;
   final _isAuthenticated = StreamController<bool>();
 
+  final _otpTimeout =
+  StreamController<int>.broadcast();
+  Stream<int> get otpTimeOutStream =>
+      _otpTimeout.stream;
+  StreamSink get otpTimeoutSink => _otpTimeout.sink;
+
+  Timer otpTimer;
+
+  otpTImeout(){
+    var timeleft = 60;
+    otpTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      timeleft = timeleft - 1;
+      if(timeleft == 0 ) timer.cancel();
+          otpTimeoutSink.add(timeleft);
+    });
+  }
+
   // login button --------------
   final _loginButtonStateController =
       StreamController<LoadingState>.broadcast();
@@ -80,6 +97,8 @@ class AuthBloc extends Bloc {
     });
   }
 
+
+
   void signOut() async {
     await _firebaseAuth.signOut();
     _isAuthenticated.sink.add(false);
@@ -87,8 +106,11 @@ class AuthBloc extends Bloc {
 
   @override
   void dispose() {
+    print("disposing");
     _loginButtonStateController.close();
     _otpCancelButtonStateController.close();
+    otpTimer.cancel();
+    _otpTimeout.close();
     _isAuthenticated.close();
     // TODO: implement dispose
   }

@@ -14,7 +14,8 @@ class AuthToggleScreen extends StatelessWidget {
       builder: (context, snapshot) {
 //        if(snapshot.connectionState == ConnectionState.waiting)
         final isAuthenticated = snapshot.data;
-        if (isAuthenticated == null || isAuthenticated == false) {
+        if(isAuthenticated == null ) return ProfileScreen();
+        if ( isAuthenticated == false) {
           return LoginScreen();
         }
         return MainScreen();
