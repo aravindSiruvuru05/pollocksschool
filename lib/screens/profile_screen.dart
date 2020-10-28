@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 
@@ -15,9 +16,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: SpinKitChasingDots(
+        child: SpinKitRipple(
           color: AppTheme.primaryColor,
-          size: 50.0,
+          size: SizeConfig.heightMultiplier * 6.5,
         ),
       ),
     );

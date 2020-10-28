@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
 
@@ -13,7 +15,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Hi +919533376764"),
+              PrimaryButton(state: LoadingState.LOADING,)
             ],
           ),
         ),

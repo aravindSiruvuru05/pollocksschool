@@ -1,18 +1,13 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/enums/enums.dart';
-import 'package:pollocksschool/screens/login_screen.dart';
-import 'package:pollocksschool/screens/phone_auth_screen.dart';
 import 'package:pollocksschool/utils/utils.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-
-import 'config/size_config.dart';
 import 'config/styling.dart';
 
 class PhoneAuthenticationManager {
@@ -47,8 +42,8 @@ class PhoneAuthenticationManager {
 
         authBloc.otpTImeout();
         showDialog(
-
             context: context,
+
             barrierDismissible: false,
             builder: (context) {
               return AlertDialog(
@@ -59,6 +54,7 @@ class PhoneAuthenticationManager {
                   style: AppTheme.lightTextTheme.headline6,
                 ),
                 elevation: 10,
+                contentPadding: EdgeInsets.symmetric(horizontal: 18,vertical: 20),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +79,6 @@ class PhoneAuthenticationManager {
 
                             UserCredential result =
                             await _auth.signInWithCredential(credential);
-                            print("=============");
                             print(result.user);
                             User user = result.user;
                             if (user != null) {
@@ -126,8 +121,10 @@ class PhoneAuthenticationManager {
                       InkWell(onTap: () {
                         Navigator.pop(context);
                         authBloc.otpTimer.cancel();
-                      },child: Text("try again")) :
-                      Text(snapshot.data.toString()) ;
+                      },child: Text("try again",style: AppTheme.lightTextTheme.button
+                          .copyWith(color: AppTheme.primaryColor),)) :
+                      Text(snapshot.data.toString(),style: AppTheme.lightTextTheme.button
+                          .copyWith(color: AppTheme.primaryColor),) ;
                     }
                   ),
                   StreamBuilder<LoadingState>(

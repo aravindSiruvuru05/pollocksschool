@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
@@ -22,7 +23,7 @@ class PrimaryButton extends StatelessWidget {
         padding: LoadingState.NORMAL == state
             ?  EdgeInsets.all(SizeConfig.heightMultiplier * 1.7) : null,
         decoration: BoxDecoration(
-          color: AppTheme.primaryColor,
+          color: LoadingState.LOADING == state ? null : AppTheme.primaryColor,
           borderRadius:
           BorderRadius.circular(SizeConfig.heightMultiplier * 3),
         ),
@@ -40,10 +41,9 @@ class PrimaryButton extends StatelessWidget {
         style: AppTheme.lightTextTheme.button,
       );
     } else if (state == LoadingState.LOADING) {
-      return CircularProgressIndicator(
-        backgroundColor: AppTheme.accentColor,
-        valueColor: new AlwaysStoppedAnimation<Color>(
-            AppTheme.primaryColor),
+      return SpinKitRipple(
+        color: AppTheme.primaryColor,
+        size: SizeConfig.heightMultiplier * 6,
       );
     } else {
       return Icon(

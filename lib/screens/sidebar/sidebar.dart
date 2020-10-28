@@ -84,7 +84,7 @@ class _SideBarState extends State<SideBar>
                     child: ClipPath(
                       clipper: CustomMenuClipper(),
                       child: Container(
-                        width: 37,
+                        width: 38,
                         height: 110,
                         color: AppTheme.primaryColor,
                         alignment: Alignment.centerLeft,
@@ -92,7 +92,7 @@ class _SideBarState extends State<SideBar>
                           progress: _animationController.view,
                           icon: AnimatedIcons.menu_close,
                           color: Colors.white,
-                          size: 25,
+                          size: 26,
                         ),
                       ),
                     ),
@@ -109,6 +109,7 @@ class _SideBarState extends State<SideBar>
                         height: 100,
                       ),
                       ListTile(
+                        contentPadding: EdgeInsets.all(0),
                         title: Text(
                           "${authBloc.getCurrentUser.firstname} ${authBloc.getCurrentUser.lastname}",
                           style: TextStyle(

@@ -31,7 +31,7 @@ class AppTheme {
 
   static final TextStyle _titleLight = TextStyle(
     color: Colors.black,
-    fontSize: 3.5 * SizeConfig.textMultiplier,
+    fontSize: 3 * SizeConfig.textMultiplier,
   );
 
   // Error text
@@ -41,7 +41,7 @@ class AppTheme {
   );
 
   static final TextStyle otpsubtitle = TextStyle(
-    color: Colors.black87,
+    color: AppTheme.accentColor,
     fontSize: 2 * SizeConfig.textMultiplier,
     fontWeight: FontWeight.w500
   );

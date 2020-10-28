@@ -70,7 +70,6 @@ class AuthBloc extends Bloc {
       final result = _userDocSnapshot.data();
       if(result["id"] == id && result["password"] == password) {
         _currentUser = UserModel.fromJson(result);
-        print(result);
         return _currentUser;
       }
       return null ;
@@ -82,7 +81,6 @@ class AuthBloc extends Bloc {
   // this method is the last one to trigger even sign in or sign out
   void checkCurrentUser() async {
     User _user = _firebaseAuth.currentUser;
-
     final _userExist = _user != null ? true : false;
     if(_userExist) {
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(_user.displayName).get();
@@ -96,8 +94,6 @@ class AuthBloc extends Bloc {
       _isAuthenticated.sink.add(_userExist);
     });
   }
-
-
 
   void signOut() async {
     await _firebaseAuth.signOut();
