@@ -79,10 +79,10 @@ class PhoneAuthenticationManager {
 
                             UserCredential result =
                             await _auth.signInWithCredential(credential);
-                            print(result.user);
                             User user = result.user;
                             if (user != null) {
                               if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
+                              print(user);
                               authBloc.otpCancelButtonStateSink
                                   .add(LoadingState.DONE);
                             } else {

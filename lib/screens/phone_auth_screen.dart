@@ -59,8 +59,6 @@ class PhoneAuthScreen extends StatelessWidget {
 
                       UserCredential result =
                           await _auth.signInWithCredential(credential);
-                      print("=============");
-                      print(result.user);
                       User user = result.user;
                       if (user != null) {
                        if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
