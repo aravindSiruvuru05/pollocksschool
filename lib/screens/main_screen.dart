@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
+import 'package:pollocksschool/screens/upload_post.dart';
+import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
+import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 
 import 'sidebar/sidebar_layout.dart';
 
 class MainScreen extends StatefulWidget {
+  MainScreen({this.userType}) : super();
+  final UserType userType;
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -33,13 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _populatePagesAndbottomBarItemsData() {
-    _pages = [
-      HomeScreen(),
-      MenuScreen(),
-      DashboardScreen(),
-      MenuScreen(),
-      SideBarLayout()
-    ];
+    _pages = _getPages();
 
     _bottomBarItemList = [
       BottomBarItem(iconData: Icons.home, isSelected: false, title: "Feed"),
@@ -55,6 +55,42 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
+  List<Widget> _getPages(){
+    if(widget.userType == UserType.STUDENT)
+      return [
+        HomeScreen(),
+        MenuScreen(),
+        DashboardScreen(),
+        MenuScreen(),
+        SideBarLayout()
+      ];
+    else
+      return [
+        HomeScreen(),
+        MenuScreen(),
+        UploadPostScreen(),
+        MenuScreen(),
+        SideBarLayout()
+      ];
+  }
+
+  Widget getFloatingActionButton(){
+    if(widget.userType == UserType.STUDENT)
+      return ImageFloatingActionButton(
+          onPressed: () => _onTap(Constants.fabItemIndex),
+          path: Strings.getLogoImagePath);
+    else
+      return CircleAvatar(
+        backgroundColor: AppTheme.primaryColor,
+        child: IconButton(
+          icon: Icon(Icons.file_upload),
+          color: _currentIndex == Constants.fabItemIndex ? Colors.white : Colors.grey,
+          onPressed: () => _onTap(Constants.fabItemIndex),
+        ),
+        radius: SizeConfig.heightMultiplier * 4,
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,9 +100,7 @@ class _MainScreenState extends State<MainScreen> {
         controller: _pageNavigationController,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: ImageFloatingActionButton(
-          onPressed: () => _onTap(Constants.fabItemIndex),
-          path: Strings.getLogoImagePath),
+      floatingActionButton: getFloatingActionButton(),
       bottomNavigationBar: BottomAppBarWithNotch(
         onItemTap: _onTap,
         bottomBarItemList: _bottomBarItemList,

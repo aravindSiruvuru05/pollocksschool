@@ -1,4 +1,8 @@
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:pollocksschool/enums/user_type.dart';
+
 class UserModel {
 
   String branch;
@@ -14,6 +18,7 @@ class UserModel {
   String lastname;
   String phonenumber;
   String photourl;
+  UserType userType;
 
   UserModel({
     this.id,
@@ -28,8 +33,18 @@ class UserModel {
     this.lastSignInTime,
     this.phonenumber,
     this.photourl,
-    this.sections
+    this.sections,
+    this.userType
   });
+
+  static UserType getUserType(String type){
+    if(describeEnum(UserType.STUDENT) == type)
+      return UserType.STUDENT;
+    else if(describeEnum(UserType.ADMIN) == type)
+      return UserType.ADMIN;
+    else
+      return UserType.TEACHER;
+  }
 
   UserModel.fromJson(Map<String,dynamic> json)
       : this.id = json['id'],
@@ -44,6 +59,7 @@ class UserModel {
         this.lastSignInTime = DateTime.tryParse(json['lastSignInTime'].toString()),
         this.phonenumber = json['phonenumber'],
         this.photourl = json['photourl'],
+        this.userType = getUserType(json['usertype']),
 //        this.sections =(json['sections'] as List<dynamic>).map((e) => "$e").toList()  ;
         this.sections = json["sections"] != null ? new List<String>.from(json["sections"].map((x) => x.toString())) : List<String>();
 
