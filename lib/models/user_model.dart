@@ -1,12 +1,11 @@
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:pollocksschool/enums/user_type.dart';
+import 'package:pollocksschool/models/models.dart';
 
 class UserModel {
 
   String branch;
-  List<String> sections;
+  List<String> classIds;
   String countrycode;
   DateTime creationTime;
   String dob;
@@ -19,6 +18,9 @@ class UserModel {
   String phonenumber;
   String photourl;
   UserType userType;
+  List<ClassModel> classes;
+
+
 
   UserModel({
     this.id,
@@ -33,7 +35,7 @@ class UserModel {
     this.lastSignInTime,
     this.phonenumber,
     this.photourl,
-    this.sections,
+    this.classIds,
     this.userType
   });
 
@@ -45,6 +47,7 @@ class UserModel {
     else
       return UserType.TEACHER;
   }
+
 
   UserModel.fromJson(Map<String,dynamic> json)
       : this.id = json['id'],
@@ -60,7 +63,7 @@ class UserModel {
         this.phonenumber = json['phonenumber'],
         this.photourl = json['photourl'],
         this.userType = getUserType(json['usertype']),
-//        this.sections =(json['sections'] as List<dynamic>).map((e) => "$e").toList()  ;
-        this.sections = json["sections"] != null ? new List<String>.from(json["sections"].map((x) => x.toString())) : List<String>();
+        this.classIds = List<String>.from(json['classIds']);
+
 
 }

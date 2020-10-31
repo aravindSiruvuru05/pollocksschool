@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/screens/profile_screen.dart';
+import 'package:pollocksschool/screens/screens.dart';
 import 'sidebar.dart';
 
 class SideBarLayout extends StatelessWidget {

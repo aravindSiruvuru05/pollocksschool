@@ -24,7 +24,8 @@ class BottomAppBarWithNotch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      notchMargin: 8,
+      notchMargin: 5,
+
       color: AppTheme.primaryColor,
       shape: CircularNotchedRectangle(),
       child: Padding(
@@ -34,7 +35,7 @@ class BottomAppBarWithNotch extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(bottomBarItemList.length, (index) {
               final isSelected = bottomBarItemList[index].isSelected;
-              Color color = isSelected ? Colors.white : Colors.grey;
+              Color color = isSelected ? Colors.white : AppTheme.primaryshadeColor;
               final size = SizeConfig.heightMultiplier * 3.5;
               final item = bottomBarItemList[index];
               return Expanded(
@@ -44,6 +45,7 @@ class BottomAppBarWithNotch extends StatelessWidget {
                     height: size * 2.2,
                     child: Material(
                       type: MaterialType.transparency,
+                      color: Colors.transparent,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,

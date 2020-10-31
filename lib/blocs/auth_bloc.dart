@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
-import 'package:pollocksschool/models/user_model.dart';
+import 'package:pollocksschool/models/models.dart';
 
 class AuthBloc extends Bloc {
 
   FirebaseAuth _firebaseAuth;
   CollectionReference _userCollectionRef;
+  CollectionReference _classCollectionRef;
 
   UserModel _currentUser;
   final _isAuthenticated = StreamController<bool>();
@@ -18,7 +18,7 @@ class AuthBloc extends Bloc {
   StreamController<int>.broadcast();
   Stream<int> get otpTimeOutStream =>
       _otpTimeout.stream;
-  StreamSink get otpTimeoutSink => _otpTimeout.sink;
+  Function get otpTimeoutSink => _otpTimeout.sink.add;
 
   Timer otpTimer;
 
@@ -27,7 +27,7 @@ class AuthBloc extends Bloc {
     otpTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       timeleft = timeleft - 1;
       if(timeleft == 0 ) timer.cancel();
-          otpTimeoutSink.add(timeleft);
+          otpTimeoutSink(timeleft);
     });
   }
 
@@ -36,15 +36,15 @@ class AuthBloc extends Bloc {
       StreamController<LoadingState>.broadcast();
   Stream<LoadingState> get loginButtonState =>
       _loginButtonStateController.stream;
-  StreamSink get loginButtonStateSink => _loginButtonStateController.sink;
+  Function get loginButtonStateSink => _loginButtonStateController.sink.add;
 
   // otp cancel button --------------
   final _otpCancelButtonStateController =
       StreamController<LoadingState>.broadcast();
   Stream<LoadingState> get otpCancelButtonState =>
       _otpCancelButtonStateController.stream;
-  StreamSink get otpCancelButtonStateSink =>
-      _otpCancelButtonStateController.sink;
+  Function get otpCancelButtonStateSink =>
+      _otpCancelButtonStateController.sink.add;
 
   Stream<bool> get isAuthStream => _isAuthenticated.stream;
 
@@ -57,6 +57,7 @@ class AuthBloc extends Bloc {
   _firebaseInit(){
     _firebaseAuth= FirebaseAuth.instance;
     _userCollectionRef = FirebaseFirestore.instance.collection("user");
+    _classCollectionRef = FirebaseFirestore.instance.collection("class");
   }
 
   Future<bool> isUserExist(String id) async{
@@ -64,6 +65,7 @@ class AuthBloc extends Bloc {
     return _userDocSnapshot.exists ? true : false ;
   }
 
+  // ignore: missing_return
   Future<UserModel> isValidUser(String id,String password) async{
     try{
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(id).get();
@@ -78,20 +80,34 @@ class AuthBloc extends Bloc {
     }
   }
 
+  Future<UserModel> getCurrentUserDataWithId(String id) async{
+    final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(id).get();
+    final result = _userDocSnapshot.data();
+    UserModel user = UserModel.fromJson(result);
+    user.classes = [];
+    for(id in user.classIds){
+      DocumentSnapshot c = await _classCollectionRef.doc(id).get();
+      final Map<String,dynamic> result = c.data();
+      user.classes.add(ClassModel.fromJson(result));
+    }
+     return user;
+  }
+
   // this method is the last one to trigger even sign in or sign out
   void checkCurrentUser() async {
     User _user = _firebaseAuth.currentUser;
     final _userExist = _user != null ? true : false;
     if(_userExist) {
-      final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(_user.displayName).get();
-      final result = _userDocSnapshot.data();
-      _currentUser = UserModel.fromJson(result);
-      loginButtonStateSink.add(LoadingState.DONE);
+      _currentUser = await getCurrentUserDataWithId(_user.displayName);
+      Timer(Duration(milliseconds: 200),(){
+        loginButtonStateSink(LoadingState.DONE);
+      });
     } else {
-      loginButtonStateSink.add(LoadingState.NORMAL);
+      loginButtonStateSink(LoadingState.NORMAL);
     }
     Timer(Duration(milliseconds: 150), (){
       _isAuthenticated.sink.add(_userExist);
+      print(getCurrentUser);
     });
   }
 

@@ -6,7 +6,6 @@ import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
-import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/utils.dart';
@@ -52,8 +51,8 @@ class PhoneAuthScreen extends StatelessWidget {
                 onChanged: (val) async {
                   if (val.length == 6) {
                     try {
-                      authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
-                      authBloc.otpCancelButtonStateSink.add(LoadingState.LOADING);
+                      authBloc.loginButtonStateSink(LoadingState.NORMAL);
+                      authBloc.otpCancelButtonStateSink(LoadingState.LOADING);
                       AuthCredential credential = PhoneAuthProvider.credential(
                           verificationId: verificationId, smsCode: val);
 
@@ -62,11 +61,9 @@ class PhoneAuthScreen extends StatelessWidget {
                       User user = result.user;
                       if (user != null) {
                        if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
-                        authBloc.otpCancelButtonStateSink
-                            .add(LoadingState.DONE);
+                        authBloc.otpCancelButtonStateSink(LoadingState.DONE);
                       } else {
-                        authBloc.otpCancelButtonStateSink
-                            .add(LoadingState.NORMAL);
+                        authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
                         DialogPopUps.showCommonDialog(
                             context: context,
                             text: "error ",
@@ -78,8 +75,7 @@ class PhoneAuthScreen extends StatelessWidget {
                       });
                     } catch (e) {
                       _pinEditingController.clear();
-                      authBloc.otpCancelButtonStateSink
-                          .add(LoadingState.NORMAL);
+                      authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
                       print(e.message);
                       DialogPopUps.showCommonDialog(
                           context: context,
@@ -107,7 +103,7 @@ class PhoneAuthScreen extends StatelessWidget {
                           onTap: () { 
                             Navigator.pop(context);
                             Timer(Duration(milliseconds: 300),(){
-                              authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                              authBloc.loginButtonStateSink(LoadingState.NORMAL);
                             });
                           },
                           text: "Cancel",

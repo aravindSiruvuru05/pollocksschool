@@ -1,14 +1,9 @@
-import 'dart:io';
-
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
-import 'package:pollocksschool/blocs/internet_connectivity_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/user_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
-import 'package:pollocksschool/utils/phone_authentication_manager.dart';
 import 'package:pollocksschool/utils/utils.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -84,9 +79,9 @@ class LoginScreen extends StatelessWidget {
                           PrimaryButton(
                             onTap: () async{
                               if (_formKey.currentState.validate())  {
-                                authBloc.loginButtonStateSink.add(LoadingState.LOADING);
+                                authBloc.loginButtonStateSink(LoadingState.LOADING);
                                 if(!await InternetConnectivity.isConnectedToInternet()) {
-                                  authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                                  authBloc.loginButtonStateSink(LoadingState.NORMAL);
                                   DialogPopUps.showCommonDialog(text: "Please make sure your are Connected to internet",ok: () => Navigator.pop(context),context: context);
                                   return;
                                 }
@@ -96,15 +91,13 @@ class LoginScreen extends StatelessWidget {
                                     .requestFocus(new FocusNode());
                                 final _userExist = await authBloc.isUserExist(id);
                                 if(!_userExist){
-                                  authBloc.loginButtonStateSink
-                                      .add(LoadingState.NORMAL);
+                                  authBloc.loginButtonStateSink(LoadingState.NORMAL);
                                   DialogPopUps.showCommonDialog(text: "invalid User id",ok: () => Navigator.pop(context),context: context);
                                   return;
                                 }
                                 UserModel user = await authBloc.isValidUser(id,password);
                                 if(user == null) {
-                                  authBloc.loginButtonStateSink
-                                      .add(LoadingState.NORMAL);
+                                  authBloc.loginButtonStateSink(LoadingState.NORMAL);
                                   DialogPopUps.showCommonDialog(text: "Incorrect Password",ok: () => Navigator.pop(context),context: context);
                                   _passwordEditingController.clear();
                                   return;

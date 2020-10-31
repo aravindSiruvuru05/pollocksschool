@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/blocs/auth_bloc.dart';
+import 'package:pollocksschool/blocs/profile_bloc.dart';
+import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/screens/upload_post.dart';
@@ -8,6 +11,7 @@ import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 import 'sidebar/sidebar_layout.dart';
 
@@ -18,12 +22,14 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientMixin<MainScreen>{
   int _currentIndex;
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
-
+  final PageStorageBucket bucket = PageStorageBucket();
   List<Widget> _pages;
+
+  AuthBloc _authBloc;
 
   @override
   void initState() {
@@ -32,6 +38,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void init() {
+
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
@@ -66,11 +73,17 @@ class _MainScreenState extends State<MainScreen> {
       ];
     else
       return [
-        HomeScreen(),
+        HomeScreen(key: PageStorageKey("home"),),
+        MenuScreen(key: PageStorageKey("d"),),
+        Provider(
+          create: (_) => UploadBloc(),
+            child: UploadPostScreen(),
+        ),
         MenuScreen(),
-        UploadPostScreen(),
-        MenuScreen(),
-        SideBarLayout()
+        Provider(
+          create: (_) => ProfileBloc(currentUser: _authBloc.getCurrentUser),
+          child: ProfileScreen(key: PageStorageKey("home"),),
+        ),
       ];
   }
 
@@ -84,7 +97,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: AppTheme.primaryColor,
         child: IconButton(
           icon: Icon(Icons.file_upload),
-          color: _currentIndex == Constants.fabItemIndex ? Colors.white : Colors.grey,
+          color: _currentIndex == Constants.fabItemIndex ? Colors.white : Colors.white54,
           onPressed: () => _onTap(Constants.fabItemIndex),
         ),
         radius: SizeConfig.heightMultiplier * 4,
@@ -93,11 +106,18 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    _authBloc = Provider.of<AuthBloc>(context);
     return Scaffold(
-      body: PageView(
-        children: _pages,
-        onPageChanged: onPageChange,
-        controller: _pageNavigationController,
+      extendBody: true,
+      resizeToAvoidBottomPadding: false,
+      body: PageStorage(
+        bucket: bucket,
+        child: PageView(
+          children: _pages,
+          onPageChanged: onPageChange,
+          controller: _pageNavigationController,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: getFloatingActionButton(),
@@ -105,6 +125,7 @@ class _MainScreenState extends State<MainScreen> {
         onItemTap: _onTap,
         bottomBarItemList: _bottomBarItemList,
       ),
+
     );
   }
 
@@ -137,4 +158,8 @@ class _MainScreenState extends State<MainScreen> {
     _pageNavigationController.dispose();
     super.dispose();
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

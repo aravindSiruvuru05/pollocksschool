@@ -32,7 +32,7 @@ class PhoneAuthenticationManager {
         }
       },
       verificationFailed: (FirebaseAuthException exception) {
-        authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+        authBloc.loginButtonStateSink(LoadingState.NORMAL);
         DialogPopUps.showCommonDialog(
             context: context,
             text: exception.toString(),
@@ -72,8 +72,7 @@ class PhoneAuthenticationManager {
                       onChanged: (val) async {
                         if (val.length == 6) {
                           try {
-                            authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
-                            authBloc.otpCancelButtonStateSink.add(LoadingState.LOADING);
+                            authBloc.otpCancelButtonStateSink(LoadingState.LOADING);
                             AuthCredential credential = PhoneAuthProvider.credential(
                                 verificationId: verificationId, smsCode: val);
 
@@ -83,24 +82,24 @@ class PhoneAuthenticationManager {
                             if (user != null) {
                               if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
                               print(user);
-                              authBloc.otpCancelButtonStateSink
-                                  .add(LoadingState.DONE);
+                              authBloc.otpCancelButtonStateSink(LoadingState.DONE);
+                              Timer(Duration(milliseconds: 300), () {
+                                Timer(Duration(milliseconds: 300), () {
+                                  authBloc.checkCurrentUser();
+                                });
+                                Navigator.pop(context);
+                              });
                             } else {
-                              authBloc.otpCancelButtonStateSink
-                                  .add(LoadingState.NORMAL);
+                              authBloc.loginButtonStateSink(LoadingState.NORMAL);
+                              authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
                               DialogPopUps.showCommonDialog(
                                   context: context,
                                   text: "error ",
                                   ok: () => Navigator.pop(context));
                             }
-                            Timer(Duration(milliseconds: 300), () {
-                              Navigator.pop(context);
-                              authBloc.checkCurrentUser();
-                            });
                           } catch (e) {
                             _codeController.clear();
-                            authBloc.otpCancelButtonStateSink
-                                .add(LoadingState.NORMAL);
+                            authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
                             print(e.message);
                             DialogPopUps.showCommonDialog(
                                 context: context,
@@ -137,7 +136,7 @@ class PhoneAuthenticationManager {
                             Navigator.pop(context);
                             authBloc.otpTimer.cancel();
                             Timer(Duration(milliseconds: 300),(){
-                              authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                              authBloc.loginButtonStateSink(LoadingState.NORMAL);
                             });
                           },
                           text: "Cancel",

@@ -169,7 +169,7 @@ class _SideBarState extends State<SideBar>
                         title: "Logout",
                         onTap: () {
                           authBloc.signOut();
-                          authBloc.loginButtonStateSink.add(LoadingState.NORMAL);
+                          authBloc.loginButtonStateSink(LoadingState.NORMAL);
                           },
                       ),
                     ],
