@@ -6,6 +6,7 @@ class SideBarLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("ProfilePage"),),
       body: Stack(
         children: <Widget>[
           ProfileScreen(),

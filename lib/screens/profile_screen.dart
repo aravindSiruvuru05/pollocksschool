@@ -6,6 +6,10 @@ import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/widgets/post_card.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../utils/config/size_config.dart';
+import '../utils/config/size_config.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key key}): super(key:key);
@@ -90,7 +94,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        buildCountColumn("posts", _profileBloc.getPostCount),
+                StreamBuilder<List<PostModel>>(
+                  stream: _profileBloc.postsStream,
+                  initialData: _profileBloc.allPosts,
+                  builder: (context, snapshot){
+                    final posts = snapshot.data;
+                    if(posts == null ) return buildCountColumn("posts", 0);
+                    return buildCountColumn("posts", posts.length);
+                  },
+                ),
+
                         buildCountColumn("followers", 0),
                         buildCountColumn("following", 0),
                       ],
@@ -121,15 +134,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(top: 4.0),
             child: Text(
-                 "bio comes here ....",
-              style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.accentColor)
+                "bio comes here ....",
+                style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.accentColor)
             ),
           ),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(top: 2.0),
             child: Text(
-              "am roi",
+                "am roi",
                 style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.accentColor)
 
             ),
@@ -144,21 +157,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     _authBloc = Provider.of<AuthBloc>(context);
     _profileBloc = Provider.of<ProfileBloc>(context);
-    return Scaffold(
-      appBar: AppBar(title: Text("profile"),),
-      body: Stack(
-        children: [
-          buildProfileHeader(),
-          ListView(
-            children: [
-              Container(height: SizeConfig.heightMultiplier*30,),
+    return
+//      Scaffold(
+//        appBar: AppBar(title: Text("profile"),),
+         Stack(
+          children: [
+            buildProfileHeader(),
+            ListView(
+              children: [
+                Container(height: SizeConfig.heightMultiplier * 30,),
 //          Divider(height: 10,thickness: 1,),
-              buildProfilePosts(),
-            ],
-          ),
-        ],
-      )
-    );
+                buildProfilePosts(),
+              ],
+            ),
+          ],
+        );
+//    );
   }
 
   buildProfilePosts() {
@@ -167,22 +181,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
       initialData: _profileBloc.allPosts,
       builder: (context, snapshot){
         final posts = snapshot.data;
-        print(posts);
         if(posts == null){
-          return CircularProgressIndicator();
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child:  Padding(
+              padding: EdgeInsets.symmetric(horizontal : SizeConfig.heightMultiplier * 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Container(
+                        width: SizeConfig.heightMultiplier * 6,
+                        height: SizeConfig.heightMultiplier * 6,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: SizeConfig.heightMultiplier,),
+                      Expanded(
+                        child: Container(
+                          height: SizeConfig.heightMultiplier * 6,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 2.0),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          );
         } else if(posts.isEmpty){
-          return Text("no posts yet");
+          return Center(child: Text("no posts yet"),);
         } else {
           final postCards = posts.map((e) => PostCard(post: e)).toList();
-          return Column(
-            children: postCards,
+          return Container(
+            color: AppTheme.appBackgroundColor,
+            child: Column(
+              children: postCards,
+            ),
           );
-//            ListView.builder(
-//            shrinkWrap: true,
-//              itemCount: posts.length,
-//              itemBuilder: (BuildContext context, int index){
-//                return PostCard(post: posts[index]);
-//              });
         }
       },
     );

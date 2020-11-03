@@ -14,6 +14,7 @@ import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'sidebar/sidebar_layout.dart';
+import 'sidebar/sidebar_layout.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.userType}) : super();
@@ -82,7 +83,7 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
         MenuScreen(),
         Provider(
           create: (_) => ProfileBloc(currentUser: _authBloc.getCurrentUser),
-          child: ProfileScreen(key: PageStorageKey("home"),),
+          child: SideBarLayout(),
         ),
       ];
   }

@@ -1,47 +1,78 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/blocs/profile_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../blocs/profile_bloc.dart';
+import '../utils/config/size_config.dart';
+
+// ignore: must_be_immutable
 class PostCard extends StatelessWidget{
   final PostModel post;
+  bool isLiked;
 
+  ProfileBloc _profileBloc;
   PostCard({@required this.post});
 
   buildPostHeader() {
-     return ListTile(
-          leading: CircleAvatar(
-            backgroundImage:post.mediaUrl  != null ? CachedNetworkImageProvider(post.mediaUrl) : null,
-            backgroundColor: Colors.grey,
-            child: post.mediaUrl == null ? Text(post.username[0]) : null,
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage:post.mediaUrl  != null ? CachedNetworkImageProvider(post.mediaUrl) : null,
+        backgroundColor: Colors.grey,
+        child: post.mediaUrl == null ? Text(post.username[0]) : null,
+      ),
+      title: GestureDetector(
+        onTap: () => print('showing profile'),
+        child: Text(
+          post.username,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
-          title: GestureDetector(
-            onTap: () => print('showing profile'),
-            child: Text(
-              post.username,
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+        ),
+      ),
 //          subtitle: Text(location),
-          trailing: IconButton(
-            onPressed: () => print('deleting post'),
-            icon: Icon(Icons.more_vert),
-          ),
-        );
+      trailing: IconButton(
+        onPressed: () => print('deleting post'),
+        icon: Icon(Icons.more_vert),
+      ),
+    );
   }
 
   buildPostImage() {
     return GestureDetector(
-      onDoubleTap: () => print('liking post'),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Image.network(post.mediaUrl),
-        ],
-      ),
+        onDoubleTap: () => _profileBloc.handleLikePost(post.postId,isLiked),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CachedNetworkImage(
+              width: double.infinity,
+              imageUrl: post.mediaUrl,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[100],
+                enabled: true,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height / 3,
+                  color: Colors.white,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+            StreamBuilder<bool>(
+              stream: _profileBloc.likeSymbolStream,
+              initialData: false,
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if(snapshot.data == null || snapshot.data == false) return SizedBox.shrink();
+                return Icon(Icons.favorite,size: SizeConfig.heightMultiplier * 13,color: Colors.white);
+              },
+            ),
+          ],
+        )
     );
   }
 
@@ -55,16 +86,16 @@ class PostCard extends StatelessWidget{
           children: <Widget>[
             Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
             GestureDetector(
-              onTap: () => print('liking post'),
+              onTap: () => _profileBloc.handleLikePost(post.postId,isLiked),
               child: Icon(
-                Icons.favorite_border,
+                isLiked ? Icons.favorite : Icons.favorite_border,
                 size: 28.0,
                 color: Colors.pink,
               ),
             ),
             Padding(padding: EdgeInsets.only(right: 20.0)),
             GestureDetector(
-              onTap: () => print('showing comments'),
+              onTap: () => print("show comments"),
               child: Icon(
                 Icons.chat,
                 size: 28.0,
@@ -105,39 +136,38 @@ class PostCard extends StatelessWidget{
         Container(
           margin: EdgeInsets.only(left: 20.0,top: 4),
           child: Text(post.description,
-    style: AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45)
-
-    )
+              style: AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45)
+          ),
         ),
-
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    _profileBloc = Provider.of<ProfileBloc>(context);
+    isLiked = _profileBloc.getIsLiked(post.likes);
     return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-          boxShadow: [
-      BoxShadow(
-      color: AppTheme.accentColor.withOpacity(0.5),
-        blurRadius: 12.0,
-        offset: Offset(3, 10)
-    ),]
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          buildPostHeader(),
-          buildPostImage(),
-          buildPostFooter(),]
-        
-      )
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: AppTheme.accentColor.withOpacity(0.5),
+                  blurRadius: 12.0,
+                  offset: Offset(3, 10)
+              ),]
+        ),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              buildPostHeader(),
+              buildPostImage(),
+              buildPostFooter(),
+            ]
+        )
     );
-
   }
 }

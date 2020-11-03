@@ -69,36 +69,36 @@ class _SideBarState extends State<SideBar>
           top: 0,
           bottom: 0,
           left:
-              isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth - 45,
+              isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth,
           right: isSideBarOpenedAsync.data ? -screenWidth * 0.1 : -screenWidth,
           child: Row(
             children: <Widget>[
-              Align(
-                alignment: Alignment(0, 0.9),
-                child: GestureDetector(
-                  onTap: () {
-                    onIconPressed();
-                  },
-                  child: Transform.rotate(
-                    angle: pi,
-                    child: ClipPath(
-                      clipper: CustomMenuClipper(),
-                      child: Container(
-                        width: 38,
-                        height: 110,
-                        color: AppTheme.primaryColor,
-                        alignment: Alignment.centerLeft,
-                        child: AnimatedIcon(
-                          progress: _animationController.view,
-                          icon: AnimatedIcons.menu_close,
-                          color: Colors.white,
-                          size: 26,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+//              Align(
+//                alignment: Alignment(0, 0.9),
+//                child: GestureDetector(
+//                  onTap: () {
+//                    onIconPressed();
+//                  },
+//                  child: Transform.rotate(
+//                    angle: pi,
+//                    child: ClipPath(
+//                      clipper: CustomMenuClipper(),
+//                      child: Container(
+//                        width: 38,
+//                        height: 110,
+//                        color: AppTheme.primaryColor,
+//                        alignment: Alignment.centerLeft,
+//                        child: AnimatedIcon(
+//                          progress: _animationController.view,
+//                          icon: AnimatedIcons.menu_close,
+//                          color: Colors.white,
+//                          size: 26,
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+//                ),
+//              ),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
