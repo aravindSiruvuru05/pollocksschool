@@ -9,10 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../utils/config/size_config.dart';
-import '../utils/config/size_config.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({Key key}): super(key:key);
+  ProfileScreen({Key key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -74,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   buildProfileHeader() {
-    return  Padding(
+    return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
         children: <Widget>[
@@ -94,16 +93,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                StreamBuilder<List<PostModel>>(
-                  stream: _profileBloc.postsStream,
-                  initialData: _profileBloc.allPosts,
-                  builder: (context, snapshot){
-                    final posts = snapshot.data;
-                    if(posts == null ) return buildCountColumn("posts", 0);
-                    return buildCountColumn("posts", posts.length);
-                  },
-                ),
-
+                        StreamBuilder<List<PostModel>>(
+                          stream: _profileBloc.postsStream,
+                          initialData: _profileBloc.allPosts,
+                          builder: (context, snapshot) {
+                            final posts = snapshot.data;
+                            if (posts == null)
+                              return buildCountColumn("posts", 0);
+                            return buildCountColumn("posts", posts.length);
+                          },
+                        ),
                         buildCountColumn("followers", 0),
                         buildCountColumn("following", 0),
                       ],
@@ -133,25 +132,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(top: 4.0),
-            child: Text(
-                "bio comes here ....",
-                style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.accentColor)
-            ),
+            child: Text("bio comes here ....",
+                style: AppTheme.lightTextTheme.bodyText2
+                    .copyWith(color: AppTheme.accentColor)),
           ),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(top: 2.0),
-            child: Text(
-                "am roi",
-                style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.accentColor)
-
-            ),
+            child: Text("am roi",
+                style: AppTheme.lightTextTheme.bodyText2
+                    .copyWith(color: AppTheme.accentColor)),
           ),
         ],
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -160,18 +155,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return
 //      Scaffold(
 //        appBar: AppBar(title: Text("profile"),),
-         Stack(
+        Stack(
+      children: [
+        buildProfileHeader(),
+        ListView(
           children: [
-            buildProfileHeader(),
-            ListView(
-              children: [
-                Container(height: SizeConfig.heightMultiplier * 30,),
-//          Divider(height: 10,thickness: 1,),
-                buildProfilePosts(),
-              ],
+            Container(
+              height: SizeConfig.heightMultiplier * 30,
             ),
+//          Divider(height: 10,thickness: 1,),
+            buildProfilePosts(),
           ],
-        );
+        ),
+      ],
+    );
 //    );
   }
 
@@ -179,15 +176,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return StreamBuilder<List<PostModel>>(
       stream: _profileBloc.postsStream,
       initialData: _profileBloc.allPosts,
-      builder: (context, snapshot){
+      builder: (context, snapshot) {
         final posts = snapshot.data;
-        if(posts == null){
+        if (posts == null) {
           return Shimmer.fromColors(
             baseColor: Colors.grey[300],
             highlightColor: Colors.grey[100],
             enabled: true,
-            child:  Padding(
-              padding: EdgeInsets.symmetric(horizontal : SizeConfig.heightMultiplier * 3),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.heightMultiplier * 3),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -198,7 +196,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: SizeConfig.heightMultiplier * 6,
                         color: Colors.white,
                       ),
-                      SizedBox(width: SizeConfig.heightMultiplier,),
+                      SizedBox(
+                        width: SizeConfig.heightMultiplier,
+                      ),
                       Expanded(
                         child: Container(
                           height: SizeConfig.heightMultiplier * 6,
@@ -219,8 +219,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           );
-        } else if(posts.isEmpty){
-          return Center(child: Text("no posts yet"),);
+        } else if (posts.isEmpty) {
+          return Center(
+            child: Text("no posts yet"),
+          );
         } else {
           final postCards = posts.map((e) => PostCard(post: e)).toList();
           return Container(

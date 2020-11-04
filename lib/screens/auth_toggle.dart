@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/screens/screens.dart';
-import 'package:pollocksschool/utils/dialod_popups.dart';
-import 'package:pollocksschool/utils/internet_connectivity.dart';
 import 'package:provider/provider.dart';
 
 class AuthToggleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
     authBloc.checkCurrentUser();
     return StreamBuilder<bool>(
@@ -17,10 +14,10 @@ class AuthToggleScreen extends StatelessWidget {
         print(snapshot.data);
 //        if(snapshot.connectionState == ConnectionState.waiting)
         final isAuthenticated = snapshot.data;
-        if(isAuthenticated == null ) return LoadingScreen();
-        if (isAuthenticated){
+        if (isAuthenticated == null) return LoadingScreen();
+        if (isAuthenticated) {
           return MainScreen();
-        } else{
+        } else {
           return LoginScreen();
         }
       },

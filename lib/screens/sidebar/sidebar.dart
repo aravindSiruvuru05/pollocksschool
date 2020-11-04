@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
@@ -68,8 +67,7 @@ class _SideBarState extends State<SideBar>
           duration: _animationDuration,
           top: 0,
           bottom: 0,
-          left:
-              isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth,
+          left: isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth,
           right: isSideBarOpenedAsync.data ? -screenWidth * 0.1 : -screenWidth,
           child: Row(
             children: <Widget>[
@@ -170,7 +168,7 @@ class _SideBarState extends State<SideBar>
                         onTap: () {
                           authBloc.signOut();
                           authBloc.loginButtonStateSink(LoadingState.NORMAL);
-                          },
+                        },
                       ),
                     ],
                   ),
