@@ -1,6 +1,7 @@
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/styling.dart';

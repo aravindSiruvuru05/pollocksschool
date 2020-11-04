@@ -120,7 +120,7 @@ class UploadBloc extends Bloc {
         .collection("userPosts")
         .doc(id)
         .set({
-      "postId": postId,
+      "postId": id,
       "ownerId": _user.id,
       "username": "${_user.firstname} ${_user.lastname}",
       "mediaUrl": mediaUrl,

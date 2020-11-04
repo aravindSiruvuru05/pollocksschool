@@ -24,7 +24,7 @@ class PostModel {
   factory PostModel.fromDocument(QueryDocumentSnapshot doc) {
 
     return PostModel(
-      postId: doc['postId'],
+      postId: doc.id,
       ownerId: doc['ownerId'],
       username: doc['username'],
       description: doc['description'],

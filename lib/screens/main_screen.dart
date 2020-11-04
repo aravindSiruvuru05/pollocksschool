@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
+import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
-import 'package:pollocksschool/screens/upload_post.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   List<Widget> _getPages(){
     if(widget.userType == UserType.STUDENT)
       return [
-        HomeScreen(),
+        TimelineScreen(),
         MenuScreen(),
         DashboardScreen(),
         MenuScreen(),
@@ -73,7 +73,11 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       ];
     else
       return [
-        HomeScreen(key: PageStorageKey("home"),),
+        Provider(
+          create: (_) => TimelineBloc(currentUser: _authBloc.getCurrentUser),
+          child: TimelineScreen(key: PageStorageKey("home"),),
+        ),
+
         MenuScreen(key: PageStorageKey("d"),),
         Provider(
           create: (_) => UploadBloc(),

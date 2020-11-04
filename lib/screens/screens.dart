@@ -1,4 +1,3 @@
-export 'home_screen.dart';
 export 'main_screen.dart';
 export 'menu_screen.dart';
 export 'dashboard_screen.dart';
@@ -6,4 +5,6 @@ export 'profile_screen.dart';
 export 'login_screen.dart';
 export 'auth_toggle.dart';
 export 'phone_auth_screen.dart';
+export 'timeline_screen.dart';
 export 'loading_screen.dart';
+export 'upload_post_screen.dart';

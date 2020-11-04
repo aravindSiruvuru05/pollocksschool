@@ -1,65 +1,43 @@
+
+
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/models/post_model.dart';
 
-import 'blocs.dart';
+import 'bloc.dart';
 
-class ProfileBloc extends Bloc{
+class TimelineBloc extends Bloc{
+  CollectionReference _timelineCollectionRef;
 
   UserModel currentUser;
 
-  CollectionReference _postCollectionRef;
-  QuerySnapshot postsSnapshot;
-
-  int _postCount;
-
-  int get getPostCount => _postCount;
-
   List<PostModel> allPosts;
 
-  //heart beat for like
 
   final _likeSymbolController =
   StreamController<bool>.broadcast();
+
+  CollectionReference _postCollectionRef;
   Stream<bool> get likeSymbolStream =>
       _likeSymbolController.stream;
   Function get _likeSymbolSink => _likeSymbolController.sink.add;
-  final _postsController =
+
+  final _timelinepostsController =
   StreamController<List<PostModel>>.broadcast();
-  Stream<List<PostModel>> get postsStream =>
-      _postsController.stream;
-  Function get _postsSink => _postsController.sink.add;
+  Stream<List<PostModel>> get timelinePostsStream =>
+      _timelinepostsController.stream;
+  Function get _timelinePostsSink => _timelinepostsController.sink.add;
 
-  ProfileBloc({@required this.currentUser}){
-    _init();
-  }
 
-  _init(){
+  TimelineBloc({@required this.currentUser}){
+    _timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
-    getProfilePosts();
+    getTimelinePosts();
   }
 
-  @override
-  void dispose() {
-    _postsController.close();
-    _likeSymbolController.close();
-    // TODO: implement dispose
-  }
-
-   getProfilePosts() async {
-    postsSnapshot = await _postCollectionRef
-        .doc(currentUser.id)
-        .collection('userPosts')
-        .orderBy('timestamp', descending: true)
-        .get();
-    _postCount = postsSnapshot.docs.length;
-    final posts = postsSnapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
-    posts == null ? allPosts = [] : allPosts = posts;
-    print(posts[0].postId);
-    _postsSink(allPosts);
-  }
 
   getIsLiked(Map<String,dynamic> likes){
     return likes[currentUser.id] == null ? false : likes[currentUser.id];
@@ -73,12 +51,12 @@ class ProfileBloc extends Bloc{
         _likeSymbolSink(false);
       });
     }
-   await _postCollectionRef
+    await _postCollectionRef
         .doc(currentUser.id)
         .collection('userPosts')
         .doc(postId)
         .update({'likes.${currentUser.id}': !isLiked});
-   getProfilePosts();
+    getTimelinePosts();
   }
 
   getLikeCount(Map<String,dynamic> likes) async{
@@ -95,5 +73,24 @@ class ProfileBloc extends Bloc{
     });
     return count;
   }
+  
+  getTimelinePosts() async {
+    QuerySnapshot snapshot = await _timelineCollectionRef
+        .doc(currentUser.classIds[0])
+        .collection('classPosts')
+        .orderBy('timestamp', descending: true)
+        .get();
+    final posts = snapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+    posts == null ? allPosts = [] : allPosts = posts;
+    _timelinePostsSink(allPosts);
+  }
+
+  @override
+  void dispose() {
+    _timelinepostsController.close();
+    _likeSymbolController.close();
+    // TODO: implement dispose
+  }
+
 
 }
