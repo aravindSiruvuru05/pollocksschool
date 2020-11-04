@@ -6,5 +6,6 @@ class Strings {
       '''     min 6 characters and contains atleast one
      special character like !@#\$%^&*(),.?":{}|<>    ''';
   static const String getSelectSection = "Select Section";
+  static const String getSelectBranch = "Select Branch";
 
 }

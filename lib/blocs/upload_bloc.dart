@@ -34,11 +34,17 @@ class UploadBloc extends Bloc {
       _postbuttonState.stream;
   Function get postbuttonStateSink => _postbuttonState.sink.add;
 
-  final _dropdownController =
+  final _sectionDropdownController =
   StreamController<String>.broadcast();
-  Stream<String> get dropdownStream =>
-      _dropdownController.stream;
-  Function get _dropdownSink => _dropdownController.sink.add;
+  Stream<String> get sectionDropdownStream =>
+      _sectionDropdownController.stream;
+  Function get _sectionDropdownSink => _sectionDropdownController.sink.add;
+
+  final _branchDropdownController =
+  StreamController<String>.broadcast();
+  Stream<String> get branchDropdownStream =>
+      _branchDropdownController.stream;
+  Function get _branchDropdownSink => _branchDropdownController.sink.add;
 
   final _isfileExistStream =
   StreamController<bool>.broadcast();
@@ -49,6 +55,10 @@ class UploadBloc extends Bloc {
   String _selectedSection;
 
   String get selectedSection => _selectedSection;
+
+  String _selectedBranch;
+
+  String get selectedBranch => _selectedBranch;
 
   UploadBloc(){
     _storageRef = FirebaseStorage.instance.ref();
@@ -75,8 +85,13 @@ class UploadBloc extends Bloc {
   }
 
   sectionModified(String section){
-    _dropdownSink(section);
+    _sectionDropdownSink(section);
     _selectedSection = section;
+  }
+
+  branchModified(String branch){
+    _branchDropdownSink(branch);
+    _selectedBranch = branch;
   }
 
    uploadPost(String caption, UserModel user) async{
@@ -99,15 +114,18 @@ class UploadBloc extends Bloc {
 
   // ignore: missing_return
   Future<void> createPostInFirestore(String mediaUrl) {
+    final id = "$_selectedBranch${_selectedSection}_$postId";
+    final classId = "$_selectedBranch$_selectedSection";
     _postCollectionRef.doc(_user.id)
         .collection("userPosts")
-        .doc(postId)
+        .doc(id)
         .set({
       "postId": postId,
       "ownerId": _user.id,
       "username": "${_user.firstname} ${_user.lastname}",
       "mediaUrl": mediaUrl,
       "description": _caption,
+      "classId": classId,
       "timestamp": DateTime.now(),
       "likes": {}
     });
@@ -143,11 +161,16 @@ class UploadBloc extends Bloc {
     return _selectedSection != null && _selectedSection != Strings.getSelectSection;
   }
 
+  bool isBranchSelected(){
+    return _selectedBranch != null && _selectedBranch != Strings.getSelectBranch;
+  }
+
   @override
   void dispose() {
     _isfileExistStream.close();
     _postbuttonState.close();
-    _dropdownController.close();
+    _sectionDropdownController.close();
+    _branchDropdownController.close();
     // TODO: implement dispose
   }
 

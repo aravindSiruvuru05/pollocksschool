@@ -66,7 +66,6 @@ class UploadPostScreen extends StatelessWidget {
     );
   }
 
-
   Container buildSplashScreen(BuildContext context) {
 
     return Container(
@@ -119,6 +118,10 @@ class UploadPostScreen extends StatelessWidget {
                   final hasCaption = _captionController.value.text.isNotEmpty;
                   if(!_uploadBloc.isSectionSelected()){
                     DialogPopUps.showCommonDialog(text: "Please select section to Post",ok: () => Navigator.pop(context),context: context);
+                    return;
+                  }
+                  if(!_uploadBloc.isBranchSelected()){
+                    DialogPopUps.showCommonDialog(text: "Please select branch to Post",ok: () => Navigator.pop(context),context: context);
                     return;
                   }
                   if(!hasCaption){
@@ -198,7 +201,7 @@ class UploadPostScreen extends StatelessWidget {
                     ),
                     Divider(),
                     StreamBuilder<String>(
-                      stream: _uploadBloc.dropdownStream,
+                      stream: _uploadBloc.sectionDropdownStream,
                       initialData: Strings.getSelectSection,
                       builder: (context, snapshot) {
 
@@ -226,6 +229,36 @@ class UploadPostScreen extends StatelessWidget {
                           ),
                         );
                       }
+                    ),
+                    StreamBuilder<String>(
+                        stream: _uploadBloc.branchDropdownStream,
+                        initialData: Strings.getSelectBranch,
+                        builder: (context, snapshot) {
+
+                          final branches  = _authBloc.getCurrentUser.classes
+                              .map<DropdownMenuItem<String>>((ClassModel value) {
+                            return DropdownMenuItem<String>(
+                              value: value.branch,
+                              child: Text(value.branch),
+                            );
+                          }).toList();
+                          final hint = snapshot.data;
+                          return Container(
+                            padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
+                            child: DropdownButton<String>(
+                              value: _uploadBloc.selectedBranch,
+                              hint: Text(hint),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: TextStyle(color: AppTheme.primaryColor),
+
+                              onChanged: (String newValue) {
+                                _uploadBloc.branchModified(newValue);
+                              },
+                              items:branches,
+                            ),
+                          );
+                        }
                     )
                   ],
                 ),
