@@ -14,7 +14,6 @@ import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'sidebar/sidebar_layout.dart';
-import 'sidebar/sidebar_layout.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.userType}) : super();

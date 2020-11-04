@@ -1,3 +1,4 @@
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
@@ -68,7 +69,21 @@ class PostCard extends StatelessWidget{
               initialData: false,
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if(snapshot.data == null || snapshot.data == false) return SizedBox.shrink();
-                return Icon(Icons.favorite,size: SizeConfig.heightMultiplier * 13,color: Colors.white);
+                return Animator(
+                  duration: Duration(milliseconds: 300),
+                  tween: Tween(begin: 0.8, end: 1.4),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                  builder: (context, animatorState, child) => Transform.scale(
+                    scale: animatorState.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 60.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+//                  Icon(Icons.favorite,size: SizeConfig.heightMultiplier * 13,color: Colors.white);
               },
             ),
           ],
