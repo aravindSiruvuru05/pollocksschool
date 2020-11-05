@@ -19,7 +19,9 @@ class TimelineScreen extends StatelessWidget {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
       body:  RefreshIndicator(
-          onRefresh: () => _timelineBloc.getPosts(), child: buildTimelinePosts())
+          onRefresh: () => _timelineBloc.getPosts(),
+          child: buildTimelinePosts()
+      )
     );
   }
 
@@ -71,7 +73,8 @@ class TimelineScreen extends StatelessWidget {
               ),
             ),
           );
-        } else if (posts.isEmpty) {
+        }
+        else if (posts.isEmpty) {
           return Center(
             child: Text("no posts yet"),
           );

@@ -46,18 +46,30 @@ class ProfileBloc extends PostBloc{
     // TODO: implement dispose
   }
 
-   getPosts() async {
+  updatePost(PostModel post, bool isLiked) async{
+    print(post.postId);
+    print(isLiked);
+    await _postCollectionRef
+        .doc(post.ownerId)
+        .collection('userPosts')
+        .doc(post.postId)
+        .update({'likes.${currentUser.id}': !isLiked});
+    getPosts();
+  }
+
+  getPosts() async{
     postsSnapshot = await _postCollectionRef
         .doc(currentUser.id)
         .collection('userPosts')
         .orderBy('timestamp', descending: true)
         .get();
     _postCount = postsSnapshot.docs.length;
+    print(_postCount);
     final posts = postsSnapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
     posts == null ? allPosts = [] : allPosts = posts;
-    print(posts[0].postId);
     _postsSink(allPosts);
   }
+
 
 //  getIsLiked(Map<String,dynamic> likes){
 //    return likes[currentUser.id] == null ? false : likes[currentUser.id];

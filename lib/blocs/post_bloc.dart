@@ -28,23 +28,15 @@ abstract class PostBloc extends Bloc {
   }
 
   void handleLikePost(PostModel post, bool isLiked) async{
-    print(post.postId);
-    print(isLiked);
     if(!isLiked){
       _likeSymbolSink(true);
       Timer(Duration(milliseconds: 600),(){
         _likeSymbolSink(false);
       });
     }
-    await _postCollectionRef
-        .doc(post.ownerId)
-        .collection('userPosts')
-        .doc(post.postId)
-        .update({'likes.${currentUser.id}': !isLiked});
-    getPosts();
+    updatePost(post,isLiked);
   }
-
-  getPosts();
+  updatePost(PostModel post,bool isLiked);
 
   getLikeCount(Map<String,dynamic> likes) async{
     int count = 0;

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostModel {
   final String postId;
+  final String classId;
   final String ownerId;
   final String username;
   final String location;
@@ -11,6 +12,7 @@ class PostModel {
   final DateTime timestamp;
 
   PostModel({
+    this.classId,
     this.postId,
     this.ownerId,
     this.username,
@@ -26,6 +28,7 @@ class PostModel {
     return PostModel(
       postId: doc.id,
       ownerId: doc['ownerId'],
+      classId: doc['classId'],
       username: doc['username'],
       description: doc['description'],
       mediaUrl: doc['mediaUrl'],

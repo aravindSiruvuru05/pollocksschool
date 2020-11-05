@@ -9,6 +9,7 @@ import 'package:pollocksschool/models/post_model.dart';
 
 class TimelineBloc extends PostBloc{
   CollectionReference _timelineCollectionRef;
+  CollectionReference _postCollectionRef;
 
   UserModel currentUser;
 
@@ -32,6 +33,8 @@ class TimelineBloc extends PostBloc{
 
   TimelineBloc({@required this.currentUser}):super(currentUser: currentUser){
     _timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
+    _postCollectionRef = FirebaseFirestore.instance.collection("post");
+
     getPosts();
   }
 
@@ -70,15 +73,28 @@ class TimelineBloc extends PostBloc{
 //    });
 //    return count;
 //  }
-  
-  getPosts() async {
+
+  updatePost(PostModel post, bool isLiked) async{
+    print(post.postId);
+    print(isLiked);
+    await _timelineCollectionRef
+        .doc(post.classId)
+        .collection('classPosts')
+        .doc(post.postId)
+        .update({'likes.${currentUser.id}': !isLiked});
+    getPosts();
+  }
+
+  getPosts() async{
     QuerySnapshot snapshot = await _timelineCollectionRef
-        .doc("intilli3A")
+        .doc(currentUser.classIds[0])
         .collection('classPosts')
         .orderBy('timestamp', descending: true)
         .get();
     final posts = snapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+
     posts == null ? allPosts = [] : allPosts = posts;
+    print(allPosts.length);
     _timelinePostsSink(allPosts);
   }
 

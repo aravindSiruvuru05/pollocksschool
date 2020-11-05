@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
+import 'package:pollocksschool/enums/loading_state.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
@@ -10,7 +11,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../utils/config/size_config.dart';
 
-// ignore: must_be_immutable
 class ProfileScreen extends StatelessWidget {
 
   ProfileScreen({Key key}) : super(key: key);
@@ -151,23 +151,36 @@ class ProfileScreen extends StatelessWidget {
     _authBloc = Provider.of<AuthBloc>(context);
     _profileBloc = Provider.of<ProfileBloc>(context);
     return
-//      Scaffold(
-//        appBar: AppBar(title: Text("profile"),),
-      Stack(
-        children: [
-          buildProfileHeader(),
-          ListView(
-            children: [
-              Container(
-                height: SizeConfig.heightMultiplier * 30,
-              ),
+      Scaffold(
+        appBar: AppBar(title: Text("profile"),centerTitle: true,
+          actions: [
+            IconButton(icon: Icon( Icons.power_settings_new),
+              onPressed: () {
+                _authBloc.signOut();
+                _authBloc.loginButtonStateSink(LoadingState.NORMAL);
+              },
+            )
+          ],
+        ),
+        body: Stack(
+          children: [
+            buildProfileHeader(),
+            RefreshIndicator(
+                onRefresh: () => _profileBloc.getPosts(),
+                child: ListView(
+                  children: [
+                    Container(
+                      height: SizeConfig.heightMultiplier * 30,
+                    ),
 //          Divider(height: 10,thickness: 1,),
-              buildProfilePosts(),
-            ],
-          ),
-        ],
-      );
-//    );
+                    buildProfilePosts(),
+                  ],
+                ),
+            )
+
+          ],
+        ),
+    );
   }
 
   buildProfilePosts() {
