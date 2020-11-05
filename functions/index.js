@@ -60,6 +60,29 @@ exports.onUpdatePost = functions.firestore
     });
 
 
+exports.onUpdateTimelinePost = functions.firestore
+  .document("/timeline/{classId}/classPosts/{postId}")
+  .onUpdate(async (change, context) => {
+    const postUpdated = change.after.data();
+    const classId = context.params.classId;
+    const postId = context.params.postId;
+
+    admin
+        .firestore()
+        .collection("post")
+        .doc(postUpdated.ownerId)
+        .collection("userPosts")
+        .doc(postId)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            doc.ref.update(postUpdated);
+          }
+        });
+    });
+
+
+
 exports.onDeletePost = functions.firestore
   .document("/posts/{userId}/userPosts/{postId}")
   .onDelete(async (snapshot, context) => {
