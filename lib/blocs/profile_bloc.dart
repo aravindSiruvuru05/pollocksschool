@@ -24,11 +24,12 @@ class ProfileBloc extends PostBloc{
 //  Stream<bool> get likeSymbolStream =>
 //      _likeSymbolController.stream;
 //  Function get _likeSymbolSink => _likeSymbolController.sink.add;
-  final _postsController =
-  StreamController<List<PostModel>>.broadcast();
-  Stream<List<PostModel>> get postsStream =>
-      _postsController.stream;
-  Function get _postsSink => _postsController.sink.add;
+//  final _postsController =
+//  StreamController<List<PostModel>>.broadcast();
+  Stream<QuerySnapshot> get postsStream => _postCollectionRef.doc(currentUser.id)
+      .collection('userPosts')
+      .orderBy('timestamp', descending: true).snapshots();
+//  Function get _postsSink => _postsController.sink.add;
 
   ProfileBloc({this.currentUser}): super(currentUser: currentUser){
     _init();
@@ -36,12 +37,12 @@ class ProfileBloc extends PostBloc{
 
   _init(){
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
-    getPosts();
+//    getPosts();
   }
 
   @override
   void dispose() {
-    _postsController.close();
+//    _postsController.close();
 //    _likeSymbolController.close();
     // TODO: implement dispose
   }
@@ -54,21 +55,21 @@ class ProfileBloc extends PostBloc{
         .collection('userPosts')
         .doc(post.postId)
         .update({'likes.${currentUser.id}': !isLiked});
-    getPosts();
+//    getPosts();
   }
-
-  getPosts() async{
-    postsSnapshot = await _postCollectionRef
-        .doc(currentUser.id)
-        .collection('userPosts')
-        .orderBy('timestamp', descending: true)
-        .get();
-    _postCount = postsSnapshot.docs.length;
-    print(_postCount);
-    final posts = postsSnapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
-    posts == null ? allPosts = [] : allPosts = posts;
-    _postsSink(allPosts);
-  }
+//
+//  getPosts() async{
+//    postsSnapshot = await _postCollectionRef
+//        .doc(currentUser.id)
+//        .collection('userPosts')
+//        .orderBy('timestamp', descending: true)
+//        .get();
+//    _postCount = postsSnapshot.docs.length;
+//    print(_postCount);
+//    final posts = postsSnapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+//    posts == null ? allPosts = [] : allPosts = posts;
+//    _postsSink(allPosts);
+//  }
 
 
 //  getIsLiked(Map<String,dynamic> likes){

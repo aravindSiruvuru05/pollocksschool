@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
@@ -91,14 +92,14 @@ class ProfileScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        StreamBuilder<List<PostModel>>(
+                        StreamBuilder<QuerySnapshot>(
                           stream: _profileBloc.postsStream,
-                          initialData: _profileBloc.allPosts,
+//                          initialData: _profileBloc.allPosts,
                           builder: (context, snapshot) {
                             final posts = snapshot.data;
                             if (posts == null)
                               return buildCountColumn("posts", 0);
-                            return buildCountColumn("posts", posts.length);
+                            return buildCountColumn("posts", posts.docs.length);
                           },
                         ),
                         buildCountColumn("followers", 0),
@@ -166,7 +167,9 @@ class ProfileScreen extends StatelessWidget {
           children: [
             buildProfileHeader(),
             RefreshIndicator(
-                onRefresh: () => _profileBloc.getPosts(),
+                onRefresh: () {
+                  print("sadf");
+                },
                 child: ListView(
                   children: [
                     Container(
@@ -184,9 +187,9 @@ class ProfileScreen extends StatelessWidget {
   }
 
   buildProfilePosts() {
-    return StreamBuilder<List<PostModel>>(
+    return StreamBuilder<QuerySnapshot>(
       stream: _profileBloc.postsStream,
-      initialData: _profileBloc.allPosts,
+//      initialData: _profileBloc.allPosts,
       builder: (context, snapshot) {
         final posts = snapshot.data;
         if (posts == null) {
@@ -230,12 +233,14 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           );
-        } else if (posts.isEmpty) {
+        } else if (posts.docs.length == 0) {
           return Center(
             child: Text("no posts yet"),
           );
         } else {
-          final postCards = posts.map((e) => PostCard(post: e,postBloc: _profileBloc,)).toList();
+          final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+
+          final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _profileBloc,)).toList();
           return Container(
             color: AppTheme.appBackgroundColor,
             child: Column(

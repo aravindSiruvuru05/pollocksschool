@@ -47,25 +47,102 @@ class PostCard extends StatelessWidget{
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(7)
-              ),
-
-              child: CachedNetworkImage(
-                imageUrl: post.mediaUrl,
-                placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.grey[300],
-                  highlightColor: Colors.grey[100],
-                  enabled: true,
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 3,
-                    color: Colors.white,
-                  ),
+            CachedNetworkImage(
+              imageUrl: post.mediaUrl,
+              height: SizeConfig.heightMultiplier * 60,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[100],
+                enabled: true,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height / 3,
+                  color: Colors.white,
                 ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+              imageBuilder: (_,ImageProvider<dynamic> imageProvider){
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(image: NetworkImage(post.mediaUrl),fit: BoxFit.cover),
+                    backgroundBlendMode: BlendMode.color,
+                  ),
+                );
+              },
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+            Positioned(
+              left: SizeConfig.heightMultiplier * 3,
+              bottom: SizeConfig.heightMultiplier * 2,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white, Colors.cyan]),
+                    borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 1.2),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.6),
+                          blurRadius: 10.0,
+                          offset: Offset(3, 10),
+                      ),]
+                ),
+                height: SizeConfig.heightMultiplier * 8,
+                width: SizeConfig.heightMultiplier * 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () => postBloc.handleLikePost(post,isLiked),
+                          child: Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            size: 25.0,
+                            color: Colors.pink,
+                          ),
+                        ),
+                        Text(
+                            "${post.getLikeCount}",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500
+                            )
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () => print("show comments"),
+                          child: Icon(
+                            Icons.chat,
+                            size: 25.0,
+                            color: AppTheme.primaryColor,
+                          ),
+                        ),
+                        Text(
+                            "${post.getLikeCount}",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500
+                            )
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
               ),
             ),
             StreamBuilder<bool>(
@@ -96,75 +173,87 @@ class PostCard extends StatelessWidget{
 
   buildPostFooter() {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(SizeConfig.heightMultiplier * 7)),
         color: Colors.white,
       ),
-      padding: EdgeInsets.all(SizeConfig.heightMultiplier),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
-              GestureDetector(
-                onTap: () => postBloc.handleLikePost(post,isLiked),
-                child: Icon(
-                  isLiked ? Icons.favorite : Icons.favorite_border,
-                  size: 28.0,
-                  color: Colors.pink,
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(right: 20.0)),
-              GestureDetector(
-                onTap: () => print("show comments"),
-                child: Icon(
-                  Icons.chat,
-                  size: 28.0,
-                  color: Colors.blue[900],
-                ),
-              ),
-              Spacer(),
-              Text(post.getPostDateString,style:  AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45),)
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 20.0),
-                child: Text(
-                  "${post.getLikeCount} likes",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Spacer(),
+      child: Row(
+        children: [
+          Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(post.getPostDateString,style:  AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45),),
+
               Text(post.getPostTime, style:  AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black54),)
+
             ],
-          ),
-          SizedBox(height: 4,),
-          Container(
-            margin: EdgeInsets.only(left: 20.0),
-            child: Text(
-              "${post.username} ",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 20.0,top: 4),
-            child: Text(post.description,
-                style: AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45)
-            ),
-          ),
+          )
         ],
       ),
+//      child: Column(
+//        crossAxisAlignment: CrossAxisAlignment.start,
+//        children: <Widget>[
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.start,
+//            crossAxisAlignment: CrossAxisAlignment.center,
+//            children: <Widget>[
+//              Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
+////              GestureDetector(
+////                onTap: () => postBloc.handleLikePost(post,isLiked),
+////                child: Icon(
+////                  isLiked ? Icons.favorite : Icons.favorite_border,
+////                  size: 28.0,
+////                  color: Colors.pink,
+////                ),
+////              ),
+////              Padding(padding: EdgeInsets.only(right: 20.0)),
+////              InkWell(
+////                onTap: () => print("show comments"),
+////                child: Icon(
+////                  Icons.chat,
+////                  size: 28.0,
+////                  color: Colors.blue[900],
+////                ),
+////              ),
+//              Spacer(),
+//            ],
+//          ),
+//          Row(
+//            children: <Widget>[
+////              Container(
+////                margin: EdgeInsets.only(left: 20.0),
+////                child: Text(
+////                  "${post.getLikeCount} likes",
+////                  style: TextStyle(
+////                    color: Colors.red,
+////                    fontWeight: FontWeight.bold,
+////                  ),
+////                ),
+////              ),
+//              Spacer(),
+//             ],
+//          ),
+//          SizedBox(height: 4,),
+//          Container(
+//            margin: EdgeInsets.only(left: 20.0),
+//            child: Text(
+//              "${post.username} ",
+//              style: TextStyle(
+//                color: Colors.black,
+//                fontWeight: FontWeight.bold,
+//              ),
+//            ),
+//          ),
+//          Container(
+//            margin: EdgeInsets.only(left: 20.0,top: 4),
+//            child: Text(post.description,
+//                style: AppTheme.lightTextTheme.bodyText2.copyWith(color: Colors.black45)
+//            ),
+//          ),
+//        ],
+//      ),
     );
   }
 
@@ -172,7 +261,7 @@ class PostCard extends StatelessWidget{
   Widget build(BuildContext context) {
     isLiked = postBloc.getIsLiked(post.likes);
     return Container(
-        margin: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 2),
@@ -184,17 +273,11 @@ class PostCard extends StatelessWidget{
                   offset: Offset(3, 10)
               ),]
         ),
-        child: Stack(
-          alignment:Alignment.bottomCenter,
-//            mainAxisSize: MainAxisSize.min,
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-//              buildPostHeader(),
-              Column(
-                children: [
-                  buildPostImage(),
-                  SizedBox(height: 60,)
-                ],
-              ),
+              buildPostHeader(),
+              buildPostImage(),
               buildPostFooter(),
             ]
         )

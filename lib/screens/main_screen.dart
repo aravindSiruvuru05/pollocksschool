@@ -60,11 +60,11 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   List<Widget> _getPages(){
     if(widget.userType == UserType.STUDENT)
       return [
-//        TimelineScreen(),
-        MenuScreen(),
+        TimelineScreen(key: PageStorageKey("TimelineScreen"),),
         DashboardScreen(),
-        MenuScreen(),
-        SideBarLayout()
+        DashboardScreen(),
+        DashboardScreen(),
+        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
       ];
     else
       return [

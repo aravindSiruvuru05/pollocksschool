@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
@@ -18,17 +19,20 @@ class TimelineScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
+      appBar: AppBar(title: Text("Pollocks Timeline"),centerTitle: true,),
       body:  RefreshIndicator(
-          onRefresh: () => _timelineBloc.getPosts(),
+          onRefresh: () {
+            print("sdaf");
+          },
           child: buildTimelinePosts()
       )
     );
   }
 
   buildTimelinePosts() {
-    return StreamBuilder<List<PostModel>>(
-      stream: _timelineBloc.timelinePostsStream,
-      initialData: _timelineBloc.allPosts,
+    return StreamBuilder<QuerySnapshot>(
+      stream: _timelineBloc.timelineCollectionRef.doc("intilli3A").collection('classPosts')
+        .orderBy('timestamp', descending: true).snapshots(),
       builder: (context, snapshot) {
         final posts = snapshot.data;
 
@@ -74,12 +78,14 @@ class TimelineScreen extends StatelessWidget {
             ),
           );
         }
-        else if (posts.isEmpty) {
+        else if (posts.docs.length == 0) {
           return Center(
             child: Text("no posts yet"),
           );
         } else {
-          final postCards = posts.map((e) => PostCard(post: e,postBloc: _timelineBloc,)).toList();
+          final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+
+          final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _timelineBloc,)).toList();
           return Container(
             color: AppTheme.appBackgroundColor,
             child: ListView(
