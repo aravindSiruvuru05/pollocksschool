@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
@@ -9,8 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 
+// ignore: must_be_immutable
 class TimelineScreen extends StatelessWidget {
-  
+
   TimelineScreen({Key key}): super(key:key);
   TimelineBloc _timelineBloc;
 
@@ -18,7 +18,8 @@ class TimelineScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
-      body:buildTimelinePosts(),
+      body:  RefreshIndicator(
+          onRefresh: () => _timelineBloc.getPosts(), child: buildTimelinePosts())
     );
   }
 
@@ -28,6 +29,7 @@ class TimelineScreen extends StatelessWidget {
       initialData: _timelineBloc.allPosts,
       builder: (context, snapshot) {
         final posts = snapshot.data;
+
         if (posts == null) {
           return Shimmer.fromColors(
             baseColor: Colors.grey[300],
@@ -74,10 +76,10 @@ class TimelineScreen extends StatelessWidget {
             child: Text("no posts yet"),
           );
         } else {
-          final postCards = posts.map((e) => PostCard(post: e)).toList();
+          final postCards = posts.map((e) => PostCard(post: e,postBloc: _timelineBloc,)).toList();
           return Container(
             color: AppTheme.appBackgroundColor,
-            child: Column(
+            child: ListView(
               children: postCards,
             ),
           );

@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/auth_bloc.dart';
-import 'package:pollocksschool/blocs/profile_bloc.dart';
-import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
@@ -28,8 +25,6 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
   List<Widget> _pages;
-
-  AuthBloc _authBloc;
 
   @override
   void initState() {
@@ -65,7 +60,7 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   List<Widget> _getPages(){
     if(widget.userType == UserType.STUDENT)
       return [
-        TimelineScreen(),
+//        TimelineScreen(),
         MenuScreen(),
         DashboardScreen(),
         MenuScreen(),
@@ -73,21 +68,14 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       ];
     else
       return [
-        Provider(
-          create: (_) => TimelineBloc(currentUser: _authBloc.getCurrentUser),
-          child: TimelineScreen(key: PageStorageKey("home"),),
-        ),
-
-        MenuScreen(key: PageStorageKey("d"),),
+        TimelineScreen(key: PageStorageKey("TimelineScreen"),),
+        MenuScreen(key: PageStorageKey("jgd"),),
         Provider(
           create: (_) => UploadBloc(),
             child: UploadPostScreen(),
         ),
-        MenuScreen(),
-        Provider(
-          create: (_) => ProfileBloc(currentUser: _authBloc.getCurrentUser),
-          child: SideBarLayout(),
-        ),
+        MenuScreen(key: PageStorageKey("MenuScreen"),),
+        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
       ];
   }
 
@@ -111,7 +99,6 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    _authBloc = Provider.of<AuthBloc>(context);
     return Scaffold(
       extendBody: true,
       resizeToAvoidBottomPadding: false,

@@ -10,14 +10,12 @@ import 'package:shimmer/shimmer.dart';
 
 import '../utils/config/size_config.dart';
 
-class ProfileScreen extends StatefulWidget {
+// ignore: must_be_immutable
+class ProfileScreen extends StatelessWidget {
+
   ProfileScreen({Key key}) : super(key: key);
 
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
 
-class _ProfileScreenState extends State<ProfileScreen> {
   AuthBloc _authBloc;
   ProfileBloc _profileBloc;
   Column buildCountColumn(String label, int count) {
@@ -155,20 +153,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return
 //      Scaffold(
 //        appBar: AppBar(title: Text("profile"),),
-        Stack(
-      children: [
-        buildProfileHeader(),
-        ListView(
-          children: [
-            Container(
-              height: SizeConfig.heightMultiplier * 30,
-            ),
+      Stack(
+        children: [
+          buildProfileHeader(),
+          ListView(
+            children: [
+              Container(
+                height: SizeConfig.heightMultiplier * 30,
+              ),
 //          Divider(height: 10,thickness: 1,),
-            buildProfilePosts(),
-          ],
-        ),
-      ],
-    );
+              buildProfilePosts(),
+            ],
+          ),
+        ],
+      );
 //    );
   }
 
@@ -224,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Text("no posts yet"),
           );
         } else {
-          final postCards = posts.map((e) => PostCard(post: e)).toList();
+          final postCards = posts.map((e) => PostCard(post: e,postBloc: _profileBloc,)).toList();
           return Container(
             color: AppTheme.appBackgroundColor,
             child: Column(

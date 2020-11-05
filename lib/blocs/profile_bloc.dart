@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:pollocksschool/blocs/post_bloc.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/models/post_model.dart';
 
-import 'blocs.dart';
-
-class ProfileBloc extends Bloc{
+class ProfileBloc extends PostBloc{
 
   UserModel currentUser;
 
@@ -21,34 +19,34 @@ class ProfileBloc extends Bloc{
 
   //heart beat for like
 
-  final _likeSymbolController =
-  StreamController<bool>.broadcast();
-  Stream<bool> get likeSymbolStream =>
-      _likeSymbolController.stream;
-  Function get _likeSymbolSink => _likeSymbolController.sink.add;
+//  final _likeSymbolController =
+//  StreamController<bool>.broadcast();
+//  Stream<bool> get likeSymbolStream =>
+//      _likeSymbolController.stream;
+//  Function get _likeSymbolSink => _likeSymbolController.sink.add;
   final _postsController =
   StreamController<List<PostModel>>.broadcast();
   Stream<List<PostModel>> get postsStream =>
       _postsController.stream;
   Function get _postsSink => _postsController.sink.add;
 
-  ProfileBloc({@required this.currentUser}){
+  ProfileBloc({this.currentUser}): super(currentUser: currentUser){
     _init();
   }
 
   _init(){
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
-    getProfilePosts();
+    getPosts();
   }
 
   @override
   void dispose() {
     _postsController.close();
-    _likeSymbolController.close();
+//    _likeSymbolController.close();
     // TODO: implement dispose
   }
 
-   getProfilePosts() async {
+   getPosts() async {
     postsSnapshot = await _postCollectionRef
         .doc(currentUser.id)
         .collection('userPosts')
@@ -61,39 +59,38 @@ class ProfileBloc extends Bloc{
     _postsSink(allPosts);
   }
 
-  getIsLiked(Map<String,dynamic> likes){
-    return likes[currentUser.id] == null ? false : likes[currentUser.id];
-  }
-
-  void handleLikePost(String postId, bool isLiked) async{
-    print(postId);
-    if(!isLiked){
-      _likeSymbolSink(true);
-      Timer(Duration(milliseconds: 600),(){
-        _likeSymbolSink(false);
-      });
-    }
-   await _postCollectionRef
-        .doc(currentUser.id)
-        .collection('userPosts')
-        .doc(postId)
-        .update({'likes.${currentUser.id}': !isLiked});
-   getProfilePosts();
-  }
-
-  getLikeCount(Map<String,dynamic> likes) async{
-    int count = 0;
-    // if no likes, return 0
-    if (likes == null) {
-      return count;
-    }
-    // if the key is explicitly set to true, add a like
-    likes.values.forEach((val) {
-      if (val == true) {
-        count += 1;
-      }
-    });
-    return count;
-  }
+//  getIsLiked(Map<String,dynamic> likes){
+//    return likes[currentUser.id] == null ? false : likes[currentUser.id];
+//  }
+//
+//  void handleLikePost(PostModel post, bool isLiked) async{
+//    if(!isLiked){
+//      _likeSymbolSink(true);
+//      Timer(Duration(milliseconds: 600),(){
+//        _likeSymbolSink(false);
+//      });
+//    }
+//   await _postCollectionRef
+//        .doc(post.ownerId)
+//        .collection('userPosts')
+//        .doc(post.postId)
+//        .update({'likes.${currentUser.id}': !isLiked});
+//   getPosts();
+//  }
+//
+//  getLikeCount(Map<String,dynamic> likes) async{
+//    int count = 0;
+//    // if no likes, return 0
+//    if (likes == null) {
+//      return count;
+//    }
+//    // if the key is explicitly set to true, add a like
+//    likes.values.forEach((val) {
+//      if (val == true) {
+//        count += 1;
+//      }
+//    });
+//    return count;
+//  }
 
 }

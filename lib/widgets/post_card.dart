@@ -1,23 +1,19 @@
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/blocs.dart';
-import 'package:pollocksschool/blocs/profile_bloc.dart';
+import 'package:pollocksschool/blocs/post_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
-import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../blocs/profile_bloc.dart';
-import '../utils/config/size_config.dart';
 
 // ignore: must_be_immutable
 class PostCard extends StatelessWidget{
   final PostModel post;
   bool isLiked;
 
-  ProfileBloc _profileBloc;
-  PostCard({@required this.post});
+  PostBloc postBloc ;
+
+  PostCard({@required this.post,@required this.postBloc});
 
   buildPostHeader() {
     return ListTile(
@@ -46,7 +42,7 @@ class PostCard extends StatelessWidget{
 
   buildPostImage() {
     return GestureDetector(
-        onDoubleTap: () => _profileBloc.handleLikePost(post.postId,isLiked),
+        onDoubleTap: () => postBloc.handleLikePost(post,isLiked),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -66,7 +62,7 @@ class PostCard extends StatelessWidget{
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             StreamBuilder<bool>(
-              stream: _profileBloc.likeSymbolStream,
+              stream: postBloc.likeSymbolStream,
               initialData: false,
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if(snapshot.data == null || snapshot.data == false) return SizedBox.shrink();
@@ -102,7 +98,7 @@ class PostCard extends StatelessWidget{
           children: <Widget>[
             Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
             GestureDetector(
-              onTap: () => _profileBloc.handleLikePost(post.postId,isLiked),
+              onTap: () => postBloc.handleLikePost(post,isLiked),
               child: Icon(
                 isLiked ? Icons.favorite : Icons.favorite_border,
                 size: 28.0,
@@ -161,8 +157,7 @@ class PostCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    _profileBloc = Provider.of<ProfileBloc>(context);
-    isLiked = _profileBloc.getIsLiked(post.likes);
+    isLiked = postBloc.getIsLiked(post.likes);
     return Container(
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
