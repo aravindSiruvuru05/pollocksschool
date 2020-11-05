@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
@@ -21,7 +22,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientMixin<MainScreen>{
   int _currentIndex;
-  PageController _pageNavigationController;
+  LiquidController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
   List<Widget> _pages;
@@ -33,11 +34,10 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   }
 
   void init() {
-
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
-    _pageNavigationController = PageController(initialPage: _currentIndex);
+    _pageNavigationController = LiquidController();
   }
 
   void _populatePagesAndbottomBarItemsData() {
@@ -104,11 +104,20 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       resizeToAvoidBottomPadding: false,
       body: PageStorage(
         bucket: bucket,
-        child: PageView(
-          children: _pages,
-          onPageChanged: onPageChange,
-          controller: _pageNavigationController,
+        child:  LiquidSwipe(
+          pages: _pages,
+          onPageChangeCallback: onPageChange,
+          waveType: WaveType.liquidReveal,
+          liquidController: _pageNavigationController,
+          ignoreUserGestureWhileAnimating: true,
+          enableSlideIcon: false,
         ),
+
+//        PageView(
+//          children: _pages,
+//          onPageChanged: onPageChange,
+//          controller: _pageNavigationController,
+//        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: getFloatingActionButton(),
@@ -122,10 +131,9 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
 
   void _onTap(int index) {
     if ((_currentIndex - index).abs() == 1) {
-      _pageNavigationController.animateToPage(index,
-          duration: const Duration(milliseconds: 300), curve: Curves.ease);
+      _pageNavigationController.animateToPage(page: index);
     } else {
-      _pageNavigationController.jumpToPage(index);
+      _pageNavigationController.jumpToPage(page: index);
     }
     changeBottomBarIconsState(index);
   }
@@ -139,14 +147,12 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   }
 
   void onPageChange(int index) {
-    _pageNavigationController.animateToPage(index,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    _pageNavigationController.animateToPage(page: index);
     changeBottomBarIconsState(index);
   }
 
   @override
   void dispose() {
-    _pageNavigationController.dispose();
     super.dispose();
   }
 

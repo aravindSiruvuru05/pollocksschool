@@ -69,6 +69,7 @@ class UploadPostScreen extends StatelessWidget {
   Container buildSplashScreen(BuildContext context) {
 
     return Container(
+      width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

@@ -23,7 +23,7 @@ class AuthToggleScreen extends StatelessWidget {
              Provider<TimelineBloc>(create: (_) => TimelineBloc(currentUser: currentUser)),
              Provider<ProfileBloc>(create: (_) => ProfileBloc(currentUser: currentUser)),
            ],
-           child: MainScreen(),
+           child: MainScreen(userType: authBloc.getCurrentUser.userType,),
          );
         } else {
           return LoginScreen();

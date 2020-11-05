@@ -59,9 +59,9 @@ class ProfileScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: AppTheme.primaryColor,
             border: Border.all(
-              color: Colors.blue,
+              color: AppTheme.primaryshadeColor,
             ),
             borderRadius: BorderRadius.circular(5.0),
           ),

@@ -46,6 +46,8 @@ dependencies:
   cached_network_image: ^2.3.3
   shimmer: ^1.1.2
   animator: ^2.0.1
+  flutter_swiper: ^1.1.6
+  liquid_swipe: ^1.5.0
 
 dev_dependencies:
   flutter_test:
