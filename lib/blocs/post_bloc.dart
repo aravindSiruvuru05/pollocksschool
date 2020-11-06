@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/models/post_model.dart';
 
@@ -12,10 +13,20 @@ abstract class PostBloc extends Bloc {
 
   CollectionReference _postCollectionRef;
 
+  LoadingState _likeButtonState;
+
 
   PostBloc({this.currentUser}){
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
   }
+
+
+  // login button --------------
+  final _likebuttonState =
+  StreamController<LoadingState>.broadcast();
+  Stream<LoadingState> get likebuttonStateStream =>
+      _likebuttonState.stream;
+  Function get liketbuttonStateSink => _likebuttonState.sink.add;
 
   final _likeSymbolController =
   StreamController<bool>.broadcast();
@@ -28,6 +39,13 @@ abstract class PostBloc extends Bloc {
   }
 
   void handleLikePost(PostModel post, bool isLiked) async{
+    liketbuttonStateSink(LoadingState.LOADING);
+    _likeButtonState = LoadingState.LOADING;
+
+    Timer(Duration(milliseconds: 3000),(){
+      liketbuttonStateSink(LoadingState.NORMAL);
+      _likeButtonState = LoadingState.NORMAL;
+    });
     if(!isLiked){
       _likeSymbolSink(true);
       Timer(Duration(milliseconds: 600),(){
@@ -36,7 +54,8 @@ abstract class PostBloc extends Bloc {
     }
     updatePost(post,isLiked);
   }
-  updatePost(PostModel post,bool isLiked);
+
+  updatePost(PostModel post, bool isLiked);
 
   getLikeCount(Map<String,dynamic> likes) async{
     int count = 0;
@@ -56,6 +75,7 @@ abstract class PostBloc extends Bloc {
   @override
   void dispose() {
     _likeSymbolController.close();
+    _likebuttonState.close();
     // TODO: implement dispose
   }
 

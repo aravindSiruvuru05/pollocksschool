@@ -50,7 +50,7 @@ class PhoneAuthenticationManager {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 title: Text(
-                  "OTP sent successfully to ${phonenumber.substring(0,7)}***",
+                  "OTP sent successfully to ${phonenumber.substring(0,7)}****",
                   style: AppTheme.lightTextTheme.headline6,
                 ),
                 elevation: 10,

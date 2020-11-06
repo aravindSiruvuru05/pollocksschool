@@ -48,15 +48,17 @@ class ProfileBloc extends PostBloc{
   }
 
   updatePost(PostModel post, bool isLiked) async{
-    print(post.postId);
-    print(isLiked);
-    await _postCollectionRef
-        .doc(post.ownerId)
-        .collection('userPosts')
-        .doc(post.postId)
-        .update({'likes.${currentUser.id}': !isLiked});
+  print(post.postId);
+  print(isLiked);
+  await _postCollectionRef
+      .doc(post.ownerId)
+      .collection('userPosts')
+      .doc(post.postId)
+      .update({'likes.${currentUser.id}': !isLiked});
 //    getPosts();
-  }
+}
+
+
 //
 //  getPosts() async{
 //    postsSnapshot = await _postCollectionRef

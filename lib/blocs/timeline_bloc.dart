@@ -26,11 +26,12 @@ class TimelineBloc extends PostBloc{
 
   TimelineBloc({@required this.currentUser}):super(currentUser: currentUser){
     timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
-
-//    getPosts();
   }
 
   updatePost(PostModel post, bool isLiked) async{
+    print(post.postId);
+    print("===");
+    print(isLiked);
     await timelineCollectionRef
         .doc(post.classId)
         .collection('classPosts')
@@ -38,6 +39,7 @@ class TimelineBloc extends PostBloc{
         .update({'likes.${currentUser.id}': !isLiked});
 //    getPosts();
   }
+
 
 //  getPosts() async{
 //    QuerySnapshot snapshot = await _timelineCollectionRef

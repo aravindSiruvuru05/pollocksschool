@@ -4,6 +4,7 @@ import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
+import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/post_card.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -19,13 +20,13 @@ class TimelineScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Pollocks Timeline",
-          style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: "FreightSans",color: AppTheme.primaryColor),
-      ),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.white,),
+//      appBar: AppBar(
+//        title: Text("Pollocks Timeline",
+//          style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: "FreightSans",color: AppTheme.primaryColor),
+//      ),
+//        elevation: 0,
+//        centerTitle: true,
+//        backgroundColor: Colors.white,),
       body:  RefreshIndicator(
           onRefresh: () {
           },
@@ -89,13 +90,33 @@ class TimelineScreen extends StatelessWidget {
           );
         } else {
           final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
-
           final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _timelineBloc,)).toList();
           return Container(
-            color: AppTheme.appBackgroundColor,
-            child: ListView(
-              children: postCards,
+            color: Colors.white,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  pinned: true,
+                  expandedHeight: SizeConfig.heightMultiplier *9,
+                  flexibleSpace: FlexibleSpaceBar(
+//                    background: Image.asset(Strings.getLogoImagePath,),
+                    centerTitle: true,
+                    title: Text("Pollocks Timeline", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                        color: AppTheme.primaryColor,fontSize: SizeConfig.heightMultiplier * 2.9)),
+                    collapseMode: CollapseMode.parallax,
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate(postCards),
+                )
+              ],
             ),
+
+//            ListView(
+//              children: postCards,
+//            ),
           );
         }
       },

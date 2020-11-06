@@ -239,7 +239,6 @@ class ProfileScreen extends StatelessWidget {
           );
         } else {
           final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
-
           final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _profileBloc,)).toList();
           return Container(
             color: AppTheme.appBackgroundColor,

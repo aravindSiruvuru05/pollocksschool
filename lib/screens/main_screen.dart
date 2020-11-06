@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/screens/screens.dart';
@@ -22,7 +21,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientMixin<MainScreen>{
   int _currentIndex;
-  LiquidController _pageNavigationController;
+  PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
   List<Widget> _pages;
@@ -34,10 +33,11 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   }
 
   void init() {
+
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
-    _pageNavigationController = LiquidController();
+    _pageNavigationController = PageController(initialPage: _currentIndex);
   }
 
   void _populatePagesAndbottomBarItemsData() {
@@ -60,11 +60,11 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   List<Widget> _getPages(){
     if(widget.userType == UserType.STUDENT)
       return [
-        TimelineScreen(key: PageStorageKey("TimelineScreen"),),
+//        TimelineScreen(),
+        MenuScreen(),
         DashboardScreen(),
-        DashboardScreen(),
-        DashboardScreen(),
-        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
+        MenuScreen(),
+        SideBarLayout()
       ];
     else
       return [
@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
         MenuScreen(key: PageStorageKey("jgd"),),
         Provider(
           create: (_) => UploadBloc(),
-            child: UploadPostScreen(),
+          child: UploadPostScreen(),
         ),
         MenuScreen(key: PageStorageKey("MenuScreen"),),
         ProfileScreen(key: PageStorageKey("ProfileScreen"),),
@@ -88,8 +88,8 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       return CircleAvatar(
         backgroundColor: Colors.white,
         child: IconButton(
-          icon: Icon(Icons.file_upload,color: AppTheme.primaryColor),
-          color: _currentIndex == Constants.fabItemIndex ? Colors.white : Colors.white54,
+          icon: Icon(Icons.file_upload),
+          color: _currentIndex == Constants.fabItemIndex ? AppTheme.primaryColor : AppTheme.accentColor,
           onPressed: () => _onTap(Constants.fabItemIndex),
         ),
         radius: SizeConfig.heightMultiplier * 4,
@@ -104,20 +104,11 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       resizeToAvoidBottomPadding: false,
       body: PageStorage(
         bucket: bucket,
-        child:  LiquidSwipe(
-          pages: _pages,
-          onPageChangeCallback: onPageChange,
-          waveType: WaveType.liquidReveal,
-          liquidController: _pageNavigationController,
-          ignoreUserGestureWhileAnimating: true,
-          enableSlideIcon: false,
+        child: PageView(
+          children: _pages,
+          onPageChanged: onPageChange,
+          controller: _pageNavigationController,
         ),
-
-//        PageView(
-//          children: _pages,
-//          onPageChanged: onPageChange,
-//          controller: _pageNavigationController,
-//        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: getFloatingActionButton(),
@@ -131,9 +122,10 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
 
   void _onTap(int index) {
     if ((_currentIndex - index).abs() == 1) {
-      _pageNavigationController.animateToPage(page: index);
+      _pageNavigationController.animateToPage(index,
+          duration: const Duration(milliseconds: 300), curve: Curves.ease);
     } else {
-      _pageNavigationController.jumpToPage(page: index);
+      _pageNavigationController.jumpToPage(index);
     }
     changeBottomBarIconsState(index);
   }
@@ -147,12 +139,14 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   }
 
   void onPageChange(int index) {
-    _pageNavigationController.animateToPage(page: index);
+    _pageNavigationController.animateToPage(index,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
     changeBottomBarIconsState(index);
   }
 
   @override
   void dispose() {
+    _pageNavigationController.dispose();
     super.dispose();
   }
 
