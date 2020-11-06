@@ -86,9 +86,9 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
           path: Strings.getLogoImagePath);
     else
       return CircleAvatar(
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: Colors.white,
         child: IconButton(
-          icon: Icon(Icons.file_upload),
+          icon: Icon(Icons.file_upload,color: AppTheme.primaryColor),
           color: _currentIndex == Constants.fabItemIndex ? Colors.white : Colors.white54,
           onPressed: () => _onTap(Constants.fabItemIndex),
         ),

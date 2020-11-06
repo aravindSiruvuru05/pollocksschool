@@ -17,6 +17,7 @@ class AppTheme {
     accentColor: accentColor,
     brightness: Brightness.light,
     textTheme: lightTextTheme,
+    fontFamily: "HelveticaNeue"
   );
 
   static final TextTheme lightTextTheme = TextTheme(

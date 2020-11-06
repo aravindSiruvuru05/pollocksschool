@@ -19,10 +19,15 @@ class TimelineScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
-      appBar: AppBar(title: Text("Pollocks Timeline"),centerTitle: true,),
+      appBar: AppBar(
+        title: Text("Pollocks Timeline",
+          style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: "FreightSans",color: AppTheme.primaryColor),
+      ),
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.white,),
       body:  RefreshIndicator(
           onRefresh: () {
-            print("sdaf");
           },
           child: buildTimelinePosts()
       )

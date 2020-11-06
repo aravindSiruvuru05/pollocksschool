@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
+import 'package:pollocksschool/utils/constants.dart';
 
 class BottomBarItem {
   final IconData iconData;
@@ -26,7 +27,7 @@ class BottomAppBarWithNotch extends StatelessWidget {
     return BottomAppBar(
       notchMargin: 5,
 
-      color: AppTheme.primaryColor,
+      color: Colors.white,
       shape: CircularNotchedRectangle(),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -35,7 +36,7 @@ class BottomAppBarWithNotch extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(bottomBarItemList.length, (index) {
               final isSelected = bottomBarItemList[index].isSelected;
-              Color color = isSelected ? Colors.white : AppTheme.primaryshadeColor;
+              Color color = isSelected ? AppTheme.primaryColor : AppTheme.accentColor;
               final size = SizeConfig.heightMultiplier * 3.5;
               final item = bottomBarItemList[index];
               return Expanded(
@@ -50,22 +51,25 @@ class BottomAppBarWithNotch extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Icon(item.iconData, color: color, size: size),
+                          Icon(item.iconData, color: color, size: isSelected ? size + SizeConfig.heightMultiplier / 2 : size) ,
                           SizedBox(
                             height: size * 0.1,
                           ),
-                          isSelected
-                              ? Text(
-                                  item.title,
-                                  style: TextStyle(
-                                      color: color,
-                                      fontSize: size * 0.5,
-                                      fontWeight: FontWeight.w300),
-                                )
-                              : SizedBox(
-                                  height: size * 0.3,
-                                  width: size,
-                                )
+//                          isSelected
+//                              ?  SizedBox(
+//                            height: size * 0.3,
+//                            width: size,
+//                          )
+////                          Text(
+////                                  item.title,
+////                                  style: TextStyle(
+////                                    fontFamily: Constants.getFreightSansFamily
+////                                  ),
+////                                )
+//                              : SizedBox(
+//                                  height: size * 0.3,
+//                                  width: size,
+//                                )
                         ],
                       ),
                     ),
