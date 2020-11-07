@@ -47,7 +47,6 @@ dependencies:
   shimmer: ^1.1.2
   animator: ^2.0.1
   flutter_swiper: ^1.1.6
-  liquid_swipe: ^1.5.0
   material_design_icons_flutter: ^4.0.5755
 
 dev_dependencies:

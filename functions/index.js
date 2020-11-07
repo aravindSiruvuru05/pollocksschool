@@ -40,11 +40,11 @@ exports.onUpdatePost = functions.firestore
     const userId = context.params.userId;
     const postId = context.params.postId;
 
-
- // 2) updatin new post to each classposts timeline
     var str = postId;
     var index = str.indexOf('_');
     var [classId, second] = [str.slice(0, index), str.slice(index + 1)];
+
+
     admin
         .firestore()
         .collection("timeline")
@@ -53,7 +53,11 @@ exports.onUpdatePost = functions.firestore
         .doc(postId)
         .get()
         .then(doc => {
-          if (doc.exists) {
+          if (doc.exists &&  JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes) ) {
+          functions.logger.log("======updated", postUpdated.likes);
+          functions.logger.log("======timeline doc", doc.data().likes);
+          functions.logger.log("======",JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes));
+
             doc.ref.update(postUpdated);
           }
         });
@@ -66,7 +70,6 @@ exports.onUpdateTimelinePost = functions.firestore
     const postUpdated = change.after.data();
     const classId = context.params.classId;
     const postId = context.params.postId;
-
     admin
         .firestore()
         .collection("post")
@@ -75,7 +78,10 @@ exports.onUpdateTimelinePost = functions.firestore
         .doc(postId)
         .get()
         .then(doc => {
-          if (doc.exists) {
+          if (doc.exists &&  JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes)) {
+              functions.logger.log("======updated", postUpdated.likes);
+              functions.logger.log("======timeline doc", doc.data().likes);
+              functions.logger.log("======",JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes));
             doc.ref.update(postUpdated);
           }
         });
