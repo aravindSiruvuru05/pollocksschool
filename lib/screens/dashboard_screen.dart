@@ -8,30 +8,15 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(SizeConfig.heightMultiplier * 3),
-        child: ListView(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
-              child: DashboardCard(text: "Pollocks Intilli",),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
-              child: DashboardCard(text: "Pollocks children",),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
-              child: DashboardCard(text: "Pollocks Intilli",),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
-              child: DashboardCard(text: "Pollocks Intilli",),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier),
-              child: DashboardCard(text: "Pollocks Intilli",),
-            ),
-
-          ],
+        child: GridView.count(
+          crossAxisCount: 3,
+          children: List.generate(7 ,(index){
+            return Container(
+              child: Card(
+                color: Colors.blue,
+              ),
+            );
+          }),
         )
       ),
     );
