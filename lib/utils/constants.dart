@@ -9,5 +9,10 @@ class Constants {
   static double commonIconSize = SizeConfig.heightMultiplier * 4;
 
 
+  static String getSettingString = "Settings";
+  static String getLogoutString = "Logout";
+
+  static List<String> getMenuChoices = [getSettingString,getLogoutString];
+
 
 }

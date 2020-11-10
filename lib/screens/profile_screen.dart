@@ -10,6 +10,7 @@ import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:pollocksschool/widgets/AppBarTitle.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -130,10 +131,31 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: AppTheme.primaryColor,
         body: CustomScrollView(
           slivers: [
-
+            SliverAppBar(
+              elevation: 0,
+              backgroundColor: AppTheme.primaryColor,
+              pinned: true,
+              expandedHeight: SizeConfig.heightMultiplier *9,
+              title: AppBarTitle(child: Text("profile", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                  color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2.9)),),
+              actions: [
+                PopupMenuButton<String>(
+                  onSelected: choiceAction,
+                  icon:  Icon(Icons.menu,color: Colors.white,),
+                  itemBuilder: (BuildContext context){
+                    return Constants.getMenuChoices.map((String choice){
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  },
+                )
+              ],
+            ),
             SliverToBoxAdapter(
               child: SizedBox(
-                height: SizeConfig.heightMultiplier * 15,
+                height: SizeConfig.heightMultiplier * 5,
               ),
             ),
             SliverToBoxAdapter(
@@ -229,7 +251,6 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             SliverToBoxAdapter(
               child: SizedBox(height: SizeConfig.heightMultiplier * 10,),
             ),
@@ -249,12 +270,27 @@ class ProfileScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: SizeConfig.heightMultiplier * 5,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("All Photos", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                        color: AppTheme.primaryColor,fontSize: SizeConfig.heightMultiplier * 2.9)),
+                        Container(
+                          width: 1,
+                          color: AppTheme.primaryColor,
+                          height: SizeConfig.heightMultiplier * 5,
+                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
+                        ),
+                        Text("All Files", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                            color: AppTheme.accentColor,fontSize: SizeConfig.heightMultiplier * 2.9)),
+                      ],
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 5,),
                     buildProfilePosts()
                   ],
                 ),
               ),
             ),
-
           ],
         ),
       );
@@ -317,6 +353,12 @@ class ProfileScreen extends StatelessWidget {
         }
       },
     );
+  }
+
+  void choiceAction(String value) {
+    if(value == Constants.getLogoutString) {
+      _authBloc.signOut();
+    }
   }
 }
 
