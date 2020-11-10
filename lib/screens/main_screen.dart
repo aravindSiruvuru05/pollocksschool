@@ -75,7 +75,8 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
           child: UploadPostScreen(),
         ),
         MenuScreen(key: PageStorageKey("MenuScreen"),),
-        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
+        SideBarLayout()
+//        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
       ];
   }
 

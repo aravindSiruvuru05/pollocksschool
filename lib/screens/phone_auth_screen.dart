@@ -24,6 +24,7 @@ class PhoneAuthScreen extends StatelessWidget {
     FirebaseAuth _auth = FirebaseAuth.instance;
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
     final UserModel currentUser = authBloc.getCurrentUser;
+    print(currentUser.countrycode);
 
     return Scaffold(
       body: Container(

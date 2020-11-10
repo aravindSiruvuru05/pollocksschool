@@ -71,6 +71,7 @@ class AuthBloc extends Bloc {
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(id).get();
       final result = _userDocSnapshot.data();
       if(result["id"] == id && result["password"] == password) {
+        print(result.toString());
         _currentUser = UserModel.fromJson(result);
         return _currentUser;
       }

@@ -15,7 +15,7 @@ class PhoneAuthenticationManager {
     FirebaseAuth _auth = FirebaseAuth.instance;
     TextEditingController _codeController = TextEditingController();
     AuthBloc authBloc = Provider.of<AuthBloc>(context, listen: false);
-
+    print(phonenumber);
     _auth.verifyPhoneNumber(
       phoneNumber: phonenumber,
       timeout: Duration(seconds: 60),

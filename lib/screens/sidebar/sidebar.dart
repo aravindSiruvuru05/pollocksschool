@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
@@ -20,7 +21,7 @@ class _SideBarState extends State<SideBar>
   StreamController<bool> isSidebarOpenedStreamController;
   Stream<bool> isSidebarOpenedStream;
   StreamSink<bool> isSidebarOpenedSink;
-  final _animationDuration = const Duration(milliseconds: 500);
+  final _animationDuration = const Duration(milliseconds: 600);
 
   @override
   void initState() {
@@ -67,76 +68,84 @@ class _SideBarState extends State<SideBar>
           duration: _animationDuration,
           top: 0,
           bottom: 0,
-          left: isSideBarOpenedAsync.data ? screenWidth * 0.1 : screenWidth,
-          right: isSideBarOpenedAsync.data ? -screenWidth * 0.1 : -screenWidth,
+          left:
+          isSideBarOpenedAsync.data ? screenWidth * 0.32 : screenWidth - 38,
+          right: isSideBarOpenedAsync.data ? -screenWidth * 0.32 : -screenWidth,
           child: Row(
             children: <Widget>[
-//              Align(
-//                alignment: Alignment(0, 0.9),
-//                child: GestureDetector(
-//                  onTap: () {
-//                    onIconPressed();
-//                  },
-//                  child: Transform.rotate(
-//                    angle: pi,
-//                    child: ClipPath(
-//                      clipper: CustomMenuClipper(),
-//                      child: Container(
-//                        width: 38,
-//                        height: 110,
-//                        color: AppTheme.primaryColor,
-//                        alignment: Alignment.centerLeft,
-//                        child: AnimatedIcon(
-//                          progress: _animationController.view,
-//                          icon: AnimatedIcons.menu_close,
-//                          color: Colors.white,
-//                          size: 26,
-//                        ),
-//                      ),
-//                    ),
-//                  ),
-//                ),
-//              ),
+              Align(
+                alignment: Alignment(0, -0.8),
+                child: GestureDetector(
+                  onTap: () {
+                    onIconPressed();
+                  },
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: ClipPath(
+                      clipper: CustomMenuClipper(),
+                      child: Container(
+                        width: 38,
+                        height: 110,
+                        color: AppTheme.primaryColor,
+                        alignment: Alignment.centerLeft,
+                        child: AnimatedIcon(
+                          progress: _animationController.view,
+                          icon: AnimatedIcons.menu_close,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   color: AppTheme.primaryColor,
                   child: Column(
                     children: <Widget>[
-                      SizedBox(
-                        height: 100,
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        title: Text(
-                          "${authBloc.getCurrentUser.firstname} ${authBloc.getCurrentUser.lastname}",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: SizeConfig.heightMultiplier * 4,
-                              fontWeight: FontWeight.w800),
+                      SizedBox(height: SizeConfig.heightMultiplier * 6,),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left:SizeConfig.heightMultiplier *6),
+                          child: CircleAvatar(
+                                child: Icon(
+                                  Icons.perm_identity,
+                                  color: Colors.white,
+                                ),
+                                radius: SizeConfig.heightMultiplier * 7,
+                              ),
                         ),
-                        subtitle: Text(
-                          "class : 1A",
-                          style: TextStyle(
-                            color: AppTheme.primaryshadeColor,
-                            fontSize: SizeConfig.heightMultiplier * 2,
-                          ),
-                        ),
-                        leading: CircleAvatar(
-                          child: Icon(
-                            Icons.perm_identity,
-                            color: Colors.white,
-                          ),
-                          radius: 40,
-                        ),
-                      ),
-                      Divider(
-                        height: 64,
-                        thickness: 0.5,
-                        color: AppTheme.accentColor,
-                        indent: 32,
-                        endIndent: 32,
-                      ),
+                      ],
+                    ),
+//                      ListTile(
+//                        contentPadding: EdgeInsets.all(0),
+//                        title: Text(
+//                          "${authBloc.getCurrentUser.firstname} ${authBloc.getCurrentUser.lastname}",
+//                          style: TextStyle(
+//                              color: Colors.white,
+//                              fontSize: SizeConfig.heightMultiplier * 4,
+//                              fontWeight: FontWeight.w800),
+//                        ),
+//                        subtitle: Text(
+//                          "class : 1A",
+//                          style: TextStyle(
+//                            color: AppTheme.primaryshadeColor,
+//                            fontSize: SizeConfig.heightMultiplier * 2,
+//                          ),
+//                        ),
+//                        leading: CircleAvatar(
+//                          child: Icon(
+//                            Icons.perm_identity,
+//                            color: Colors.white,
+//                          ),
+//                          radius: 40,
+//                        ),
+//                      ),
+                      SizedBox(height: SizeConfig.heightMultiplier * 6,),
+
                       MenuItem(
                         icon: Icons.account_circle,
                         title: "My Profile",

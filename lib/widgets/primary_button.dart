@@ -18,7 +18,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: LoadingState.NORMAL  == state?  onTap : null,
       child: Container(
         padding: LoadingState.NORMAL == state
             ?  EdgeInsets.all(SizeConfig.heightMultiplier * 1.7) : null,

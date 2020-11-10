@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:masonry_grid/masonry_grid.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
 import 'package:pollocksschool/enums/loading_state.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
-import 'package:pollocksschool/widgets/post_card.dart';
+import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -77,43 +80,13 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CircleAvatar(
                 radius: 40.0,
                 backgroundColor: Colors.grey,
 //                backgroundImage: CachedNetworkImageProvider(user.photoUrl),
                 child: Text("A"),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        StreamBuilder<QuerySnapshot>(
-                          stream: _profileBloc.postsStream,
-//                          initialData: _profileBloc.allPosts,
-                          builder: (context, snapshot) {
-                            final posts = snapshot.data;
-                            if (posts == null)
-                              return buildCountColumn("posts", 0);
-                            return buildCountColumn("posts", posts.docs.length);
-                          },
-                        ),
-                        buildCountColumn("followers", 0),
-                        buildCountColumn("following", 0),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        buildButton(text: "Edit Profile"),
-                      ],
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
@@ -153,37 +126,70 @@ class ProfileScreen extends StatelessWidget {
     _profileBloc = Provider.of<ProfileBloc>(context);
     return
       Scaffold(
-        appBar: AppBar(title: Text("profile"),centerTitle: true,
-          actions: [
-            IconButton(icon: Icon( Icons.power_settings_new),
-              onPressed: () {
-                _authBloc.signOut();
-                _authBloc.loginButtonStateSink(LoadingState.NORMAL);
-              },
-            )
-          ],
-        ),
-        body: Stack(
-          children: [
-            buildProfileHeader(),
-            RefreshIndicator(
-                onRefresh: () {
-                  print("sadf");
-                },
-                child: ListView(
-                  children: [
-                    Container(
-                      height: SizeConfig.heightMultiplier * 30,
-                    ),
-//          Divider(height: 10,thickness: 1,),
-                    buildProfilePosts(),
-                  ],
-                ),
-            )
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 50,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Stack(
+                overflow: Overflow.visible,
+                children: [
+                  Container(width: double.infinity,
+                  height: SizeConfig.heightMultiplier * 20,
+//                    color: Colors.red,
+                  ),
+                 Positioned(
+                   bottom: -SizeConfig.heightMultiplier,
+                   right: SizeConfig.heightMultiplier * 10,
+                   child: Stack(
+                     overflow: Overflow.visible,
+                     children: [
+                       Container(
+                         width:SizeConfig.heightMultiplier * 40,
+                         height: SizeConfig.heightMultiplier * 15,
+                         decoration: BoxDecoration(
+                           color: Colors.white,
+                           boxShadow: [
+                             BoxShadow(
+                                 color: AppTheme.accentColor.withOpacity(0.8),
+                                 blurRadius: 10.0,
+                                 offset: Offset(5, 5)
+                             ),
+                           ],
+                           borderRadius: BorderRadius.all(Radius.circular(10),
+                           ),
+                         ),
+                       ),
+                       Positioned(
+                           top: -SizeConfig.heightMultiplier * 4,
+                           left: -SizeConfig.heightMultiplier * 2,
+                           child: CircleAvatar(
+                             radius: SizeConfig.heightMultiplier * 6,
+                             backgroundImage: NetworkImage(
+                               'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+                             ),
+                           )
+                       ),
+                     ],
+                   ),
+                 )
+                ],
+              ),
+            ),
+
+            SliverToBoxAdapter(
+              child: SizedBox(height: SizeConfig.heightMultiplier * 10,),
+            ),
+            SliverToBoxAdapter(
+              child: buildProfilePosts(),
+            ),
 
           ],
         ),
-    );
+      );
   }
 
   buildProfilePosts() {
@@ -194,60 +200,55 @@ class ProfileScreen extends StatelessWidget {
         final posts = snapshot.data;
         if (posts == null) {
           return Shimmer.fromColors(
-            baseColor: Colors.grey[300],
-            highlightColor: Colors.grey[100],
-            enabled: true,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.heightMultiplier * 3),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        width: SizeConfig.heightMultiplier * 6,
-                        height: SizeConfig.heightMultiplier * 6,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.heightMultiplier,
-                      ),
-                      Expanded(
-                        child: Container(
+              baseColor: Colors.grey[300],
+              highlightColor: Colors.grey[100],
+              enabled: true,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.heightMultiplier * 3),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Container(
+                          width: SizeConfig.heightMultiplier * 6,
                           height: SizeConfig.heightMultiplier * 6,
                           color: Colors.white,
                         ),
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2.0),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 2.5,
-                    color: Colors.white,
-                  ),
-                ],
+                        SizedBox(
+                          width: SizeConfig.heightMultiplier,
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: SizeConfig.heightMultiplier * 6,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height / 2.5,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
         } else if (posts.docs.length == 0) {
           return Center(
             child: Text("no posts yet"),
           );
         } else {
           final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
-          final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _profileBloc,)).toList();
-          return Container(
-            color: AppTheme.appBackgroundColor,
-            child: Column(
-              children: postCards,
-            ),
-          );
+          return ProfilePhotosCard(finalPosts: finalPosts);
         }
       },
     );
   }
 }
+
