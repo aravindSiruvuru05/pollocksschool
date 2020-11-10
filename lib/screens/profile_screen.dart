@@ -166,14 +166,14 @@ class ProfileScreen extends StatelessWidget {
                       SizedBox(width: SizeConfig.heightMultiplier * 2,),
                       CircleAvatar(radius: SizeConfig.heightMultiplier * 5,),
                       Padding(
-                        padding:  EdgeInsets.all(SizeConfig.heightMultiplier * 2),
+                        padding:  EdgeInsets.all(SizeConfig.heightMultiplier * 3),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Sanjay gadu" ,
                                 style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                            color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2.9)),
+                            color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3)),
                             Padding(
                               padding: EdgeInsets.only(top: SizeConfig.heightMultiplier),
                               child: Row(
@@ -192,8 +192,9 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: SizeConfig.heightMultiplier* 5,top: SizeConfig.heightMultiplier* 5),
+                    padding: EdgeInsets.only(top: SizeConfig.heightMultiplier* 5,left: SizeConfig.heightMultiplier* 3),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Column(
                           children: [
