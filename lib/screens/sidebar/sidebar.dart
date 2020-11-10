@@ -74,7 +74,7 @@ class _SideBarState extends State<SideBar>
           child: Row(
             children: <Widget>[
               Align(
-                alignment: Alignment(0, -0.8),
+                alignment: Alignment(0, -1),
                 child: GestureDetector(
                   onTap: () {
                     onIconPressed();

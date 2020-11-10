@@ -6,7 +6,7 @@ class AppTheme {
 
   static const Color appBackgroundColor = Colors.white;
   static const Color accentColor = Color(0xFF9ba4b4);
-  static const Color primaryColor = Color(0xFF14274e);
+  static const Color primaryColor = Color(0xff09031d);
   static const Color primaryshadeColor = Color(0xFF394867);
   static const Color primaryTextFieldColor = Color.fromRGBO(245, 242, 252, 1);
 

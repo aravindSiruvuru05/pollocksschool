@@ -9,6 +9,7 @@ import 'package:pollocksschool/enums/loading_state.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
+import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -126,56 +127,105 @@ class ProfileScreen extends StatelessWidget {
     _profileBloc = Provider.of<ProfileBloc>(context);
     return
       Scaffold(
+        backgroundColor: AppTheme.primaryColor,
         body: CustomScrollView(
           slivers: [
+
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 50,
+                height: SizeConfig.heightMultiplier * 15,
               ),
             ),
             SliverToBoxAdapter(
-              child: Stack(
-                overflow: Overflow.visible,
+              child: Column(
                 children: [
-                  Container(width: double.infinity,
-                  height: SizeConfig.heightMultiplier * 20,
-//                    color: Colors.red,
+                  Row(
+                    children: [
+                      SizedBox(width: SizeConfig.heightMultiplier * 2,),
+                      CircleAvatar(radius: SizeConfig.heightMultiplier * 5,),
+                      Padding(
+                        padding:  EdgeInsets.all(SizeConfig.heightMultiplier * 2),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Sanjay gadu" ,
+                                style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                            color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2.9)),
+                            Padding(
+                              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.account_balance,color: AppTheme.accentColor,size: SizeConfig.heightMultiplier* 2.5,),
+                                  SizedBox(width: SizeConfig.heightMultiplier,),
+                                  Text("Intilli" ,style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
+                                      color: AppTheme.accentColor,fontSize: SizeConfig.heightMultiplier * 2.2)),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                 Positioned(
-                   bottom: -SizeConfig.heightMultiplier,
-                   right: SizeConfig.heightMultiplier * 10,
-                   child: Stack(
-                     overflow: Overflow.visible,
-                     children: [
-                       Container(
-                         width:SizeConfig.heightMultiplier * 40,
-                         height: SizeConfig.heightMultiplier * 15,
-                         decoration: BoxDecoration(
-                           color: Colors.white,
-                           boxShadow: [
-                             BoxShadow(
-                                 color: AppTheme.accentColor.withOpacity(0.8),
-                                 blurRadius: 10.0,
-                                 offset: Offset(5, 5)
-                             ),
-                           ],
-                           borderRadius: BorderRadius.all(Radius.circular(10),
-                           ),
-                         ),
-                       ),
-                       Positioned(
-                           top: -SizeConfig.heightMultiplier * 4,
-                           left: -SizeConfig.heightMultiplier * 2,
-                           child: CircleAvatar(
-                             radius: SizeConfig.heightMultiplier * 6,
-                             backgroundImage: NetworkImage(
-                               'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
-                             ),
-                           )
-                       ),
-                     ],
-                   ),
-                 )
+                  Container(
+                    padding: EdgeInsets.only(left: SizeConfig.heightMultiplier* 5,top: SizeConfig.heightMultiplier* 5),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text("20",style: AppTheme.lightTextTheme.headline6.copyWith(
+                                fontFamily: Constants.getFreightSansFamily,
+                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3.5)
+                            ),
+                            Text("Posts",style: AppTheme.lightTextTheme.headline6.copyWith(
+                                fontFamily: Constants.getHelveticaNeueFamily,
+                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)
+                            ),
+
+                          ],
+                        ),
+                        Container(
+                          width: 1,
+                          color: Colors.white,
+                          height: SizeConfig.heightMultiplier * 5,
+                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
+                        ),
+                        Column(
+                          children: [
+                            Text("10",style: AppTheme.lightTextTheme.headline6.copyWith(
+                                fontFamily: Constants.getFreightSansFamily,
+                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3.5)
+                            ),
+                            Text("Posts",style: AppTheme.lightTextTheme.headline6.copyWith(
+                                fontFamily: Constants.getHelveticaNeueFamily,
+                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: 1,
+                          color: Colors.white,
+                          height: SizeConfig.heightMultiplier * 5,
+                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 2.5,vertical: SizeConfig.heightMultiplier ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xff6d0eb5),Color(0xff4059F1)]
+                            ),
+                            borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier)
+                          ),
+                          child: Text("message",style: AppTheme.lightTextTheme.headline6.copyWith(
+                              fontFamily: Constants.getFreightSansFamily,
+                              color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)),
+                        )
+
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -184,7 +234,25 @@ class ProfileScreen extends StatelessWidget {
               child: SizedBox(height: SizeConfig.heightMultiplier * 10,),
             ),
             SliverToBoxAdapter(
-              child: buildProfilePosts(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 3),
+                  boxShadow: [
+                    BoxShadow(
+                        color: AppTheme.accentColor.withOpacity(0.8),
+                        blurRadius: 10.0,
+                        offset: Offset(5, 5)
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: SizeConfig.heightMultiplier * 5,),
+                    buildProfilePosts()
+                  ],
+                ),
+              ),
             ),
 
           ],
