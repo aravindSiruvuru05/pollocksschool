@@ -18,9 +18,7 @@ import 'package:shimmer/shimmer.dart';
 import '../utils/config/size_config.dart';
 
 class ProfileScreen extends StatelessWidget {
-
   ProfileScreen({Key key}) : super(key: key);
-
 
   AuthBloc _authBloc;
   ProfileBloc _profileBloc;
@@ -126,175 +124,225 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _authBloc = Provider.of<AuthBloc>(context);
     _profileBloc = Provider.of<ProfileBloc>(context);
-    return
-      Scaffold(
-        backgroundColor: AppTheme.primaryColor,
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              elevation: 0,
-              backgroundColor: AppTheme.primaryColor,
-              pinned: true,
-              expandedHeight: SizeConfig.heightMultiplier *9,
-              title: AppBarTitle(child: Text("profile", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                  color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2.9)),),
-              actions: [
-                PopupMenuButton<String>(
-                  onSelected: choiceAction,
-                  icon:  Icon(Icons.menu,color: Colors.white,),
-                  itemBuilder: (BuildContext context){
-                    return Constants.getMenuChoices.map((String choice){
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
-                  },
-                )
-              ],
+    return Scaffold(
+      backgroundColor: AppTheme.primaryColor,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            elevation: 0,
+            backgroundColor: AppTheme.primaryColor,
+            pinned: true,
+            centerTitle: true,
+            expandedHeight: SizeConfig.heightMultiplier * 9,
+            title: AppBarTitle(
+              child: Text("profile",
+                  style: AppTheme.lightTextTheme.headline6.copyWith(
+                      fontFamily: Constants.getFreightSansFamily,
+                      color: Colors.white,
+                      fontSize: SizeConfig.heightMultiplier * 2.9)),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: SizeConfig.heightMultiplier * 5,
-              ),
+            actions: [
+              PopupMenuButton<String>(
+                onSelected: choiceAction,
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                ),
+                itemBuilder: (BuildContext context) {
+                  return Constants.getMenuChoices.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              )
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: SizeConfig.heightMultiplier * 5,
             ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: SizeConfig.heightMultiplier * 2,),
-                      CircleAvatar(radius: SizeConfig.heightMultiplier * 5,),
-                      Padding(
-                        padding:  EdgeInsets.all(SizeConfig.heightMultiplier * 3),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Sanjay gadu" ,
-                                style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                            color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3)),
-                            Padding(
-                              padding: EdgeInsets.only(top: SizeConfig.heightMultiplier),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.account_balance,color: AppTheme.accentColor,size: SizeConfig.heightMultiplier* 2.5,),
-                                  SizedBox(width: SizeConfig.heightMultiplier,),
-                                  Text("Intilli" ,style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                                      color: AppTheme.accentColor,fontSize: SizeConfig.heightMultiplier * 2.2)),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: SizeConfig.heightMultiplier * 2,
+                    ),
+                    CircleAvatar(
+                      radius: SizeConfig.heightMultiplier * 5,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 3),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Sanjay gadu",
+                              style: AppTheme.lightTextTheme.headline6.copyWith(
+                                  fontFamily: Constants.getFreightSansFamily,
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.heightMultiplier * 3)),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: SizeConfig.heightMultiplier),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  Icons.account_balance,
+                                  color: AppTheme.accentColor,
+                                  size: SizeConfig.heightMultiplier * 2.5,
+                                ),
+                                SizedBox(
+                                  width: SizeConfig.heightMultiplier,
+                                ),
+                                Text("Intilli",
+                                    style: AppTheme.lightTextTheme.headline6
+                                        .copyWith(
+                                            fontFamily:
+                                                Constants.getFreightSansFamily,
+                                            color: AppTheme.accentColor,
+                                            fontSize:
+                                                SizeConfig.heightMultiplier *
+                                                    2.2)),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: SizeConfig.heightMultiplier * 5,
+                      left: SizeConfig.heightMultiplier * 3),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text("20",
+                              style: AppTheme.lightTextTheme.headline6.copyWith(
+                                  fontFamily: Constants.getFreightSansFamily,
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.heightMultiplier * 3.5)),
+                          Text("Posts",
+                              style: AppTheme.lightTextTheme.headline6.copyWith(
+                                  fontFamily: Constants.getHelveticaNeueFamily,
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.heightMultiplier * 2)),
+                        ],
+                      ),
+                      Container(
+                        width: 1,
+                        color: Colors.white,
+                        height: SizeConfig.heightMultiplier * 5,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.heightMultiplier * 5),
+                      ),
+                      Column(
+                        children: [
+                          Text("10",
+                              style: AppTheme.lightTextTheme.headline6.copyWith(
+                                  fontFamily: Constants.getFreightSansFamily,
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.heightMultiplier * 3.5)),
+                          Text("Posts",
+                              style: AppTheme.lightTextTheme.headline6.copyWith(
+                                  fontFamily: Constants.getHelveticaNeueFamily,
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.heightMultiplier * 2)),
+                        ],
+                      ),
+                      Container(
+                        width: 1,
+                        color: Colors.white,
+                        height: SizeConfig.heightMultiplier * 5,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.heightMultiplier * 5),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.heightMultiplier * 2.5,
+                            vertical: SizeConfig.heightMultiplier),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Color(0xff6d0eb5), Color(0xff4059F1)]),
+                            borderRadius: BorderRadius.circular(
+                                SizeConfig.heightMultiplier)),
+                        child: Text("message",
+                            style: AppTheme.lightTextTheme.headline6.copyWith(
+                                fontFamily: Constants.getFreightSansFamily,
+                                color: Colors.white,
+                                fontSize: SizeConfig.heightMultiplier * 2)),
+                      )
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: SizeConfig.heightMultiplier* 5,left: SizeConfig.heightMultiplier* 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Text("20",style: AppTheme.lightTextTheme.headline6.copyWith(
-                                fontFamily: Constants.getFreightSansFamily,
-                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3.5)
-                            ),
-                            Text("Posts",style: AppTheme.lightTextTheme.headline6.copyWith(
-                                fontFamily: Constants.getHelveticaNeueFamily,
-                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)
-                            ),
-
-                          ],
-                        ),
-                        Container(
-                          width: 1,
-                          color: Colors.white,
-                          height: SizeConfig.heightMultiplier * 5,
-                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
-                        ),
-                        Column(
-                          children: [
-                            Text("10",style: AppTheme.lightTextTheme.headline6.copyWith(
-                                fontFamily: Constants.getFreightSansFamily,
-                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 3.5)
-                            ),
-                            Text("Posts",style: AppTheme.lightTextTheme.headline6.copyWith(
-                                fontFamily: Constants.getHelveticaNeueFamily,
-                                color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: 1,
-                          color: Colors.white,
-                          height: SizeConfig.heightMultiplier * 5,
-                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 2.5,vertical: SizeConfig.heightMultiplier ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xff6d0eb5),Color(0xff4059F1)]
-                            ),
-                            borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier)
-                          ),
-                          child: Text("message",style: AppTheme.lightTextTheme.headline6.copyWith(
-                              fontFamily: Constants.getFreightSansFamily,
-                              color: Colors.white,fontSize: SizeConfig.heightMultiplier * 2)),
-                        )
-
-                      ],
-                    ),
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: SizeConfig.heightMultiplier * 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(SizeConfig.heightMultiplier * 3),
+                boxShadow: [
+                  BoxShadow(
+                      color: AppTheme.accentColor.withOpacity(0.8),
+                      blurRadius: 10.0,
+                      offset: Offset(5, 5)),
+                ],
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: SizeConfig.heightMultiplier * 5,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("All Photos",
+                          style: AppTheme.lightTextTheme.headline6.copyWith(
+                              fontFamily: Constants.getFreightSansFamily,
+                              color: AppTheme.primaryColor,
+                              fontSize: SizeConfig.heightMultiplier * 2.9)),
+                      Container(
+                        width: 1,
+                        color: AppTheme.primaryColor,
+                        height: SizeConfig.heightMultiplier * 5,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.heightMultiplier * 5),
+                      ),
+                      Text("All Files",
+                          style: AppTheme.lightTextTheme.headline6.copyWith(
+                              fontFamily: Constants.getFreightSansFamily,
+                              color: AppTheme.accentColor,
+                              fontSize: SizeConfig.heightMultiplier * 2.9)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: SizeConfig.heightMultiplier * 5,
+                  ),
+                  buildProfilePosts()
                 ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(height: SizeConfig.heightMultiplier * 10,),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 3),
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppTheme.accentColor.withOpacity(0.8),
-                        blurRadius: 10.0,
-                        offset: Offset(5, 5)
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(height: SizeConfig.heightMultiplier * 5,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("All Photos", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                        color: AppTheme.primaryColor,fontSize: SizeConfig.heightMultiplier * 2.9)),
-                        Container(
-                          width: 1,
-                          color: AppTheme.primaryColor,
-                          height: SizeConfig.heightMultiplier * 5,
-                          margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 5),
-                        ),
-                        Text("All Files", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getFreightSansFamily,
-                            color: AppTheme.accentColor,fontSize: SizeConfig.heightMultiplier * 2.9)),
-                      ],
-                    ),
-                    SizedBox(height: SizeConfig.heightMultiplier * 5,),
-                    buildProfilePosts()
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 
   buildProfilePosts() {
@@ -305,51 +353,53 @@ class ProfileScreen extends StatelessWidget {
         final posts = snapshot.data;
         if (posts == null) {
           return Shimmer.fromColors(
-              baseColor: Colors.grey[300],
-              highlightColor: Colors.grey[100],
-              enabled: true,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.heightMultiplier * 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Container(
-                          width: SizeConfig.heightMultiplier * 6,
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.heightMultiplier * 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Container(
+                        width: SizeConfig.heightMultiplier * 6,
+                        height: SizeConfig.heightMultiplier * 6,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.heightMultiplier,
+                      ),
+                      Expanded(
+                        child: Container(
                           height: SizeConfig.heightMultiplier * 6,
                           color: Colors.white,
                         ),
-                        SizedBox(
-                          width: SizeConfig.heightMultiplier,
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: SizeConfig.heightMultiplier * 6,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 2.5,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 2.0),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    color: Colors.white,
+                  ),
+                ],
               ),
-            );
+            ),
+          );
         } else if (posts.docs.length == 0) {
           return Center(
             child: Text("no posts yet"),
           );
         } else {
-          final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+          final finalPosts = snapshot.data.docs
+              .map((doc) => PostModel.fromDocument(doc))
+              .toList();
           return ProfilePhotosCard(finalPosts: finalPosts);
         }
       },
@@ -357,9 +407,8 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void choiceAction(String value) {
-    if(value == Constants.getLogoutString) {
+    if (value == Constants.getLogoutString) {
       _authBloc.signOut();
     }
   }
 }
-

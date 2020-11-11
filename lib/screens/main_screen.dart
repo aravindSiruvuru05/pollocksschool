@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
@@ -19,11 +20,13 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientMixin<MainScreen>{
+class _MainScreenState extends State<MainScreen>
+    with AutomaticKeepAliveClientMixin<MainScreen> {
   int _currentIndex;
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Widget> _pages;
 
   @override
@@ -33,7 +36,7 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
   }
 
   void init() {
-
+    _firebaseMessaging.getToken().then((value) => print(value));
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
@@ -57,10 +60,12 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
     ];
   }
 
-  List<Widget> _getPages(){
-    if(widget.userType == UserType.STUDENT)
+  List<Widget> _getPages() {
+    if (widget.userType == UserType.STUDENT)
       return [
-        TimelineScreen(key: PageStorageKey("TimelineScreen"),),
+        TimelineScreen(
+          key: PageStorageKey("TimelineScreen"),
+        ),
         MenuScreen(),
         DashboardScreen(),
         MenuScreen(),
@@ -68,20 +73,28 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
       ];
     else
       return [
-        TimelineScreen(key: PageStorageKey("TimelineScreen"),),
-        MenuScreen(key: PageStorageKey("jgd"),),
+        TimelineScreen(
+          key: PageStorageKey("TimelineScreen"),
+        ),
+        MenuScreen(
+          key: PageStorageKey("jgd"),
+        ),
         Provider(
           create: (_) => UploadBloc(),
           child: UploadPostScreen(),
         ),
-        MenuScreen(key: PageStorageKey("MenuScreen"),),
+        MenuScreen(
+          key: PageStorageKey("MenuScreen"),
+        ),
 //        SideBarLayout()
-        ProfileScreen(key: PageStorageKey("ProfileScreen"),),
+        ProfileScreen(
+          key: PageStorageKey("ProfileScreen"),
+        ),
       ];
   }
 
-  Widget getFloatingActionButton(){
-    if(widget.userType == UserType.STUDENT)
+  Widget getFloatingActionButton() {
+    if (widget.userType == UserType.STUDENT)
       return ImageFloatingActionButton(
           onPressed: () => _onTap(Constants.fabItemIndex),
           path: Strings.getLogoImagePath);
@@ -90,7 +103,9 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
         backgroundColor: Colors.white,
         child: IconButton(
           icon: Icon(Icons.file_upload),
-          color: _currentIndex == Constants.fabItemIndex ? AppTheme.primaryColor : AppTheme.accentColor,
+          color: _currentIndex == Constants.fabItemIndex
+              ? AppTheme.primaryColor
+              : AppTheme.accentColor,
           onPressed: () => _onTap(Constants.fabItemIndex),
         ),
         radius: SizeConfig.heightMultiplier * 4,
@@ -117,7 +132,6 @@ class _MainScreenState extends State<MainScreen>  with AutomaticKeepAliveClientM
         onItemTap: _onTap,
         bottomBarItemList: _bottomBarItemList,
       ),
-
     );
   }
 

@@ -4,6 +4,8 @@ import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 
+import '../utils/config/size_config.dart';
+
 class PrimaryButton extends StatelessWidget {
   final String text;
   final Function onTap;
@@ -18,14 +20,14 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: LoadingState.NORMAL  == state?  onTap : null,
+      onTap: LoadingState.NORMAL == state ? onTap : null,
       child: Container(
         padding: LoadingState.NORMAL == state
-            ?  EdgeInsets.all(SizeConfig.heightMultiplier * 1.7) : null,
+            ? EdgeInsets.all(SizeConfig.heightMultiplier * 1.7)
+            : null,
         decoration: BoxDecoration(
           color: LoadingState.LOADING == state ? null : AppTheme.primaryColor,
-          borderRadius:
-          BorderRadius.circular(SizeConfig.heightMultiplier * 3),
+          borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 3),
         ),
         child: buildPrimaryButtonChild(),
       ),
@@ -38,7 +40,8 @@ class PrimaryButton extends StatelessWidget {
       return Text(
         text,
         textAlign: TextAlign.center,
-        style: AppTheme.lightTextTheme.button,
+        style: AppTheme.lightTextTheme.button
+            .copyWith(letterSpacing: SizeConfig.heightMultiplier / 3),
       );
     } else if (state == LoadingState.LOADING) {
       return SpinKitRipple(

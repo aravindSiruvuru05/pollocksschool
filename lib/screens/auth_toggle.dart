@@ -18,13 +18,18 @@ class AuthToggleScreen extends StatelessWidget {
         if (isAuthenticated == null) return LoadingScreen();
         if (isAuthenticated) {
           final currentUser = authBloc.getCurrentUser;
-         return  MultiProvider(
-           providers: [
-             Provider<TimelineBloc>(create: (_) => TimelineBloc(currentUser: currentUser)),
-             Provider<ProfileBloc>(create: (_) => ProfileBloc(currentUser: currentUser)),
-           ],
-           child: MainScreen(userType: authBloc.getCurrentUser.userType,),
-         );
+
+          return MultiProvider(
+            providers: [
+              Provider<TimelineBloc>(
+                  create: (_) => TimelineBloc(currentUser: currentUser)),
+              Provider<ProfileBloc>(
+                  create: (_) => ProfileBloc(currentUser: currentUser)),
+            ],
+            child: MainScreen(
+              userType: authBloc.getCurrentUser.userType,
+            ),
+          );
         } else {
           return LoginScreen();
         }
