@@ -4,7 +4,7 @@ import 'size_config.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color appBackgroundColor = Colors.white;
+  static const Color appBackgroundColor = Color(0xFFF7F7F7);
   static const Color accentColor = Color(0xFF9ba4b4);
   static const Color primaryColor = Color(0xff09031d);
   static const Color primaryshadeColor = Color(0xFF394867);
@@ -38,7 +38,7 @@ class AppTheme {
   // Error text
   static final TextStyle _subTitleLight2 = TextStyle(
     color: Colors.black87,
-    fontSize: 1.5 * SizeConfig.textMultiplier,
+    fontSize: 1.8 * SizeConfig.textMultiplier,
   );
 
   static final TextStyle otpsubtitle = TextStyle(
@@ -48,7 +48,7 @@ class AppTheme {
   );
 
   static final TextStyle _buttonLight = TextStyle(
-    color: Colors.white,
+    color: Colors.black87,
     fontSize: 2.5 * SizeConfig.textMultiplier,
   );
 

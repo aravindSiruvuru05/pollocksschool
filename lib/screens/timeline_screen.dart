@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/blocs/post_bloc.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
@@ -89,7 +90,7 @@ class TimelineScreen extends StatelessWidget {
             child: Text("no posts yet"),
           );
         } else {
-          final finalPosts = snapshot.data.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+          final finalPosts = posts.docs.map((doc) => PostModel.fromDocument(doc)).toList();
           final postCards = finalPosts.map((e) => PostCard(post: e,postBloc: _timelineBloc,)).toList();
           return Container(
             color: Colors.white,
@@ -113,10 +114,6 @@ class TimelineScreen extends StatelessWidget {
                 )
               ],
             ),
-
-//            ListView(
-//              children: postCards,
-//            ),
           );
         }
       },

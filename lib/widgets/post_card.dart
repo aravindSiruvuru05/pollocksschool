@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:pollocksschool/blocs/post_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/post_model.dart';
+import 'package:pollocksschool/screens/post_detail_screen.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
@@ -27,18 +28,25 @@ class PostCard extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: ListTile(
         contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
-        leading: CircleAvatar(
-          backgroundImage: post.mediaUrl != null
-              ? CachedNetworkImageProvider(post.mediaUrl)
-              : null,
-          backgroundColor: Colors.grey,
-          child: post.mediaUrl == null ? Text(post.username[0]) : null,
+        leading: Hero(
+          tag: post,
+          child: CircleAvatar(
+            radius: SizeConfig.heightMultiplier * 3,
+            backgroundImage: post.mediaUrl != null
+                ? CachedNetworkImageProvider(post.mediaUrl)
+                : null,
+            backgroundColor: Colors.grey,
+            child: post.mediaUrl == null ? Text(post.username[0]) : null,
+          ),
         ),
         title: GestureDetector(
           onTap: () => print('showing profile'),
-          child: Text(
-            post.username,
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          child: Hero(
+            tag: post.mediaUrl,
+            child: Text(
+              post.username,
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
 //          subtitle: Text(location),
@@ -62,54 +70,61 @@ class PostCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: post.mediaUrl,
-                    height: SizeConfig.heightMultiplier * 60,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300],
-                      highlightColor: Colors.grey[100],
-                      enabled: true,
-                      child: Container(
-                        width: double.infinity,
-                        height: SizeConfig.heightMultiplier * 60,
-                        color: Colors.white,
+                  Hero(
+                    tag: post.postId,
+                    child: CachedNetworkImage(
+                      imageUrl: post.mediaUrl,
+                      fit: BoxFit.fitHeight,
+                      height: SizeConfig.heightMultiplier * 60,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300],
+                        highlightColor: Colors.grey[100],
+                        enabled: true,
+                        child: Container(
+                          width: double.infinity,
+                          height: SizeConfig.heightMultiplier * 60,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          image: DecorationImage(
-                              image: NetworkImage(post.mediaUrl),
-                              fit: BoxFit.cover),
-                          backgroundBlendMode: BlendMode.color,
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  StreamBuilder<bool>(
-                    stream: postBloc.likeSymbolStream,
-                    initialData: false,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.data == null || snapshot.data == false)
-                        return SizedBox.shrink();
-                      return Animator(
-                        duration: Duration(milliseconds: 300),
-                        tween: Tween(begin: 0.8, end: 1.4),
-                        curve: Curves.elasticOut,
-                        cycles: 0,
-                        builder: (context, animatorState, child) =>
-                            Transform.scale(
-                          scale: animatorState.value,
-                          child: Icon(
-                            Icons.favorite,
-                            size: 60.0,
-                            color: Colors.white,
+                      imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            image: DecorationImage(
+                                image: NetworkImage(post.mediaUrl),
+                                fit: BoxFit.cover),
+                            backgroundBlendMode: BlendMode.color,
                           ),
-                        ),
-                      );
+                        );
+                      },
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
+                  StreamBuilder<String>(
+                    stream: postBloc.likeSymbolStream,
+                    initialData: "",
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+
+                      if (snapshot.data == post.postId){
+                        return Animator(
+                          duration: Duration(milliseconds: 300),
+                          tween: Tween(begin: 0.8, end: 1.4),
+                          curve: Curves.elasticOut,
+                          cycles: 0,
+                          builder: (context, animatorState, child) =>
+                              Transform.scale(
+                                scale: animatorState.value,
+                                child: Icon(
+                                  Icons.favorite,
+                                  size: 60.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
                     },
                   ),
                 ],
@@ -117,7 +132,7 @@ class PostCard extends StatelessWidget {
         });
   }
 
-  buildPostFooter() {
+  buildPostFooter(BuildContext context) {
     return Container(
       color: Colors.white,
 //      padding: EdgeInsets.only(top: SizeConfig.heightMultiplier),
@@ -163,7 +178,12 @@ class PostCard extends StatelessWidget {
                     padding: EdgeInsets.all(0),
                     icon: Icon(MdiIcons.chatOutline,
                         size: Constants.commonIconSize, color: Colors.black87),
-                    onPressed: () => {},
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PostDetailScreen(post: post,postBloc: postBloc,)),
+                      );
+                    },
                   ),
                   Text(
                     "0",
@@ -215,7 +235,7 @@ class PostCard extends StatelessWidget {
       ),
       buildPostHeader(),
       buildPostImage(),
-      buildPostFooter(),
+      buildPostFooter(context),
     ]));
   }
 }

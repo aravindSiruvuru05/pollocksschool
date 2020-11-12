@@ -43,8 +43,6 @@ exports.onUpdatePost = functions.firestore
     var str = postId;
     var index = str.indexOf('_');
     var [classId, second] = [str.slice(0, index), str.slice(index + 1)];
-
-
     admin
         .firestore()
         .collection("timeline")
@@ -85,6 +83,7 @@ exports.onUpdateTimelinePost = functions.firestore
             doc.ref.update(postUpdated);
           }
         });
+
     });
 
 

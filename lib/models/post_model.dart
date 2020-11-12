@@ -9,7 +9,7 @@ class PostModel {
   final String description;
   final String mediaUrl;
   final dynamic likes;
-  final DateTime timestamp;
+  final Timestamp timestamp;
 
   PostModel({
     this.classId,
@@ -24,7 +24,6 @@ class PostModel {
   });
 
   factory PostModel.fromDocument(QueryDocumentSnapshot doc) {
-
     return PostModel(
       postId: doc.id,
       ownerId: doc['ownerId'],
@@ -33,27 +32,11 @@ class PostModel {
       description: doc['description'],
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
-      timestamp:DateTime.fromMicrosecondsSinceEpoch(doc['timestamp'].microsecondsSinceEpoch),
+      timestamp: doc['timestamp'],
     );
   }
 
-  String get getPostTime{
-    return "${timestamp.hour}:${timestamp.minute}";
-  }
 
-  String get getPostDateString {
-    String day = timestamp.day.toString();
-    String month = _getMonth(timestamp.month);
-    return "$day $month";
-  }
-
-  _getMonth(int month){
-    final months = ['January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'];
-
-    return months[month - 1] ?? '';
-  }
 
   int get getLikeCount {
     // if no likes, return 0
