@@ -41,7 +41,7 @@ class PrimaryButton extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: AppTheme.lightTextTheme.button
-            .copyWith(letterSpacing: SizeConfig.heightMultiplier / 3),
+            .copyWith(letterSpacing: SizeConfig.heightMultiplier / 3,color: Colors.white),
       );
     } else if (state == LoadingState.LOADING) {
       return SpinKitRipple(

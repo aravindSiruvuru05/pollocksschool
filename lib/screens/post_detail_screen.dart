@@ -43,7 +43,7 @@ class PostDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildCommonCard(buildPostDetailCard()),
-                buildCommonCard(buildAddCommentTile()),
+                buildCommonCard(buildAddCommentTile(context)),
                 StreamBuilder<QuerySnapshot>(
                   stream:  commentsRef.doc(post.postId).collection('comments')
                       .orderBy('timestamp', descending: true).snapshots(),
@@ -112,7 +112,7 @@ class PostDetailScreen extends StatelessWidget {
       ),
     );
   }
-  ListTile buildAddCommentTile() {
+  ListTile buildAddCommentTile(BuildContext context) {
     TextEditingController controller = TextEditingController();
     return ListTile(
       contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
@@ -127,6 +127,7 @@ class PostDetailScreen extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(Icons.check,color: Colors.blue,size: 25,),
         onPressed: () async{
+          FocusScope.of(context).requestFocus(new FocusNode());
           if(controller.text.isEmpty){
             return;
           }
