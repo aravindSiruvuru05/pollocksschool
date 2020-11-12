@@ -77,10 +77,7 @@ exports.onUpdateTimelinePost = functions.firestore
         .get()
         .then(doc => {
           if (doc.exists &&  JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes)) {
-              functions.logger.log("======updated", postUpdated.likes);
-              functions.logger.log("======timeline doc", doc.data().likes);
-              functions.logger.log("======",JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes));
-            doc.ref.update(postUpdated);
+             doc.ref.update(postUpdated);
           }
         });
 
@@ -113,3 +110,27 @@ exports.onDeletePost = functions.firestore
           }
         });
     });
+
+
+exports.onCreateComment = functions.firestore
+  .document("/comment/{postId}/comments/{commentId}")
+  .onCreate(async (snapshot, context) => {
+    const commentCreated = snapshot.data();
+    const postId = context.params.postId; // 223344
+//    const  = context.params.commentId; // intilli3A
+   functions.logger.log("======",postId);
+   admin
+        .firestore()
+        .collection("post")
+        .doc(commentCreated.postownerid)
+        .collection("userPosts")
+        .doc(postId)
+        .get()
+        .then(doc => {
+        functions.logger.log("=====  =",doc['commentscount']);
+              const count = doc['commentscount'] == null ? 1 : doc['commentscount'] + 1 ;
+              functions.logger.log("======",count);
+
+             doc.ref.update({'commentscount':count});
+        });
+  });
