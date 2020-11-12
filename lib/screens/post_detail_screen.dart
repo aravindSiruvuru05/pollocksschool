@@ -1,29 +1,31 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/post_bloc.dart';
-import 'package:pollocksschool/models/comment_model.dart';
-import 'package:pollocksschool/models/post_model.dart';
+import 'package:pollocksschool/blocs/blocs.dart';
+import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostDetailScreen extends StatelessWidget {
   final PostModel post;
 
-  final PostBloc postBloc;
   bool isLiked;
+  UserModel currentUser;
 
   CollectionReference commentsRef;
 
-  PostDetailScreen({Key key,@required this.post,@required this.postBloc}) : super(key: key);
+  PostDetailScreen({Key key,@required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    isLiked = postBloc.getIsLiked(post.likes);
-    commentsRef = FirebaseFirestore.instance.collection("comments");
+    AuthBloc authBloc = Provider.of<AuthBloc>(context);
+    currentUser = authBloc.getCurrentUser;
+    isLiked = post.likes[currentUser.id] == null ? false : post.likes[currentUser.id];
+    commentsRef = FirebaseFirestore.instance.collection("comment");
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -132,11 +134,12 @@ class PostDetailScreen extends StatelessWidget {
               .doc(post.postId)
               .collection('comments')
               .add({
-            "username" : "${postBloc.currentUser.firstname} ${postBloc.currentUser.lastname}",
+            "username" : "${currentUser.firstname} ${currentUser.lastname}",
             "comment" : controller.text,
             "timestamp": DateTime.now(),
-            "avatarurl": postBloc.currentUser.photourl,
-            "userid": postBloc.currentUser.id
+            "avatarurl": currentUser.photourl,
+            "userid": currentUser.id,
+            "postownerid": post.ownerId
           });
           controller.clear();
         }

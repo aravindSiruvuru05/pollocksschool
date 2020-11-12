@@ -127,6 +127,7 @@ class UploadBloc extends Bloc {
       "description": _caption,
       "classId": classId,
       "timestamp": DateTime.now(),
+      "commentscount": 0,
       "likes": {}
     });
   }

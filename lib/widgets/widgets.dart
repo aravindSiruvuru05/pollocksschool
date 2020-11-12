@@ -4,4 +4,6 @@ export 'primary_text_form_field.dart';
 export 'primary_button.dart';
 export 'secondary_button.dart';
 export 'dashboard_card.dart';
+export 'post_card.dart';
 export 'profile_photos_card.dart';
+export 'appbar_title.dart';

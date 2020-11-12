@@ -130,6 +130,7 @@ class UploadPostScreen extends StatelessWidget {
                     return;
                   }
                   _uploadBloc.uploadPost(_captionController.value.text,_authBloc.getCurrentUser);
+                  _captionController.clear();
                 } : null,
                 child: Text(
                   "Post",

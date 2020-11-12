@@ -10,8 +10,9 @@ class PostModel {
   final String mediaUrl;
   final dynamic likes;
   final Timestamp timestamp;
+  final int commentscount;
 
-  PostModel({
+  PostModel( {
     this.classId,
     this.postId,
     this.ownerId,
@@ -21,6 +22,7 @@ class PostModel {
     this.mediaUrl,
     this.likes,
     this.timestamp,
+    this.commentscount,
   });
 
   factory PostModel.fromDocument(QueryDocumentSnapshot doc) {
@@ -33,6 +35,7 @@ class PostModel {
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
       timestamp: doc['timestamp'],
+      commentscount: doc['commentscount'],
     );
   }
 

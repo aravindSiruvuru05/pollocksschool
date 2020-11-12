@@ -2,13 +2,13 @@ import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:pollocksschool/blocs/post_bloc.dart';
-import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/screens/post_detail_screen.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 // ignore: must_be_immutable
@@ -16,9 +16,9 @@ class PostCard extends StatelessWidget {
   final PostModel post;
   bool isLiked;
 
-  PostBloc postBloc;
+  TimelineBloc timelineBloc;
 
-  PostCard({@required this.post, @required this.postBloc});
+  PostCard({@required this.post});
 
   buildPostHeader() {
     return Card(
@@ -59,77 +59,70 @@ class PostCard extends StatelessWidget {
   }
 
   buildPostImage() {
-    return StreamBuilder<LoadingState>(
-        stream: postBloc.likebuttonStateStream,
-        initialData: LoadingState.NORMAL,
-        builder: (context, snapshot) {
-          return GestureDetector(
-              onDoubleTap: snapshot.data == LoadingState.NORMAL
-                  ? () => postBloc.handleLikePost(post, isLiked)
-                  : null,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Hero(
-                    tag: post.postId,
-                    child: CachedNetworkImage(
-                      imageUrl: post.mediaUrl,
-                      fit: BoxFit.fitHeight,
-                      height: SizeConfig.heightMultiplier * 60,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300],
-                        highlightColor: Colors.grey[100],
-                        enabled: true,
-                        child: Container(
-                          width: double.infinity,
-                          height: SizeConfig.heightMultiplier * 60,
-                          color: Colors.white,
-                        ),
-                      ),
-                      imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            image: DecorationImage(
-                                image: NetworkImage(post.mediaUrl),
-                                fit: BoxFit.cover),
-                            backgroundBlendMode: BlendMode.color,
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+    return GestureDetector(
+        onDoubleTap: () => timelineBloc.handleLikePost(post, !isLiked),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Hero(
+              tag: post.postId,
+              child: CachedNetworkImage(
+                imageUrl: post.mediaUrl,
+                fit: BoxFit.fitHeight,
+                height: SizeConfig.heightMultiplier * 60,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.grey[100],
+                  enabled: true,
+                  child: Container(
+                    width: double.infinity,
+                    height: SizeConfig.heightMultiplier * 60,
+                    color: Colors.white,
+                  ),
+                ),
+                imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                          image: NetworkImage(post.mediaUrl),
+                          fit: BoxFit.cover),
+                      backgroundBlendMode: BlendMode.color,
                     ),
-                  ),
-                  StreamBuilder<String>(
-                    stream: postBloc.likeSymbolStream,
-                    initialData: "",
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  );
+                },
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+            StreamBuilder<String>(
+              stream: timelineBloc.likeSymbolStream,
+              initialData: "",
+              builder:
+                  (BuildContext context, AsyncSnapshot<String> snapshot) {
 
-                      if (snapshot.data == post.postId){
-                        return Animator(
-                          duration: Duration(milliseconds: 300),
-                          tween: Tween(begin: 0.8, end: 1.4),
-                          curve: Curves.elasticOut,
-                          cycles: 0,
-                          builder: (context, animatorState, child) =>
-                              Transform.scale(
-                                scale: animatorState.value,
-                                child: Icon(
-                                  Icons.favorite,
-                                  size: 60.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    },
-                  ),
-                ],
-              ));
-        });
+                if (snapshot.data == post.postId){
+                  return Animator(
+                    duration: Duration(milliseconds: 300),
+                    tween: Tween(begin: 0.8, end: 1.4),
+                    curve: Curves.elasticOut,
+                    cycles: 0,
+                    builder: (context, animatorState, child) =>
+                        Transform.scale(
+                          scale: animatorState.value,
+                          child: Icon(
+                            Icons.favorite,
+                            size: 60.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
+            ),
+          ],
+        ));
   }
 
   buildPostFooter(BuildContext context) {
@@ -141,37 +134,30 @@ class PostCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              StreamBuilder<LoadingState>(
-                  stream: postBloc.likebuttonStateStream,
-                  initialData: LoadingState.NORMAL,
-                  builder: (context, snapshot) {
-                    return Row(
-                      children: [
-                        IconButton(
-                          padding: EdgeInsets.all(0),
-                          icon: !isLiked
-                              ? Icon(
-                                  MdiIcons.heartOutline,
-                                  size: Constants.commonIconSize,
-                                  color: Colors.black87,
-                                )
-                              : Icon(
-                                  MdiIcons.heart,
-                                  size: Constants.commonIconSize,
-                                  color: Colors.pink,
-                                ),
-                          onPressed: snapshot.data == LoadingState.NORMAL
-                              ? () => postBloc.handleLikePost(post, isLiked)
-                              : null,
-                        ),
-                        Text(
-                          post.getLikeCount.toString(),
-                          style: AppTheme.lightTextTheme.bodyText2
-                              .copyWith(color: Colors.pink),
-                        ),
-                      ],
-                    );
-                  }),
+              Row(
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: !isLiked
+                        ? Icon(
+                      MdiIcons.heartOutline,
+                      size: Constants.commonIconSize,
+                      color: Colors.black87,
+                    )
+                        : Icon(
+                      MdiIcons.heart,
+                      size: Constants.commonIconSize,
+                      color: Colors.pink,
+                    ),
+                    onPressed: () => timelineBloc.handleLikePost(post, !isLiked),
+                  ),
+                  Text(
+                    post.getLikeCount.toString(),
+                    style: AppTheme.lightTextTheme.bodyText2
+                        .copyWith(color: Colors.pink),
+                  ),
+                ],
+              ),
               Row(
                 children: [
                   IconButton(
@@ -181,12 +167,12 @@ class PostCard extends StatelessWidget {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PostDetailScreen(post: post,postBloc: postBloc,)),
+                        MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
                       );
                     },
                   ),
                   Text(
-                    "0",
+                    post.commentscount.toString(),
                     style: AppTheme.lightTextTheme.bodyText2
                         .copyWith(color: Colors.black87),
                   ),
@@ -226,7 +212,8 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    isLiked = postBloc.getIsLiked(post.likes);
+    timelineBloc = Provider.of<TimelineBloc>(context);
+    isLiked = post.likes[timelineBloc.currentUser.id] == null ? false : post.likes[timelineBloc.currentUser.id];
     return Container(
         child: Column(children: <Widget>[
       Divider(
