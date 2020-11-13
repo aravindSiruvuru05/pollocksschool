@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
 import 'package:pollocksschool/models/models.dart';
 
@@ -29,23 +30,36 @@ class TimelineBloc extends Bloc {
   TimelineBloc({@required this.currentUser}) {
     timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
     postCollectionRef = FirebaseFirestore.instance.collection("post");
-
-    updateTimeline();
+    _init();
+    timelineCollectionRef.doc("intilli3A").collection('classPosts')
+        .orderBy('timestamp', descending: true).snapshots().listen((querySnapshot) {
+          print(querySnapshot.docs);
+      updateTimeline(querySnapshot);
+    });
   }
 
-  Future<void> updateTimeline() async{
-    QuerySnapshot timelinePostsSnap = await timelineCollectionRef.doc("intilli3A").collection('classPosts')
+  _init() async{
+    final snapshot = await getTimelineQuerySnapshot();
+    updateTimeline(snapshot);
+  }
+
+  Future<QuerySnapshot> getTimelineQuerySnapshot() async{
+    return await timelineCollectionRef.doc("intilli3A").collection('classPosts')
         .orderBy('timestamp', descending: true).get();
-    timelinePosts = timelinePostsSnap.docs.map<PostModel>((doc) => PostModel.fromDocument(doc)).toList();
+  }
+
+  Future<void> updateTimeline(QuerySnapshot snapshot) async{
+
+    timelinePosts = snapshot.docs.map<PostModel>((doc) => PostModel.fromDocument(doc)).toList();
     print(timelinePosts[0].commentscount);
     timelinePostsStateSink(timelinePosts);
   }
 
-
-
   void handleLikePost(PostModel post, bool isLiked) async{
     updatePostInFirestore(post,isLiked);
     if(isLiked){
+//      Clipboard.setData(ClipboardData(text: data));
+      HapticFeedback.heavyImpact();
       _likeSymbolSink(post.postId);
       Timer(Duration(milliseconds: 600),(){
         _likeSymbolSink("");
@@ -59,6 +73,7 @@ class TimelineBloc extends Bloc {
     }).toList();
     timelinePostsStateSink(timelinePosts);
   }
+
 
   updatePostInFirestore(PostModel post, bool isLiked) async{
     await postCollectionRef

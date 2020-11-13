@@ -21,7 +21,8 @@ class TimelineScreen extends StatelessWidget {
     return Scaffold(
       body:  RefreshIndicator(
           onRefresh: () async{
-            await _timelineBloc.updateTimeline();
+            final snapshot = await _timelineBloc.getTimelineQuerySnapshot();
+            await _timelineBloc.updateTimeline(snapshot);
           },
           child: CustomScrollView(
             slivers: [
