@@ -188,7 +188,7 @@ class UploadPostScreen extends StatelessWidget {
                     ListTile(
                       contentPadding: EdgeInsets.all(0),
                       leading: CircleAvatar(
-                        child: Text("A"),
+                        child: Text(_authBloc.getCurrentUser.firstname[0]),
                       ),
                       title: Container(
                         width: 250.0,

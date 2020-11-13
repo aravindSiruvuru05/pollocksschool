@@ -3,23 +3,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/models.dart';
 
 class TimelineBloc extends Bloc {
   CollectionReference timelineCollectionRef;
   CollectionReference postCollectionRef;
+  CollectionReference activityFeedRef;
 
 
   UserModel currentUser;
-
+  LoadingState _likeButtonState;
   List<PostModel> timelinePosts;
 
 
   final _likeSymbolController =
   StreamController<String>.broadcast();
+
   Stream<String> get likeSymbolStream =>
       _likeSymbolController.stream;
   Function get _likeSymbolSink => _likeSymbolController.sink.add;
+
+  final _likebuttonState =
+  StreamController<LoadingState>.broadcast();
+  Stream<LoadingState> get likebuttonStateStream =>
+      _likebuttonState.stream;
+  Function get liketbuttonStateSink => _likebuttonState.sink.add;
 
 
   final _timelinePostsState = StreamController<List<PostModel>>.broadcast();
@@ -29,6 +38,7 @@ class TimelineBloc extends Bloc {
 
   TimelineBloc({@required this.currentUser}) {
     timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
+    activityFeedRef = FirebaseFirestore.instance.collection("feed");
     postCollectionRef = FirebaseFirestore.instance.collection("post");
     _init();
     timelineCollectionRef.doc("intilli3A").collection('classPosts')
@@ -49,13 +59,22 @@ class TimelineBloc extends Bloc {
   }
 
   Future<void> updateTimeline(QuerySnapshot snapshot) async{
-
     timelinePosts = snapshot.docs.map<PostModel>((doc) => PostModel.fromDocument(doc)).toList();
-    print(timelinePosts[0].commentscount);
+    timelinePosts = timelinePosts == null ? [] : timelinePosts;
     timelinePostsStateSink(timelinePosts);
   }
 
   void handleLikePost(PostModel post, bool isLiked) async{
+
+    liketbuttonStateSink(LoadingState.LOADING);
+    _likeButtonState = LoadingState.LOADING;
+
+    Timer(Duration(milliseconds: 5000),(){
+      liketbuttonStateSink(LoadingState.NORMAL);
+      _likeButtonState = LoadingState.NORMAL;
+    });
+
+
     updatePostInFirestore(post,isLiked);
     if(isLiked){
 //      Clipboard.setData(ClipboardData(text: data));
@@ -81,10 +100,49 @@ class TimelineBloc extends Bloc {
         .collection('userPosts')
         .doc(post.postId)
         .update({'likes.${currentUser.id}': isLiked});
+    isLiked ?  addLikeToActivityFeed(post) : removeLikeFromActivityFeed(post);
+  }
+
+  removeLikeFromActivityFeed(PostModel post) {
+    bool isNotPostOwner = currentUser.id != post.ownerId;
+    if (isNotPostOwner) {
+      activityFeedRef
+          .doc(post.ownerId)
+          .collection("feedItems")
+          .doc(post.postId)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
+    }
+  }
+
+  addLikeToActivityFeed(PostModel post) {
+    print("asdf");
+    // add a notification to the postOwner's activity feed only if comment made by OTHER user (to avoid getting notification for our own like)
+    bool isNotPostOwner = currentUser.id != post.ownerId;
+    if (isNotPostOwner) {
+      activityFeedRef
+          .doc(post.ownerId)
+          .collection("feedItems")
+          .doc(post.postId)
+          .set({
+        "type": "like",
+        "username": "${currentUser.firstname} ${currentUser.lastname}",
+        "userId": currentUser.id,
+        "userProfileImg": currentUser.photourl,
+        "postId": post.postId,
+        "mediaUrl": post.mediaUrl,
+        "timestamp": DateTime.now(),
+      });
+    }
   }
 
   @override
   void dispose() {
+    _likebuttonState.close();
     _timelinePostsState.close();
     _likeSymbolController.close();
     // TODO: implement dispose

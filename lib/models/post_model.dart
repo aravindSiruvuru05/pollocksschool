@@ -11,8 +11,9 @@ class PostModel {
   final dynamic likes;
   final Timestamp timestamp;
   final int commentscount;
+  final String ownerProfileImgUrl;
 
-  PostModel( {
+  PostModel({
     this.classId,
     this.postId,
     this.ownerId,
@@ -23,6 +24,7 @@ class PostModel {
     this.likes,
     this.timestamp,
     this.commentscount,
+    this.ownerProfileImgUrl,
   });
 
   factory PostModel.fromDocument(QueryDocumentSnapshot doc) {
@@ -35,11 +37,10 @@ class PostModel {
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
       timestamp: doc['timestamp'],
-      commentscount: doc['commentscount'],
+      commentscount: doc['commentsCount'],
+      ownerProfileImgUrl: doc['ownerProfileImgUrl'],
     );
   }
-
-
 
   int get getLikeCount {
     // if no likes, return 0

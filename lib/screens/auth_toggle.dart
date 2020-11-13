@@ -27,7 +27,7 @@ class AuthToggleScreen extends StatelessWidget {
                   create: (_) => ProfileBloc(currentUser: currentUser)),
             ],
             child: MainScreen(
-              userType: authBloc.getCurrentUser.userType,
+              currentuser: authBloc.getCurrentUser,
             ),
           );
         } else {

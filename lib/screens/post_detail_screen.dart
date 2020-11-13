@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
@@ -43,7 +44,7 @@ class PostDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildCommonCard(buildPostDetailCard()),
-                buildCommonCard(buildAddCommentTile(context)),
+                buildCommonCard(CommentBox(commentsRef: commentsRef, post: post, currentUser: currentUser)),
                 StreamBuilder<QuerySnapshot>(
                   stream:  commentsRef.doc(post.postId).collection('comments')
                       .orderBy('timestamp', descending: true).snapshots(),
@@ -112,43 +113,6 @@ class PostDetailScreen extends StatelessWidget {
       ),
     );
   }
-  ListTile buildAddCommentTile(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-    return ListTile(
-      contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
-      leading: CircleAvatar(
-              child: Text("A"),),
-      title: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-            hintText: 'Add Comment'
-        ),
-      ),
-      trailing: IconButton(
-        icon: Icon(Icons.check,color: Colors.blue,size: 25,),
-        onPressed: () async{
-          FocusScope.of(context).requestFocus(new FocusNode());
-          if(controller.text.isEmpty){
-            return;
-          }
-          await commentsRef
-              .doc(post.postId)
-              .collection('comments')
-              .add({
-            "username" : "${currentUser.firstname} ${currentUser.lastname}",
-            "comment" : controller.text,
-            "timestamp": DateTime.now(),
-            "avatarurl": currentUser.photourl,
-            "userid": currentUser.id,
-            "postownerid": post.ownerId
-          });
-          controller.clear();
-        }
-      ),
-    );
-  }
-
-
 
   buildCommonCard(Widget child) {
     return Container(
@@ -229,6 +193,93 @@ class PostDetailScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CommentBox extends StatefulWidget {
+  CommentBox({
+    Key key,
+    @required this.commentsRef,
+    @required this.post,
+    @required this.currentUser,
+  }) : super(key: key);
+
+  final CollectionReference commentsRef;
+  final PostModel post;
+  final UserModel currentUser;
+
+  @override
+  _CommentBoxState createState() => _CommentBoxState();
+}
+
+class _CommentBoxState extends State<CommentBox> {
+  final TextEditingController controller = TextEditingController();
+  CollectionReference activityFeedRef = FirebaseFirestore.instance.collection("feed");
+
+  bool isEnabled = false;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
+      leading: CircleAvatar(
+        child: Text(widget.currentUser.firstname[0 ]),),
+      title: TextField(
+        controller: controller,
+        onChanged: (val){
+
+          if(val.length > 0) {
+            setState(() {
+              isEnabled = true;
+            });
+          } else {
+            setState(() {
+              isEnabled = false;
+            });
+          }
+          print(isEnabled);
+        },
+        decoration: InputDecoration(
+            hintText: 'Add Comment'
+        ),
+      ),
+      trailing: IconButton(
+          icon: isEnabled ? Icon(Icons.check,color: AppTheme.primaryColor,size: 25,) : Icon(Icons.check,color: Colors.blueGrey,size: 25,),
+          onPressed: !isEnabled ? null : () async{
+            FocusScope.of(context).requestFocus(new FocusNode());
+            if(controller.text.isEmpty){
+              return;
+            }
+            await widget.commentsRef
+                .doc(widget.post.postId)
+                .collection('comments')
+                .add({
+              "username" : "${widget.currentUser.firstname} ${widget.currentUser.lastname}",
+              "comment" : controller.text,
+              "timestamp": DateTime.now(),
+              "avatarurl": widget.currentUser.photourl,
+              "userid": widget.currentUser.id,
+              "postownerid": widget.post.ownerId
+            });
+            bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
+            if (isNotPostOwner) {
+              activityFeedRef.doc(widget.post.ownerId).collection('feedItems').add({
+                "type": "comment",
+                "commentData": controller.text,
+                "timestamp": DateTime.now(),
+                "postId": widget.post.postId,
+                "userId": widget.currentUser.id,
+                "username": "${widget.currentUser.firstname} ${widget.currentUser.lastname}",
+                "userProfileImg": widget.currentUser.photourl,
+                "mediaUrl": widget.post.mediaUrl,
+              });
+            }
+            controller.clear();
+            setState(() {
+              isEnabled = false;
+            });
+          }
+      ),
     );
   }
 }

@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 
+GlobalKey<ScaffoldState> timelineScaffoldKey = GlobalKey<ScaffoldState>();
+
 // ignore: must_be_immutable
 class TimelineScreen extends StatelessWidget {
 
@@ -19,6 +21,7 @@ class TimelineScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
     return Scaffold(
+      key: timelineScaffoldKey,
       body:  RefreshIndicator(
           onRefresh: () async{
             final snapshot = await _timelineBloc.getTimelineQuerySnapshot();

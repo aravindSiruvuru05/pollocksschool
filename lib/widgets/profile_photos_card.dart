@@ -51,7 +51,7 @@ class ProfilePostsPhotosGrid extends StatelessWidget {
                         enabled: true,
                         child: Container(
                           width: double.infinity,
-                          height: SizeConfig.heightMultiplier * 25,
+                          height: SizeConfig.heightMultiplier * 15,
                           color: Colors.white,
                         ),
                       ),

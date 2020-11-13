@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
+import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
@@ -11,11 +13,10 @@ import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'sidebar/sidebar_layout.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({this.userType}) : super();
-  final UserType userType;
+  MainScreen({this.currentuser}) : super();
+  final UserModel currentuser;
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -36,11 +37,23 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void init() {
-    _firebaseMessaging.getToken().then((value) => print(value));
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
     _pageNavigationController = PageController(initialPage: _currentIndex);
+//    enablePushtoken();
+  }
+
+  enablePushtoken(){
+    CollectionReference timelineRef = FirebaseFirestore.instance.collection("timeline");
+    _firebaseMessaging.getToken().then((value){
+      timelineRef.doc("intilli3A")
+          .collection("classPushTokens")
+          .doc(widget.currentuser.id)
+          .set({
+            "value": value,
+           });
+    });
   }
 
   void _populatePagesAndbottomBarItemsData() {
@@ -61,7 +74,8 @@ class _MainScreenState extends State<MainScreen>
   }
 
   List<Widget> _getPages() {
-    if (widget.userType == UserType.STUDENT)
+    print(widget.currentuser.id);
+    if (widget.currentuser.userType == UserType.STUDENT)
       return [
         TimelineScreen(
           key: PageStorageKey("TimelineScreen"),
@@ -94,7 +108,7 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Widget getFloatingActionButton() {
-    if (widget.userType == UserType.STUDENT)
+    if (widget.currentuser.userType == UserType.STUDENT)
       return ImageFloatingActionButton(
           onPressed: () => _onTap(Constants.fabItemIndex),
           path: Strings.getLogoImagePath);

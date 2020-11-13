@@ -122,12 +122,13 @@ class UploadBloc extends Bloc {
         .set({
       "postId": id,
       "ownerId": _user.id,
+      "ownerProfileImgUrl": _user.photourl,
       "username": "${_user.firstname} ${_user.lastname}",
       "mediaUrl": mediaUrl,
       "description": _caption,
       "classId": classId,
       "timestamp": DateTime.now(),
-      "commentscount": 0,
+      "commentsCount": 0,
       "likes": {}
     });
   }
