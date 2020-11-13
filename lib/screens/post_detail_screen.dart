@@ -257,9 +257,9 @@ class _CommentBoxState extends State<CommentBox> {
               "username" : "${widget.currentUser.firstname} ${widget.currentUser.lastname}",
               "comment" : controller.text,
               "timestamp": DateTime.now(),
-              "avatarurl": widget.currentUser.photourl,
-              "userid": widget.currentUser.id,
-              "postownerid": widget.post.ownerId
+              "avatarUrl": widget.currentUser.photourl,
+              "userId": widget.currentUser.id,
+              "postownerId": widget.post.ownerId,
             });
             bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
             if (isNotPostOwner) {

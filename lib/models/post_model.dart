@@ -10,7 +10,7 @@ class PostModel {
   final String mediaUrl;
   final dynamic likes;
   final Timestamp timestamp;
-  final int commentscount;
+  final int commentsCount;
   final String ownerProfileImgUrl;
 
   PostModel({
@@ -23,7 +23,7 @@ class PostModel {
     this.mediaUrl,
     this.likes,
     this.timestamp,
-    this.commentscount,
+    this.commentsCount,
     this.ownerProfileImgUrl,
   });
 
@@ -37,9 +37,24 @@ class PostModel {
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
       timestamp: doc['timestamp'],
-      commentscount: doc['commentsCount'],
+      commentsCount: doc['commentsCount'],
       ownerProfileImgUrl: doc['ownerProfileImgUrl'],
     );
+  }
+
+  Map<String,dynamic> toMap(){
+    return <String,dynamic>{
+      'postId' : postId,
+      'ownerId' : ownerId,
+      'classId' : classId,
+      'username' : username,
+      'description' : description,
+      'mediaUrl' : mediaUrl,
+      'likes' : likes,
+      'timestamp' : timestamp,
+      'commentsCount' : commentsCount,
+      'ownerProfileImgUrl' : ownerProfileImgUrl,
+    };
   }
 
   int get getLikeCount {

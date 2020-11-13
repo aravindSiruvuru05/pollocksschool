@@ -16,8 +16,8 @@ class CommentModel {
         username : doc['username'],
         comment : doc['comment'],
         timestamp : doc['timestamp'],
-        avatarurl : doc['avatarurl'],
-        userid : doc['userid']
+        avatarurl : doc['avatarUrl'],
+        userid : doc['userId']
     );
   }
 }

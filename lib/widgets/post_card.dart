@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/screens/post_detail_screen.dart';
 import 'package:pollocksschool/screens/screens.dart';
@@ -63,83 +64,73 @@ class PostCard extends StatelessWidget {
   }
 
   buildPostImage() {
-    return StreamBuilder<LoadingState>(
-        stream: timelineBloc.likebuttonStateStream,
-        initialData: LoadingState.NORMAL,
-      builder: (context, snapshot) {
-        return GestureDetector(
-            onDoubleTap: snapshot.data == LoadingState.NORMAL ?  () {
-              timelineBloc.handleLikePost(post, !isLiked);
-            } : () {
-              CustomFlushBar.customFlushBar(
-                  title: "Hold on for 5 sec to perform this action",
-                  message: "you can not like/dislike action with in 10sec of span",
-                  scaffoldKey: timelineScaffoldKey);
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Hero(
-                  tag: post.postId,
-                  child: CachedNetworkImage(
-                    imageUrl: post.mediaUrl,
-                    fit: BoxFit.fitHeight,
+    return GestureDetector(
+        onDoubleTap: () {
+          if(isLiked) return;
+          timelineBloc.handleLikePost(post, !isLiked);
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Hero(
+              tag: post.postId,
+              child: CachedNetworkImage(
+                imageUrl: post.mediaUrl,
+                fit: BoxFit.fitHeight,
+                height: SizeConfig.heightMultiplier * 60,
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.grey[100],
+                  enabled: true,
+                  child: Container(
+                    width: double.infinity,
                     height: SizeConfig.heightMultiplier * 60,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300],
-                      highlightColor: Colors.grey[100],
-                      enabled: true,
-                      child: Container(
-                        width: double.infinity,
-                        height: SizeConfig.heightMultiplier * 60,
-                        color: Colors.white,
-                      ),
-                    ),
-                    imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          image: DecorationImage(
-                              image: NetworkImage(post.mediaUrl),
-                              fit: BoxFit.cover),
-                          backgroundBlendMode: BlendMode.color,
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    color: Colors.white,
                   ),
                 ),
-                StreamBuilder<String>(
-                  stream: timelineBloc.likeSymbolStream,
-                  initialData: "",
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                imageBuilder: (_, ImageProvider<dynamic> imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                          image: NetworkImage(post.mediaUrl),
+                          fit: BoxFit.cover),
+                      backgroundBlendMode: BlendMode.color,
+                    ),
+                  );
+                },
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+            StreamBuilder<String>(
+              stream: timelineBloc.likeSymbolStream,
+              initialData: "",
+              builder:
+                  (BuildContext context, AsyncSnapshot<String> snapshot) {
 
-                    if (snapshot.data == post.postId){
-                      return Animator(
-                        duration: Duration(milliseconds: 600),
-                        tween: Tween(begin: 0.8, end: 1.5),
-                        curve: Curves.elasticOut,
-                        cycles: 0,
-                        builder: (context, animatorState, child) =>
-                            Transform.scale(
-                              scale: animatorState.value,
-                              child: Icon(
-                                Icons.favorite,
-                                size: 60.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  },
-                ),
-              ],
-            ));
-      }
-    );
+                if (snapshot.data == post.postId){
+                  return Animator(
+                    duration: Duration(milliseconds: 250),
+                    tween: Tween(begin: 0.8, end: 1.7),
+                    curve: Curves.easeOut,
+                    cycles: 0,
+                    builder: (context, animatorState, child) =>
+                        Transform.scale(
+                          scale: animatorState.value,
+                          child: Icon(
+                            Icons.favorite,
+                            size: 60.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
+            ),
+          ],
+        ));
   }
 
   buildPostFooter(BuildContext context) {
@@ -153,33 +144,22 @@ class PostCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  StreamBuilder<LoadingState>(
-                      stream: timelineBloc.likebuttonStateStream,
-                      initialData: LoadingState.NORMAL,
-                    builder: (context, snapshot) {
-                      return IconButton(
-                        padding: EdgeInsets.all(0),
-                        icon: !isLiked
-                            ? Icon(
-                          MdiIcons.heartOutline,
-                          size: Constants.commonIconSize,
-                          color: Colors.black87,
-                        )
-                            : Icon(
-                          MdiIcons.heart,
-                          size: Constants.commonIconSize,
-                          color: Colors.pink,
-                        ),
-                        onPressed: snapshot.data == LoadingState.NORMAL ?  () {
-                            timelineBloc.handleLikePost(post, !isLiked);
-                        } : () {
-                          CustomFlushBar.customFlushBar(
-                              title: "Hold on for 5 sec to perform this action",
-                              message: "you can not like/dislike action with in 10sec of span",
-                              scaffoldKey: timelineScaffoldKey);
-                        },
-                      );
-                    }
+                  IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: !isLiked
+                        ? Icon(
+                      MdiIcons.heartOutline,
+                      size: Constants.commonIconSize,
+                      color: Colors.black87,
+                    )
+                        : Icon(
+                      MdiIcons.heart,
+                      size: Constants.commonIconSize,
+                      color: Colors.pink,
+                    ),
+                    onPressed:() {
+                      timelineBloc.handleLikePost(post, !isLiked);
+                    },
                   ),
                   Text(
                     post.getLikeCount.toString(),
@@ -202,12 +182,18 @@ class PostCard extends StatelessWidget {
                     },
                   ),
                   Text(
-                    post.commentscount.toString(),
+                    post.commentsCount.toString(),
                     style: AppTheme.lightTextTheme.bodyText2
                         .copyWith(color: Colors.black87),
                   ),
                 ],
-              )
+              ),
+              Spacer(),
+              timelineBloc.currentUser.userType == UserType.STUDENT ? Row(
+                children: [
+                  SaveButton(timelineBloc: timelineBloc, post: post),
+                ],
+              ) : SizedBox.shrink(),
             ],
           ),
           Padding(
@@ -245,5 +231,28 @@ class PostCard extends StatelessWidget {
       buildPostImage(),
       buildPostFooter(context),
     ]));
+  }
+}
+
+class SaveButton extends StatelessWidget {
+  const SaveButton({
+    Key key,
+    @required this.timelineBloc,
+    @required this.post,
+  }) : super(key: key);
+
+  final TimelineBloc timelineBloc;
+  final PostModel post;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      padding: EdgeInsets.all(0),
+      icon: Icon(Icons.bookmark_border,
+          size: Constants.commonIconSize, color: Colors.black87),
+      onPressed: (){
+        timelineBloc.saveToPostCollection(post);
+      },
+    );
   }
 }

@@ -13,7 +13,6 @@ class TimelineBloc extends Bloc {
 
 
   UserModel currentUser;
-  LoadingState _likeButtonState;
   List<PostModel> timelinePosts;
 
 
@@ -23,13 +22,6 @@ class TimelineBloc extends Bloc {
   Stream<String> get likeSymbolStream =>
       _likeSymbolController.stream;
   Function get _likeSymbolSink => _likeSymbolController.sink.add;
-
-  final _likebuttonState =
-  StreamController<LoadingState>.broadcast();
-  Stream<LoadingState> get likebuttonStateStream =>
-      _likebuttonState.stream;
-  Function get liketbuttonStateSink => _likebuttonState.sink.add;
-
 
   final _timelinePostsState = StreamController<List<PostModel>>.broadcast();
   Stream<List<PostModel>> get timelinePostsStream =>
@@ -64,20 +56,19 @@ class TimelineBloc extends Bloc {
     timelinePostsStateSink(timelinePosts);
   }
 
+  Future<void> saveToPostCollection(PostModel post) async{
+    final postMap = post.toMap();
+    print(postMap);
+   await postCollectionRef
+        .doc(currentUser.id)
+        .collection("userPosts")
+        .doc(post.postId)
+        .set(postMap);
+  }
+
   void handleLikePost(PostModel post, bool isLiked) async{
-
-    liketbuttonStateSink(LoadingState.LOADING);
-    _likeButtonState = LoadingState.LOADING;
-
-    Timer(Duration(milliseconds: 5000),(){
-      liketbuttonStateSink(LoadingState.NORMAL);
-      _likeButtonState = LoadingState.NORMAL;
-    });
-
-
     updatePostInFirestore(post,isLiked);
     if(isLiked){
-//      Clipboard.setData(ClipboardData(text: data));
       HapticFeedback.heavyImpact();
       _likeSymbolSink(post.postId);
       Timer(Duration(milliseconds: 600),(){
@@ -95,11 +86,12 @@ class TimelineBloc extends Bloc {
 
 
   updatePostInFirestore(PostModel post, bool isLiked) async{
-    await postCollectionRef
-        .doc(post.ownerId)
-        .collection('userPosts')
-        .doc(post.postId)
-        .update({'likes.${currentUser.id}': isLiked});
+    await timelineCollectionRef
+          .doc(post.classId)
+          .collection('classPosts')
+          .doc(post.postId)
+          .update({'likes.${currentUser.id}': isLiked});
+
     isLiked ?  addLikeToActivityFeed(post) : removeLikeFromActivityFeed(post);
   }
 
@@ -142,7 +134,6 @@ class TimelineBloc extends Bloc {
 
   @override
   void dispose() {
-    _likebuttonState.close();
     _timelinePostsState.close();
     _likeSymbolController.close();
     // TODO: implement dispose
