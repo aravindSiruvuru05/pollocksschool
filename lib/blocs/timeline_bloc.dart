@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
+import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 
 class TimelineBloc extends Bloc {
@@ -14,6 +15,7 @@ class TimelineBloc extends Bloc {
 
   UserModel currentUser;
   List<PostModel> timelinePosts;
+  List<String> savedPostsIds = [];
 
 
   final _likeSymbolController =
@@ -35,12 +37,39 @@ class TimelineBloc extends Bloc {
     _init();
     timelineCollectionRef.doc("intilli3A").collection('classPosts')
         .orderBy('timestamp', descending: true).snapshots().listen((querySnapshot) {
-          print(querySnapshot.docs);
       updateTimeline(querySnapshot);
     });
+//    getAdminTimeline();
   }
 
+//  getAdminTimeline() async{
+//
+//    FirebaseFirestoreeFirestore.instance.collection("user")
+//        .where("classIds",arrayContains: "intilli3A")
+//        .where("pushToken",isGreaterThan: "")
+//        .get()
+//        .then((val){
+//          print("========");
+//      print(val.docs.length);
+//    });
+//
+//
+////    List<QuerySnapshot> snapsList = [];
+////   QuerySnapshot timelineSnap = await timelineCollectionRef.get();
+////   timelineSnap.docs.forEach((doc) async{
+////     final a = await doc.reference.collection("classPosts").get();
+////     snapsList.add(a);
+////   });
+////   return snapsList.length;
+//  }
+
   _init() async{
+   if(currentUser.userType == UserType.STUDENT){
+     QuerySnapshot snap = await postCollectionRef.doc(currentUser.id).collection("userPosts").get();
+     snap.docs.forEach((doc) {
+       savedPostsIds.add(doc.id);
+     });
+   }
     final snapshot = await getTimelineQuerySnapshot();
     updateTimeline(snapshot);
   }
@@ -51,19 +80,44 @@ class TimelineBloc extends Bloc {
   }
 
   Future<void> updateTimeline(QuerySnapshot snapshot) async{
+
     timelinePosts = snapshot.docs.map<PostModel>((doc) => PostModel.fromDocument(doc)).toList();
     timelinePosts = timelinePosts == null ? [] : timelinePosts;
     timelinePostsStateSink(timelinePosts);
   }
 
-  Future<void> saveToPostCollection(PostModel post) async{
-    final postMap = post.toMap();
-    print(postMap);
-   await postCollectionRef
-        .doc(currentUser.id)
-        .collection("userPosts")
-        .doc(post.postId)
-        .set(postMap);
+  Future<void> toggleSaveToPostCollection(PostModel post,bool isSaved) async{
+    print(isSaved);
+    print("----");
+    if(isSaved){
+      await postCollectionRef
+          .doc(currentUser.id)
+          .collection("userPosts")
+          .doc(post.postId)
+          .get()
+          .then( (doc) {
+            if (doc.exists) {
+             doc.reference.delete().then((value) {
+               savedPostsIds.remove(post.postId);
+               timelinePostsStateSink(timelinePosts);
+             });
+            }
+          });
+    }else{
+      final postMap = post.toMap();
+      await postCollectionRef
+          .doc(currentUser.id)
+          .collection("userPosts")
+          .doc(post.postId)
+          .set(postMap)
+          .then((value) {
+            savedPostsIds.add(post.postId);
+            timelinePostsStateSink(timelinePosts);
+          },
+          onError: (value) {
+            print("failed");
+          });
+    }
   }
 
   void handleLikePost(PostModel post, bool isLiked) async{
@@ -91,8 +145,7 @@ class TimelineBloc extends Bloc {
           .collection('classPosts')
           .doc(post.postId)
           .update({'likes.${currentUser.id}': isLiked});
-
-    isLiked ?  addLikeToActivityFeed(post) : removeLikeFromActivityFeed(post);
+    isLiked ? addLikeToActivityFeed(post) : removeLikeFromActivityFeed(post);
   }
 
   removeLikeFromActivityFeed(PostModel post) {

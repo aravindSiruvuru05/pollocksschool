@@ -29,8 +29,6 @@ class ProfileBloc extends Bloc{
   }
 
   updatePostInFirestore(PostModel post, bool isLiked) async{
-  print(post.postId);
-  print(isLiked);
   await _postCollectionRef
       .doc(post.ownerId)
       .collection('userPosts')

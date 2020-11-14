@@ -4,4 +4,5 @@ class InternetConnectivity {
   static Future<bool> isConnectedToInternet () async{
     return await DataConnectionChecker().hasConnection;
   }
+
 }

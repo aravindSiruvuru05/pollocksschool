@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:pollocksschool/utils/internet_connectivity.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,6 +24,7 @@ class TimelineScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _timelineBloc = Provider.of<TimelineBloc>(context);
+
     return Scaffold(
       key: timelineScaffoldKey,
       body:  RefreshIndicator(
@@ -106,7 +111,9 @@ class TimelineScreen extends StatelessWidget {
             ),
           );
         } else {
-          final postCards = posts.map((e) => PostCard(post: e)).toList();
+           final postCards = posts.map((e) {
+              return PostCard(post: e);
+          }).toList();
           return SliverToBoxAdapter(
               child:  Container(
                 padding: EdgeInsets.only(bottom: SizeConfig.heightMultiplier * 10),

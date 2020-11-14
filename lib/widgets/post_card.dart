@@ -1,18 +1,14 @@
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
-import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/post_model.dart';
 import 'package:pollocksschool/screens/post_detail_screen.dart';
-import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
-import 'package:pollocksschool/widgets/CustomFlushBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -20,6 +16,7 @@ import 'package:shimmer/shimmer.dart';
 class PostCard extends StatelessWidget {
   final PostModel post;
   bool isLiked;
+  bool isSaved;
 
   TimelineBloc timelineBloc;
 
@@ -191,7 +188,17 @@ class PostCard extends StatelessWidget {
               Spacer(),
               timelineBloc.currentUser.userType == UserType.STUDENT ? Row(
                 children: [
-                  SaveButton(timelineBloc: timelineBloc, post: post),
+                  IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: isSaved
+                        ? Icon(Icons.bookmark,
+                        size: Constants.commonIconSize, color: Colors.black87)
+                        :  Icon(Icons.bookmark_border,
+                        size: Constants.commonIconSize, color: Colors.black87),
+                    onPressed: (){
+                      timelineBloc.toggleSaveToPostCollection(post,isSaved);
+                    },
+                  ),
                 ],
               ) : SizedBox.shrink(),
             ],
@@ -221,6 +228,10 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     timelineBloc = Provider.of<TimelineBloc>(context);
     isLiked = post.likes[timelineBloc.currentUser.id] == null ? false : post.likes[timelineBloc.currentUser.id];
+    if(timelineBloc.currentUser.userType == UserType.STUDENT){
+      isSaved = timelineBloc.savedPostsIds.contains(post.postId);
+      print(isSaved);
+    }
     return Container(
         child: Column(children: <Widget>[
       Divider(
@@ -234,25 +245,3 @@ class PostCard extends StatelessWidget {
   }
 }
 
-class SaveButton extends StatelessWidget {
-  const SaveButton({
-    Key key,
-    @required this.timelineBloc,
-    @required this.post,
-  }) : super(key: key);
-
-  final TimelineBloc timelineBloc;
-  final PostModel post;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      padding: EdgeInsets.all(0),
-      icon: Icon(Icons.bookmark_border,
-          size: Constants.commonIconSize, color: Colors.black87),
-      onPressed: (){
-        timelineBloc.saveToPostCollection(post);
-      },
-    );
-  }
-}

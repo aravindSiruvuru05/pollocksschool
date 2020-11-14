@@ -3,13 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
+import 'package:pollocksschool/enums/flushbar_type.dart';
 import 'package:pollocksschool/models/models.dart';
+import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:pollocksschool/widgets/CustomFlushBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+
+GlobalKey<ScaffoldState> postDetailScaffoldKey = GlobalKey<ScaffoldState>();
+
 
 class PostDetailScreen extends StatelessWidget {
   final PostModel post;
@@ -28,6 +35,7 @@ class PostDetailScreen extends StatelessWidget {
     isLiked = post.likes[currentUser.id] == null ? false : post.likes[currentUser.id];
     commentsRef = FirebaseFirestore.instance.collection("comment");
     return Scaffold(
+      key: postDetailScaffoldKey,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppTheme.appBackgroundColor,
@@ -250,6 +258,9 @@ class _CommentBoxState extends State<CommentBox> {
             if(controller.text.isEmpty){
               return;
             }
+            setState(() {
+              isEnabled = false;
+            });
             await widget.commentsRef
                 .doc(widget.post.postId)
                 .collection('comments')
@@ -260,23 +271,25 @@ class _CommentBoxState extends State<CommentBox> {
               "avatarUrl": widget.currentUser.photourl,
               "userId": widget.currentUser.id,
               "postownerId": widget.post.ownerId,
-            });
-            bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
-            if (isNotPostOwner) {
-              activityFeedRef.doc(widget.post.ownerId).collection('feedItems').add({
-                "type": "comment",
-                "commentData": controller.text,
-                "timestamp": DateTime.now(),
-                "postId": widget.post.postId,
-                "userId": widget.currentUser.id,
-                "username": "${widget.currentUser.firstname} ${widget.currentUser.lastname}",
-                "userProfileImg": widget.currentUser.photourl,
-                "mediaUrl": widget.post.mediaUrl,
-              });
-            }
-            controller.clear();
-            setState(() {
-              isEnabled = false;
+            }).then((value) {
+              controller.clear();
+              CustomFlushBar.customFlushBar(title: "comment added successfully ", message: "" , scaffoldKey: timelineScaffoldKey,type: FlushBarType.SUCCESS);
+              bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
+              if (isNotPostOwner) {
+                activityFeedRef.doc(widget.post.ownerId).collection('feedItems').add({
+                  "type": "comment",
+                  "commentData": controller.text,
+                  "timestamp": DateTime.now(),
+                  "postId": widget.post.postId,
+                  "userId": widget.currentUser.id,
+                  "username": "${widget.currentUser.firstname} ${widget.currentUser.lastname}",
+                  "userProfileImg": widget.currentUser.photourl,
+                  "mediaUrl": widget.post.mediaUrl,
+                });
+              }
+              },onError: (error) {
+              controller.clear();
+              CustomFlushBar.customFlushBar(title: "error adding comment ! ", message: "", scaffoldKey: postDetailScaffoldKey,type: FlushBarType.FAILURE);
             });
           }
       ),

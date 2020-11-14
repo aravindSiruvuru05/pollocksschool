@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
+import 'package:pollocksschool/screens/no_internet_screen.dart';
 import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
@@ -24,6 +27,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with AutomaticKeepAliveClientMixin<MainScreen> {
   int _currentIndex;
+  bool isConnectedToInternet = true;
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
@@ -41,18 +45,15 @@ class _MainScreenState extends State<MainScreen>
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
     _pageNavigationController = PageController(initialPage: _currentIndex);
-//    enablePushtoken();
+    enablePushtoken();
   }
 
   enablePushtoken(){
-    CollectionReference timelineRef = FirebaseFirestore.instance.collection("timeline");
+    CollectionReference userRef = FirebaseFirestore.instance.collection("user");
     _firebaseMessaging.getToken().then((value){
-      timelineRef.doc("intilli3A")
-          .collection("classPushTokens")
+      userRef
           .doc(widget.currentuser.id)
-          .set({
-            "value": value,
-           });
+          .update({'pushToken': value});
     });
   }
 
@@ -134,11 +135,20 @@ class _MainScreenState extends State<MainScreen>
       resizeToAvoidBottomPadding: false,
       body: PageStorage(
         bucket: bucket,
-        child: PageView(
-          children: _pages,
-          onPageChanged: onPageChange,
-          controller: _pageNavigationController,
-        ),
+        child: StreamBuilder<DataConnectionStatus>(
+          stream: DataConnectionChecker().onStatusChange,
+          builder: (context,snapshot){
+            if(!snapshot.hasData){
+              return LoadingScreen();
+            }
+            final isConnected = snapshot.data == DataConnectionStatus.connected;
+            return   PageView(
+              children: isConnected ? _pages : [NoInternetScreen()],
+              onPageChanged: onPageChange,
+              controller: _pageNavigationController,
+            );
+          },
+        )
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: getFloatingActionButton(),
