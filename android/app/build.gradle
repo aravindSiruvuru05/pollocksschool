@@ -83,4 +83,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.android.support:multidex:2.0.0'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
 }

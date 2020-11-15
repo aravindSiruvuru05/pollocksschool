@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
-import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 

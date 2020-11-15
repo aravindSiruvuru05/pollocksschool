@@ -9,7 +9,7 @@ import 'package:pollocksschool/utils/constants.dart';
 
 class CustomFlushBar {
 
-  static Flushbar customFlushBar({@required String title,@required String message,@required GlobalKey scaffoldKey,@required FlushBarType type}) {
+  static Flushbar customFlushBar({@required String message,@required GlobalKey scaffoldKey,@required FlushBarType type}) {
     IconData icon;
     LinearGradient gradient;
     switch(type){
@@ -41,7 +41,7 @@ class CustomFlushBar {
       padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2 ),
       margin: EdgeInsets.all(SizeConfig.heightMultiplier * 2 ),
       borderRadius: SizeConfig.heightMultiplier *3,
-      messageText:  Text(title,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
+      messageText:  Text(message,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
       duration:  Duration(seconds: 3),
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       backgroundGradient: gradient,

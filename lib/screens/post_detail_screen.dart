@@ -273,7 +273,7 @@ class _CommentBoxState extends State<CommentBox> {
               "postownerId": widget.post.ownerId,
             }).then((value) {
               controller.clear();
-              CustomFlushBar.customFlushBar(title: "comment added successfully ", message: "" , scaffoldKey: timelineScaffoldKey,type: FlushBarType.SUCCESS);
+              CustomFlushBar.customFlushBar( message: "comment added successfully ", scaffoldKey: timelineScaffoldKey,type: FlushBarType.SUCCESS);
               bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
               if (isNotPostOwner) {
                 activityFeedRef.doc(widget.post.ownerId).collection('feedItems').add({
@@ -289,7 +289,7 @@ class _CommentBoxState extends State<CommentBox> {
               }
               },onError: (error) {
               controller.clear();
-              CustomFlushBar.customFlushBar(title: "error adding comment ! ", message: "", scaffoldKey: postDetailScaffoldKey,type: FlushBarType.FAILURE);
+              CustomFlushBar.customFlushBar( message: "error adding comment ! try again ", scaffoldKey: postDetailScaffoldKey,type: FlushBarType.FAILURE);
             });
           }
       ),

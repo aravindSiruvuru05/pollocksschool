@@ -67,8 +67,11 @@ class AuthBloc extends Bloc {
 
   // ignore: missing_return
   Future<UserModel> isValidUser(String id,String password) async{
+    print(id);
+    print(password);
     try{
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(id).get();
+      print(_userDocSnapshot.data());
       final result = _userDocSnapshot.data();
       if(result["id"] == id && result["password"] == password) {
         print(result.toString());
