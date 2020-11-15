@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
-import 'package:pollocksschool/enums/flushbar_type.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
-import 'package:pollocksschool/widgets/CustomFlushBar.dart';
+import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -18,6 +17,7 @@ import 'package:timeago/timeago.dart' as timeago;
 GlobalKey<ScaffoldState> postDetailScaffoldKey = GlobalKey<ScaffoldState>();
 
 
+// ignore: must_be_immutable
 class PostDetailScreen extends StatelessWidget {
   final PostModel post;
 
@@ -245,7 +245,6 @@ class _CommentBoxState extends State<CommentBox> {
               isEnabled = false;
             });
           }
-          print(isEnabled);
         },
         decoration: InputDecoration(
             hintText: 'Add Comment'
@@ -273,7 +272,7 @@ class _CommentBoxState extends State<CommentBox> {
               "postownerId": widget.post.ownerId,
             }).then((value) {
               controller.clear();
-              CustomFlushBar.customFlushBar(title: "comment added successfully ", message: "" , scaffoldKey: timelineScaffoldKey,type: FlushBarType.SUCCESS);
+              CustomFlushBar.customFlushBar(message: "comment added successfully ", scaffoldKey: timelineScaffoldKey,type: FlushBarType.SUCCESS);
               bool isNotPostOwner = widget.post.ownerId != widget.currentUser.id;
               if (isNotPostOwner) {
                 activityFeedRef.doc(widget.post.ownerId).collection('feedItems').add({
@@ -289,7 +288,7 @@ class _CommentBoxState extends State<CommentBox> {
               }
               },onError: (error) {
               controller.clear();
-              CustomFlushBar.customFlushBar(title: "error adding comment ! ", message: "", scaffoldKey: postDetailScaffoldKey,type: FlushBarType.FAILURE);
+              CustomFlushBar.customFlushBar(message: "error adding comment ! ", scaffoldKey: postDetailScaffoldKey,type: FlushBarType.FAILURE);
             });
           }
       ),

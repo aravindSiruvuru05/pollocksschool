@@ -24,8 +24,6 @@ class PhoneAuthScreen extends StatelessWidget {
     FirebaseAuth _auth = FirebaseAuth.instance;
     AuthBloc authBloc = Provider.of<AuthBloc>(context);
     final UserModel currentUser = authBloc.getCurrentUser;
-    print(currentUser.countrycode);
-
     return Scaffold(
       body: Container(
         padding:
@@ -77,7 +75,6 @@ class PhoneAuthScreen extends StatelessWidget {
                     } catch (e) {
                       _pinEditingController.clear();
                       authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
-                      print(e.message);
                       DialogPopUps.showCommonDialog(
                           context: context,
                           text: e.toString(),

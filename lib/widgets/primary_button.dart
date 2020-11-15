@@ -35,7 +35,6 @@ class PrimaryButton extends StatelessWidget {
   }
 
   Widget buildPrimaryButtonChild() {
-    print(state);
     if (state == LoadingState.NORMAL) {
       return Text(
         text,

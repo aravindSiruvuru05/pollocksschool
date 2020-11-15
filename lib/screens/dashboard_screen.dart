@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
-import 'package:pollocksschool/widgets/widgets.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override

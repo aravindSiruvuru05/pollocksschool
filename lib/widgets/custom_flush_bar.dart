@@ -2,14 +2,14 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/enums/flushbar_type.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
 
 class CustomFlushBar {
 
-  static Flushbar customFlushBar({@required String title,@required String message,@required GlobalKey scaffoldKey,@required FlushBarType type}) {
+  static Flushbar customFlushBar({@required String message,@required GlobalKey scaffoldKey,@required FlushBarType type}) {
     IconData icon;
     LinearGradient gradient;
     switch(type){
@@ -38,10 +38,10 @@ class CustomFlushBar {
     flushbarPosition: FlushbarPosition.TOP,
       barBlur: 5,
       animationDuration: Duration(milliseconds: 300),
-      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2 ),
-      margin: EdgeInsets.all(SizeConfig.heightMultiplier * 2 ),
+      padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier * 4),
+      margin: EdgeInsets.all(SizeConfig.heightMultiplier * 3 ),
       borderRadius: SizeConfig.heightMultiplier *3,
-      messageText:  Text(title,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
+      messageText:  Text(message,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
       duration:  Duration(seconds: 3),
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       backgroundGradient: gradient,
@@ -50,7 +50,7 @@ class CustomFlushBar {
               color: AppTheme.primaryTextFieldColor.withOpacity(0.8),
               spreadRadius: 5.0)
       ],
-      icon: Icon(icon, color: Colors.white),
+      icon: Icon(icon, color: Colors.white,),
     )..show(scaffoldKey.currentContext);
   }
 }

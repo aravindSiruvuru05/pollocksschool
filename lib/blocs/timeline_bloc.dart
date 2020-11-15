@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
-import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 
@@ -49,7 +48,6 @@ class TimelineBloc extends Bloc {
 //        .where("pushToken",isGreaterThan: "")
 //        .get()
 //        .then((val){
-//          print("========");
 //      print(val.docs.length);
 //    });
 //
@@ -87,8 +85,6 @@ class TimelineBloc extends Bloc {
   }
 
   Future<void> toggleSaveToPostCollection(PostModel post,bool isSaved) async{
-    print(isSaved);
-    print("----");
     if(isSaved){
       await postCollectionRef
           .doc(currentUser.id)
@@ -165,7 +161,6 @@ class TimelineBloc extends Bloc {
   }
 
   addLikeToActivityFeed(PostModel post) {
-    print("asdf");
     // add a notification to the postOwner's activity feed only if comment made by OTHER user (to avoid getting notification for our own like)
     bool isNotPostOwner = currentUser.id != post.ownerId;
     if (isNotPostOwner) {

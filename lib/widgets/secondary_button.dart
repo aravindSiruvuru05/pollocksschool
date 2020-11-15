@@ -27,7 +27,6 @@ class SecondaryButton extends StatelessWidget {
   }
 
   Widget buildSecondaryButtonChild() {
-    print(state);
     if (state == LoadingState.NORMAL) {
       return Text(
         text,

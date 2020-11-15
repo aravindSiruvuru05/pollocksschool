@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/screens/no_internet_screen.dart';
@@ -16,6 +15,7 @@ import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+GlobalKey<ScaffoldState> mainScreenScaffoldKey = GlobalKey<ScaffoldState>();
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.currentuser}) : super();
@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen>
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FirebaseMessaging _firebaseMessaging ;
   List<Widget> _pages;
 
   @override
@@ -41,21 +41,24 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void init() {
+    _firebaseMessaging = FirebaseMessaging();
+    fcmConfiguration();
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
     _pageNavigationController = PageController(initialPage: _currentIndex);
-    enablePushtoken();
   }
 
-  enablePushtoken(){
-    CollectionReference userRef = FirebaseFirestore.instance.collection("user");
-    _firebaseMessaging.getToken().then((value){
-      userRef
-          .doc(widget.currentuser.id)
-          .update({'pushToken': value});
-    });
+  fcmConfiguration(){
+    _firebaseMessaging.configure(
+        // ignore: missing_return
+        onMessage: (Map<String,dynamic> map) {
+          // ignore: missing_return
+          CustomFlushBar.customFlushBar(message: "new Post arrived !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
+        }
+    );
   }
+
 
   void _populatePagesAndbottomBarItemsData() {
     _pages = _getPages();
@@ -75,7 +78,6 @@ class _MainScreenState extends State<MainScreen>
   }
 
   List<Widget> _getPages() {
-    print(widget.currentuser.id);
     if (widget.currentuser.userType == UserType.STUDENT)
       return [
         TimelineScreen(
@@ -131,6 +133,7 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      key: mainScreenScaffoldKey,
       extendBody: true,
       resizeToAvoidBottomPadding: false,
       body: PageStorage(

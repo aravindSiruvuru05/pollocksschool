@@ -102,8 +102,6 @@ class LoginScreen extends StatelessWidget {
                                   _passwordEditingController.clear();
                                   return;
                                 }
-                                print(authBloc.getCurrentUser.countrycode);
-                                print(authBloc.getCurrentUser.toString());
                                 await PhoneAuthenticationManager.loginUser(
                                     "${authBloc.getCurrentUser.countrycode}${authBloc.getCurrentUser.phonenumber}", context);
                               }

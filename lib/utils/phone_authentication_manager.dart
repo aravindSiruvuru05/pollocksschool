@@ -15,21 +15,25 @@ class PhoneAuthenticationManager {
     FirebaseAuth _auth = FirebaseAuth.instance;
     TextEditingController _codeController = TextEditingController();
     AuthBloc authBloc = Provider.of<AuthBloc>(context, listen: false);
-    print(phonenumber);
     _auth.verifyPhoneNumber(
       phoneNumber: phonenumber,
       timeout: Duration(seconds: 60),
       verificationCompleted: (AuthCredential credential) async {
-        authBloc.otpTimer.cancel();
-        Navigator.pop(context);
-        UserCredential result = await _auth.signInWithCredential(credential);
-        User user = result.user;
-        if (user != null) {
-          if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
-          authBloc.checkCurrentUser();
-        } else {
-          DialogPopUps.showCommonDialog(context: context, text: "verification complete and error fetching user ");
-        }
+        _codeController.text = credential.asMap()['codeSent'];
+        authBloc.otpCancelButtonStateSink(LoadingState.LOADING);
+        Timer(Duration(seconds: 2), () async{
+          authBloc.otpTimer.cancel();
+          authBloc.otpCancelButtonStateSink(LoadingState.DONE);
+          Navigator.pop(context);
+          UserCredential result = await _auth.signInWithCredential(credential);
+          User user = result.user;
+          if (user != null) {
+            if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
+            authBloc.checkCurrentUser();
+          } else {
+            DialogPopUps.showCommonDialog(context: context, text: "verification complete and error fetching user ");
+          }
+        });
       },
       verificationFailed: (FirebaseAuthException exception) {
         authBloc.loginButtonStateSink(LoadingState.NORMAL);
@@ -43,14 +47,13 @@ class PhoneAuthenticationManager {
         authBloc.otpTImeout();
         showDialog(
             context: context,
-
             barrierDismissible: false,
             builder: (context) {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 title: Text(
-                  "OTP sent successfully to ${phonenumber.substring(0,7)}****",
+                  "OTP sent successfully to ${phonenumber.substring(0,9)}****",
                   style: AppTheme.lightTextTheme.headline6,
                 ),
                 elevation: 10,
@@ -59,7 +62,7 @@ class PhoneAuthenticationManager {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("sit back and relax ... we will auto validate if the above number is in the current device...",style: AppTheme.otpsubtitle,),
+                    Text("auto retreving OTP ...",style: AppTheme.otpsubtitle,),
                     SizedBox(height: 5,),
                     PinInputTextField(
                       controller: _codeController,
@@ -81,7 +84,6 @@ class PhoneAuthenticationManager {
                             User user = result.user;
                             if (user != null) {
                               if(user.displayName == null) await user.updateProfile(displayName: authBloc.getCurrentUser.id);
-                              print(user);
                               authBloc.otpCancelButtonStateSink(LoadingState.DONE);
                               Timer(Duration(milliseconds: 300), () {
                                 Timer(Duration(milliseconds: 300), () {
@@ -100,7 +102,6 @@ class PhoneAuthenticationManager {
                           } catch (e) {
                             _codeController.clear();
                             authBloc.otpCancelButtonStateSink(LoadingState.NORMAL);
-                            print(e.message);
                             DialogPopUps.showCommonDialog(
                                 context: context,
                                 text: e.toString(),

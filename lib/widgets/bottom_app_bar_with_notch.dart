@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
-import 'package:pollocksschool/utils/constants.dart';
 
 class BottomBarItem {
   final IconData iconData;

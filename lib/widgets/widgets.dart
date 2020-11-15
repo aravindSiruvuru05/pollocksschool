@@ -7,3 +7,4 @@ export 'dashboard_card.dart';
 export 'post_card.dart';
 export 'profile_photos_card.dart';
 export 'appbar_title.dart';
+export 'custom_flush_bar.dart';
