@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
-import 'package:pollocksschool/enums/flushbar_type.dart';
+import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/screens/no_internet_screen.dart';
@@ -15,17 +12,10 @@ import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
-import 'package:pollocksschool/widgets/CustomFlushBar.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 GlobalKey<ScaffoldState> mainScreenScaffoldKey = GlobalKey<ScaffoldState>();
-
-
-Future<dynamic> myBackgroundHandler(Map<String, dynamic> message) {
-  return _MainScreenState()._showNotification(message);
-}
-
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.currentuser}) : super();
@@ -41,8 +31,7 @@ class _MainScreenState extends State<MainScreen>
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  FirebaseMessaging _firebaseMessaging ;
   List<Widget> _pages;
 
   @override
@@ -52,77 +41,24 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void init() {
+    _firebaseMessaging = FirebaseMessaging();
+    fcmConfiguration();
     _populatePagesAndbottomBarItemsData();
     _currentIndex = 0;
     _bottomBarItemList[_currentIndex].isSelected = true;
     _pageNavigationController = PageController(initialPage: _currentIndex);
-    enablePushtoken();
-    fcmConfiguration();
-    _initFLN();
-  }
-
-  Future _showNotification(Map<String, dynamic> message) async {
-    print("hi-==-=-=-=-=-=");
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      'channel id',
-      'channel name',
-      'channel desc',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-
-    var platformChannelSpecifics =
-    new NotificationDetails(android: androidPlatformChannelSpecifics);
-    await _flutterLocalNotificationsPlugin.show(
-      0,
-      'new message arived',
-      'i want ${message['data']['title']} for ${message['data']['price']}',
-      platformChannelSpecifics,
-      payload: 'Default_Sound',
-    );
-  }
-
-  _initFLN() {
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
-//    final IOSInitializationSettings initializationSettingsIOS =
-//    IOSInitializationSettings(
-//        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-//    final InitializationSettings initializationSettings = InitializationSettings(
-//        android: initializationSettingsAndroid,
-//        iOS: initializationSettingsIOS);
-    final InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: null);
-    _flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-  }
-
-  Future onSelectNotification(String payload) async{
-    await _flutterLocalNotificationsPlugin.cancelAll();
   }
 
   fcmConfiguration(){
     _firebaseMessaging.configure(
-      onBackgroundMessage: myBackgroundHandler,
-      // ignore: missing_return
-      onMessage: (Map<String,dynamic> map) {
-        print("onmessage");
         // ignore: missing_return
-        CustomFlushBar.customFlushBar(message: "new Post arrived !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
-      }
+        onMessage: (Map<String,dynamic> map) {
+          // ignore: missing_return
+          CustomFlushBar.customFlushBar(message: "new Post arrived !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
+        }
     );
   }
 
-  enablePushtoken(){
-    CollectionReference userRef = FirebaseFirestore.instance.collection("user");
-    _firebaseMessaging.getToken().then((value){
-      userRef
-          .doc(widget.currentuser.id)
-          .update({'pushToken': value});
-    });
-  }
 
   void _populatePagesAndbottomBarItemsData() {
     _pages = _getPages();
@@ -142,7 +78,6 @@ class _MainScreenState extends State<MainScreen>
   }
 
   List<Widget> _getPages() {
-    print(widget.currentuser.id);
     if (widget.currentuser.userType == UserType.STUDENT)
       return [
         TimelineScreen(

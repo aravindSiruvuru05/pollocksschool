@@ -2,6 +2,14 @@ const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
 admin.initializeApp();
+// // Create and Deploy Your First Cloud Functions
+// // https://firebase.google.com/docs/functions/write-firebase-functions
+//
+// exports.helloWorld = functions.https.onRequest((request, response) => {
+//   functions.logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });
+
 
 // when a post is created, add post to timeline of each follower (of post owner)
 exports.onCreatePost = functions.firestore
@@ -12,9 +20,9 @@ exports.onCreatePost = functions.firestore
     const postId = context.params.postId; // intilli3A
 
     // 2) Add new post to each classposts timeline
-
-    const index = postId.indexOf('_');
-    var [classId, uuId] = [postId.slice(0, index), postId.slice(index + 1)];
+    var str = postId;
+    var index = str.indexOf('_');
+    var [classId, second] = [str.slice(0, index), str.slice(index + 1)];
     admin
         .firestore()
         .collection("timeline")
@@ -22,22 +30,36 @@ exports.onCreatePost = functions.firestore
         .collection("classPosts")
         .doc(postId)
          .set(postCreated);
-//     admin
-//          .firestore()
-//          .collection("feed")
-//          .doc(classId)
-//          .collection("feedItems")
-//          .doc(postId)
-//          .set({
-//            "type": "post",
-//            "username": `${postCreated.username}`,
-//            "userId": `${postCreated.ownerId}`,
-//            "userProfileImg": `${postCreated.userProfileImgUrl}`,
-//            "postId": postId,
-//            "mediaUrl":postCreated.mediaUrl,
-//            "timestamp": postCreated.timestamp
-//          });
   });
+
+
+exports.onUpdatePost = functions.firestore
+  .document("/post/{userId}/userPosts/{postId}")
+  .onUpdate(async (change, context) => {
+    const postUpdated = change.after.data();
+    const userId = context.params.userId;
+    const postId = context.params.postId;
+
+    var str = postId;
+    var index = str.indexOf('_');
+    var [classId, second] = [str.slice(0, index), str.slice(index + 1)];
+    admin
+        .firestore()
+        .collection("timeline")
+        .doc(classId)
+        .collection("classPosts")
+        .doc(postId)
+        .get()
+        .then(doc => {
+          if (doc.exists &&  JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes) ) {
+          functions.logger.log("======updated", postUpdated.likes);
+          functions.logger.log("======timeline doc", doc.data().likes);
+          functions.logger.log("======",JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes));
+
+            doc.ref.update(postUpdated);
+          }
+        });
+    });
 
 
 exports.onUpdateTimelinePost = functions.firestore
@@ -54,32 +76,13 @@ exports.onUpdateTimelinePost = functions.firestore
         .doc(postId)
         .get()
         .then(doc => {
-          doc.ref.update(postUpdated);
+          if (doc.exists &&  JSON.stringify(postUpdated.likes) !== JSON.stringify(doc.data().likes)) {
+             doc.ref.update(postUpdated);
+          }
         });
+
     });
 
-//exports.onUpdatePost = functions.firestore
-//  .document("/post/{userId}/userPosts/{postId}")
-//  .onUpdate(async (change, context) => {
-//    const postUpdated = change.after.data();
-//    const userId = context.params.userId;
-//    const postId = context.params.postId;
-//
-//    var str = postId;
-//    var index = str.indexOf('_');
-//    var [classId, second] = [str.slice(0, index), str.slice(index + 1)];
-//
-//    admin
-//         .firestore()
-//         .collection("timeline")
-//         .doc("admin")
-//         .collection("posts")
-//         .doc(postId)
-//         .get()
-//         .then(doc => {
-//             doc.ref.update(postUpdated);
-//         });
-//    });
 
 
 exports.onDeletePost = functions.firestore
@@ -106,18 +109,6 @@ exports.onDeletePost = functions.firestore
             doc.ref.delete();
           }
         });
-    admin
-         .firestore()
-         .collection("timeline")
-         .doc("admin")
-         .collection("posts")
-         .doc(postId)
-         .get()
-         .then(doc => {
-            if (doc.exists) {
-              doc.ref.delete();
-            }
-         });
     });
 
 
@@ -125,20 +116,21 @@ exports.onCreateComment = functions.firestore
   .document("/comment/{postId}/comments/{commentId}")
   .onCreate(async (snapshot, context) => {
     const commentCreated = snapshot.data();
-    const postId = context.params.postId;
-   const index = postId.indexOf('_');
-   var [classId, uuId] = [postId.slice(0, index), postId.slice(index + 1)];
+    const postId = context.params.postId; // 223344
+//    const  = context.params.commentId; // intilli3A
+   functions.logger.log("======",postId);
    admin
         .firestore()
-        .collection("timeline")
-        .doc(classId)
-        .collection("classPosts")
+        .collection("post")
+        .doc(commentCreated.postownerid)
+        .collection("userPosts")
         .doc(postId)
         .get()
         .then(doc => {
-        const post = doc.data();
-        functions.logger.log("=====  =",post.commentsCount);
-        const count = post.commentsCount+1;
-             doc.ref.update({'commentsCount':count});
+        functions.logger.log("=====  =",doc['commentscount']);
+              const count = doc['commentscount'] == null ? 1 : doc['commentscount'] + 1 ;
+              functions.logger.log("======",count);
+
+             doc.ref.update({'commentscount':count});
         });
   });

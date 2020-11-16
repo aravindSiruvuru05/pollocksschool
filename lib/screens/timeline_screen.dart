@@ -1,13 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
-import 'package:pollocksschool/utils/internet_connectivity.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -67,37 +63,12 @@ class TimelineScreen extends StatelessWidget {
               highlightColor: Colors.grey[100],
               enabled: true,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.heightMultiplier * 3),
+                padding: EdgeInsets.all(SizeConfig.heightMultiplier * 3),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Container(
-                          width: SizeConfig.heightMultiplier * 6,
-                          height: SizeConfig.heightMultiplier * 6,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: SizeConfig.heightMultiplier,
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: SizeConfig.heightMultiplier * 6,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 2.5,
-                      color: Colors.white,
-                    ),
+                  children: [
+                    PostShimmer(),
+                    SizedBox(height: SizeConfig.heightMultiplier,),
+                    PostShimmer(),
                   ],
                 ),
               ),
@@ -106,8 +77,11 @@ class TimelineScreen extends StatelessWidget {
         }
         else if (posts.length == 0) {
           return SliverToBoxAdapter(
-            child: Center(
-              child: Text("no posts yet"),
+            child: Column(
+              children: [
+                SizedBox(height: SizeConfig.heightMultiplier * 20,),
+                Text("Y o u r   T i m e l i n e   i s   E m p t y", style: AppTheme.lightTextTheme.headline3,),
+              ],
             ),
           );
         } else {
@@ -125,6 +99,47 @@ class TimelineScreen extends StatelessWidget {
           );
         }
       },
+    );
+  }
+}
+
+class PostShimmer extends StatelessWidget {
+  const PostShimmer({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: [
+            Container(
+              width: SizeConfig.heightMultiplier * 6,
+              height: SizeConfig.heightMultiplier * 6,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: SizeConfig.heightMultiplier,
+            ),
+            Expanded(
+              child: Container(
+                height: SizeConfig.heightMultiplier * 6,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 2.0),
+        ),
+        Container(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height / 2.5,
+          color: Colors.white,
+        ),
+      ],
     );
   }
 }

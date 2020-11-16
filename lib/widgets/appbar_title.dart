@@ -34,7 +34,7 @@ class _AppBarTitleState extends State<AppBarTitle> {
   }
   void _positionListener() {
     final FlexibleSpaceBarSettings settings =
-    context.inheritFromWidgetOfExactType(FlexibleSpaceBarSettings);
+    context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
     bool visible = settings == null || settings.currentExtent <= settings.minExtent;
     if (_visible != visible) {
       setState(() {

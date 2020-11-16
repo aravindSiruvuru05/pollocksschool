@@ -48,7 +48,6 @@ class TimelineBloc extends Bloc {
 //        .where("pushToken",isGreaterThan: "")
 //        .get()
 //        .then((val){
-//          print("========");
 //      print(val.docs.length);
 //    });
 //
@@ -86,8 +85,6 @@ class TimelineBloc extends Bloc {
   }
 
   Future<void> toggleSaveToPostCollection(PostModel post,bool isSaved) async{
-    print(isSaved);
-    print("----");
     if(isSaved){
       await postCollectionRef
           .doc(currentUser.id)
@@ -164,7 +161,6 @@ class TimelineBloc extends Bloc {
   }
 
   addLikeToActivityFeed(PostModel post) {
-    print("asdf");
     // add a notification to the postOwner's activity feed only if comment made by OTHER user (to avoid getting notification for our own like)
     bool isNotPostOwner = currentUser.id != post.ownerId;
     if (isNotPostOwner) {

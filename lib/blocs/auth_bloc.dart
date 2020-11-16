@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/models.dart';
@@ -10,7 +11,7 @@ class AuthBloc extends Bloc {
   FirebaseAuth _firebaseAuth;
   CollectionReference _userCollectionRef;
   CollectionReference _classCollectionRef;
-
+  FirebaseMessaging _firebaseMessaging;
   UserModel _currentUser;
   final _isAuthenticated = StreamController<bool>();
 
@@ -56,6 +57,7 @@ class AuthBloc extends Bloc {
 
   _firebaseInit(){
     _firebaseAuth= FirebaseAuth.instance;
+    _firebaseMessaging = FirebaseMessaging();
     _userCollectionRef = FirebaseFirestore.instance.collection("user");
     _classCollectionRef = FirebaseFirestore.instance.collection("class");
   }
@@ -67,14 +69,10 @@ class AuthBloc extends Bloc {
 
   // ignore: missing_return
   Future<UserModel> isValidUser(String id,String password) async{
-    print(id);
-    print(password);
     try{
       final DocumentSnapshot _userDocSnapshot = await _userCollectionRef.doc(id).get();
-      print(_userDocSnapshot.data());
       final result = _userDocSnapshot.data();
       if(result["id"] == id && result["password"] == password) {
-        print(result.toString());
         _currentUser = UserModel.fromJson(result);
         return _currentUser;
       }
@@ -104,6 +102,7 @@ class AuthBloc extends Bloc {
     if(_userExist) {
       _currentUser = await getCurrentUserDataWithId(_user.displayName);
       Timer(Duration(milliseconds: 200),(){
+        enablePushtoken();
         loginButtonStateSink(LoadingState.DONE);
       });
     } else {
@@ -111,18 +110,32 @@ class AuthBloc extends Bloc {
     }
     Timer(Duration(milliseconds: 150), (){
       _isAuthenticated.sink.add(_userExist);
-      print(getCurrentUser);
     });
   }
 
+  enablePushtoken(){
+    _firebaseMessaging.getToken().then((value){
+      _userCollectionRef
+          .doc(_currentUser.id)
+          .update({'pushToken': value});
+    });
+  }
+
+  removePushToken(){
+    _userCollectionRef
+        .doc(_currentUser.id)
+        .update({'pushToken': ''});
+  }
+
+
   void signOut() async {
+    removePushToken();
     await _firebaseAuth.signOut();
     _isAuthenticated.sink.add(false);
   }
 
   @override
   void dispose() {
-    print("disposing");
     _loginButtonStateController.close();
     _otpCancelButtonStateController.close();
     otpTimer.cancel();

@@ -230,7 +230,6 @@ class PostCard extends StatelessWidget {
     isLiked = post.likes[timelineBloc.currentUser.id] == null ? false : post.likes[timelineBloc.currentUser.id];
     if(timelineBloc.currentUser.userType == UserType.STUDENT){
       isSaved = timelineBloc.savedPostsIds.contains(post.postId);
-      print(isSaved);
     }
     return Container(
         child: Column(children: <Widget>[

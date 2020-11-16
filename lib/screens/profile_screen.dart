@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../utils/config/size_config.dart';
 
+// ignore: must_be_immutable
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key key}) : super(key: key);
 
@@ -205,7 +206,7 @@ class ProfileScreen extends StatelessWidget {
                                   fontFamily: Constants.getFreightSansFamily,
                                   color: Colors.white,
                                   fontSize: SizeConfig.heightMultiplier * 3.5)),
-                          Text("Posts",
+                          Text("Grade",
                               style: AppTheme.lightTextTheme.headline6.copyWith(
                                   fontFamily: Constants.getHelveticaNeueFamily,
                                   color: Colors.white,
