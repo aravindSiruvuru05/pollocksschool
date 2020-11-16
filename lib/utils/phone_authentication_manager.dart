@@ -19,7 +19,7 @@ class PhoneAuthenticationManager {
       phoneNumber: phonenumber,
       timeout: Duration(seconds: 60),
       verificationCompleted: (AuthCredential credential) async {
-        _codeController.text = credential.asMap()['codeSent'];
+        _codeController.text = credential.asMap()['smsCode'];
         authBloc.otpCancelButtonStateSink(LoadingState.LOADING);
         Timer(Duration(seconds: 2), () async{
           authBloc.otpTimer.cancel();

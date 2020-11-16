@@ -134,19 +134,27 @@ class UploadBloc extends Bloc {
   }
 
   handleTakePhoto() async {
-    PickedFile file = await _imagePicker.getImage(
-      source: ImageSource.camera,
-      maxHeight: 675,
-      maxWidth: 960,
-    );
-    this.file = File(file.path);
-    toggleUploadPage();
+   try{
+     PickedFile file = await _imagePicker.getImage(
+       source: ImageSource.camera,
+       maxHeight: 675,
+       maxWidth: 960,
+     );
+     this.file = File(file.path);
+     toggleUploadPage();
+   } catch (e) {
+     print(e);
+   }
   }
 
   handleChooseFromGallery() async {
-    PickedFile file = await _imagePicker.getImage(source: ImageSource.gallery);
-    this.file = File(file.path);
-    toggleUploadPage();
+   try{
+     PickedFile file = await _imagePicker.getImage(source: ImageSource.gallery);
+     this.file = File(file.path);
+     toggleUploadPage();
+   } catch(e){
+     print(e);
+   }
   }
 
   clearPostDetails(){

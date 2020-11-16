@@ -116,6 +116,7 @@ class UploadPostScreen extends StatelessWidget {
               final enable = snapshot.data == LoadingState.NORMAL;
               return FlatButton(
                 onPressed: enable ?  () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
                   final hasCaption = _captionController.value.text.isNotEmpty;
                   if(!_uploadBloc.isSectionSelected()){
                     DialogPopUps.showCommonDialog(text: "Please select section to Post",ok: () => Navigator.pop(context),context: context);
