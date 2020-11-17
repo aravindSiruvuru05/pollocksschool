@@ -10,3 +10,4 @@ export 'loading_screen.dart';
 export 'upload_post_screen.dart';
 export 'post_detail_screen.dart';
 export 'activity_screen.dart';
+export 'no_internet_screen.dart';

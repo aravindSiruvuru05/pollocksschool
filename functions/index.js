@@ -39,13 +39,13 @@ exports.onCreatePost = functions.firestore
                              }
                              const payload = {
                                            'notification': {
-                                               'title': `${postCreated.username} says !!`,
+                                               'title': `${postCreated.username} just posted on your timeline !!`,
                                                'body': `${postCreated.description}`,
                                                'sound': 'default'
                                            },
                                            'data': {
-                                                'sendername': 'sendername',
-                                                'message': 'msgg'
+                                                'postId': postCreated.postId,
+                                                'type': 'POST'
                                            }
                                       };
                               return admin.messaging().sendToDevice(tokens,payload).then((res)=> {
@@ -60,6 +60,76 @@ exports.onCreatePost = functions.firestore
 
   });
 
+
+exports.onCreateFeed = functions.firestore
+  .document("/feed/{feedUserId}/feedItems/{feedId}")
+  .onCreate(async (snapshot, context) => {
+    const feedCreated = snapshot.data();
+    const feedUser = context.params.feedUserId;
+    const feedId = context.params.feedId;
+    var feedTypeTitle = '';
+    var feedTypeMessage = '';
+
+    // 2) Add new post to each classposts timeline
+
+    switch(feedCreated.type) {
+        case "LIKE":
+            feedTypeTitle = "Liked your post";
+            break;
+        case "COMMENT":
+            feedTypeTitle = "Commented on your post";
+            break;
+        default:
+            feedTypeTitle = "just posted";
+    }
+
+
+    switch(feedCreated.type) {
+            case "LIKE":
+                feedTypeMessage = "";
+                break;
+            case "COMMENT":
+                feedTypeMessage = feedCreated.caption;
+                break;
+            default:
+                feedTypeMessage = feedCreated.caption;
+        }
+
+
+    admin.firestore().collection("user")
+                       .where("id","==",feedUser)
+                       .where("pushToken",">","")
+                       .get()
+                       .then((teUserSnap) => {
+                         var tokens = [];
+                        functions.logger.log("=====  =",teUserSnap.docs.length);
+
+                         if(teUserSnap.empty){
+                             functions.logger.log("No Devices");
+                         }else {
+                             for(var token of teUserSnap.docs){
+                                 tokens.push(token.data().pushToken);
+                             }
+                             const payload = {
+                                           'notification': {
+                                               'title': `${feedCreated.username} ${feedTypeTitle}`,
+                                               'body': feedTypeMessage,
+                                               'sound': 'default'
+                                           },
+                                           'data': {
+                                                'postId': feedCreated.postId,
+                                                'type': feedCreated.type
+                                           }
+                                      };
+                              return admin.messaging().sendToDevice(tokens,payload).then((res)=> {
+                                 functions.logger.log('pushed to all devices');
+                              }).catch((err)=>{
+                                  functions.logger.log(err);
+                              });
+
+                         }
+                     });
+  });
 
 exports.onUpdateTimelinePost = functions.firestore
   .document("/timeline/{classId}/classPosts/{postId}")

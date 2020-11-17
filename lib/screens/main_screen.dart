@@ -1,12 +1,10 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/upload_bloc.dart';
 import 'package:pollocksschool/enums/enums.dart';
-import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
-import 'package:pollocksschool/screens/no_internet_screen.dart';
+import 'package:pollocksschool/models/push_notification_model.dart';
 import 'package:pollocksschool/screens/screens.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
@@ -14,7 +12,6 @@ import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.currentuser}) : super();
@@ -30,7 +27,7 @@ class _MainScreenState extends State<MainScreen>
   PageController _pageNavigationController;
   List<BottomBarItem> _bottomBarItemList;
   final PageStorageBucket bucket = PageStorageBucket();
-  FirebaseMessaging _firebaseMessaging ;
+  FirebaseMessaging _firebaseMessaging;
   List<Widget> _pages;
 
   @override
@@ -48,16 +45,28 @@ class _MainScreenState extends State<MainScreen>
     _pageNavigationController = PageController(initialPage: _currentIndex);
   }
 
-  fcmConfiguration(){
+  fcmConfiguration() {
     _firebaseMessaging.configure(
+      // ignore: missing_return
+      onMessage: (Map<String, dynamic> map) {
+        final push = PushNotificationModel.fromMap(map);
+        CustomFlushBar.customFlushBar(
+            message: push.title, type: FlushBarType.UPDATE);
+      },
+      // ignore: missing_return
+      onLaunch: (Map<String, dynamic> message) {
         // ignore: missing_return
-        onMessage: (Map<String,dynamic> map) {
-          // ignore: missing_return
-          CustomFlushBar.customFlushBar(message: "new Post in your timeline !", type: FlushBarType.UPDATE);
-        }
+        CustomFlushBar.customFlushBar(
+            message: "new Post in your timeline !", type: FlushBarType.UPDATE);
+      },
+      // ignore: missing_return
+      onResume: (Map<String, dynamic> message) {
+        // ignore: missing_return
+        CustomFlushBar.customFlushBar(
+            message: "new Post in your timeline !", type: FlushBarType.UPDATE);
+      },
     );
   }
-
 
   void _populatePagesAndbottomBarItemsData() {
     _pages = _getPages();
@@ -134,22 +143,22 @@ class _MainScreenState extends State<MainScreen>
       extendBody: true,
       resizeToAvoidBottomPadding: false,
       body: PageStorage(
-        bucket: bucket,
-        child: StreamBuilder<DataConnectionStatus>(
-          stream: DataConnectionChecker().onStatusChange,
-          builder: (context,snapshot){
-            if(!snapshot.hasData){
-              return LoadingScreen();
-            }
-            final isConnected = snapshot.data == DataConnectionStatus.connected;
-            return   PageView(
-              children: isConnected ? _pages : [NoInternetScreen()],
-              onPageChanged: onPageChange,
-              controller: _pageNavigationController,
-            );
-          },
-        )
-      ),
+          bucket: bucket,
+          child: StreamBuilder<DataConnectionStatus>(
+            stream: DataConnectionChecker().onStatusChange,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return LoadingScreen();
+              }
+              final isConnected =
+                  snapshot.data == DataConnectionStatus.connected;
+              return PageView(
+                children: isConnected ? _pages : [NoInternetScreen()],
+                onPageChanged: onPageChange,
+                controller: _pageNavigationController,
+              );
+            },
+          )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: getFloatingActionButton(),
       bottomNavigationBar: BottomAppBarWithNotch(

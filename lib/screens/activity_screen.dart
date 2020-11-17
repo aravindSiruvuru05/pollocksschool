@@ -12,7 +12,6 @@ import '../utils/constants.dart';
 import '../widgets/widgets.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-
 // ignore: must_be_immutable
 class ActivityScreen extends StatelessWidget {
   CollectionReference activityRef;
@@ -26,14 +25,22 @@ class ActivityScreen extends StatelessWidget {
         : activityBloc.currentUser.id;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Activity Feed", style: AppTheme.lightTextTheme.headline6.copyWith(fontFamily: Constants.getHelveticaNeueFamily,
-            color: AppTheme.primaryColor,fontWeight: FontWeight.bold,letterSpacing: 1.5,fontSize: SizeConfig.heightMultiplier * 2.9)),
+        title: Text("Activity Feed",
+            style: AppTheme.lightTextTheme.headline6.copyWith(
+                fontFamily: Constants.getHelveticaNeueFamily,
+                color: AppTheme.primaryColor,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+                fontSize: SizeConfig.heightMultiplier * 2.9)),
         centerTitle: true,
       ),
       body: Container(
         child: StreamBuilder<QuerySnapshot>(
-            stream: activityRef.doc(docId).collection('feedItems')
-                .orderBy('timestamp', descending: true).snapshots(),
+            stream: activityRef
+                .doc(docId)
+                .collection('feedItems')
+                .orderBy('timestamp', descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               final comments = snapshot.data;
               print(comments);
@@ -48,71 +55,88 @@ class ActivityScreen extends StatelessWidget {
               } else {
                 print(comments.docs.length);
 
-                final List<ActivityModel> finalComments = comments.docs.map((
-                    doc) => ActivityModel.fromDocument(doc)).toList();
-                final List<Widget> commentBlocks = finalComments.map<Widget>((e) =>
-                    buildCommentTile(e)).toList();
-                return Column(
-                    children: commentBlocks
-                );
+                final List<ActivityModel> finalComments = comments.docs
+                    .map((doc) => ActivityModel.fromDocument(doc))
+                    .toList();
+                final List<Widget> commentBlocks = finalComments
+                    .map<Widget>((e) => buildCommentTile(e))
+                    .toList();
+                return Column(children: commentBlocks);
               }
-            }
-        ),
-
+            }),
       ),
     );
   }
 
   Widget buildCommentTile(ActivityModel activityModel) {
-    final timeText = Text('${timeago.format(activityModel.timestamp.toDate())}',
-        style: AppTheme.lightTextTheme.subtitle2.copyWith(color: Colors.blue)
+    final timeText = Padding(
+      padding: EdgeInsets.only(top: SizeConfig.heightMultiplier),
+      child: Text('${timeago.format(activityModel.timestamp.toDate())}',
+          style:
+              AppTheme.lightTextTheme.subtitle2.copyWith(color: Colors.blue)),
     );
     return InkWell(
       onTap: () => print('d'),
       child: CommonShadowCard(
         child: ListTile(
           leading: CircleAvatar(
-            child: Text(activityModel.username[0]),),
-          title: RichText(
-            text: TextSpan(
-                text: "",
-                children: <TextSpan>[
-                  TextSpan(text:activityModel.username,
-                      style: AppTheme.lightTextTheme.button
-                          .copyWith(fontFamily: Constants.getFreightSansFamily)),
-                  TextSpan(text: " "),
-                  TextSpan(text: getCenterText(activityModel.type),style: AppTheme.lightTextTheme.subtitle2.copyWith(color: Colors.black87)),
-                ]
-            ),
+            child: Text(activityModel.username[0]),
           ),
-          subtitle: activityModel.type == ActivityType.LIKE ? timeText :
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${activityModel.caption}',maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,style: AppTheme.lightTextTheme.bodyText2.copyWith(color: AppTheme.primaryColor.withOpacity(0.7)),
-              ),
-              timeText,
-            ],
-          ) ,
-          trailing: Image.network(activityModel.mediaUrl),
+          title: RichText(
+            text: TextSpan(text: "", children: <TextSpan>[
+              TextSpan(
+                  text: activityModel.username,
+                  style: AppTheme.lightTextTheme.button
+                      .copyWith(fontFamily: Constants.getFreightSansFamily)),
+              TextSpan(text: " "),
+              TextSpan(
+                  text: getCenterText(activityModel.type),
+                  style: AppTheme.lightTextTheme.subtitle2
+                      .copyWith(color: Colors.black87)),
+            ]),
+          ),
+          subtitle: activityModel.type == ActivityType.LIKE
+              ? timeText
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${activityModel.caption}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: AppTheme.lightTextTheme.subtitle2.copyWith(
+                          color: AppTheme.primaryColor.withOpacity(0.7)),
+                    ),
+                    timeText,
+                  ],
+                ),
+          trailing: Image.network(
+            activityModel.mediaUrl,
+            width: SizeConfig.heightMultiplier * 6,
+          ),
         ),
       ),
     );
   }
 
   getCenterText(ActivityType type) {
-    switch(type){
-      case ActivityType.LIKE:{
-        return "liked your post";
-      }break;
-      case ActivityType.COMMENT:{
-        return "commented on your post";
-      }break;
-      default:{
-        return "posted";
-      }break;
+    switch (type) {
+      case ActivityType.LIKE:
+        {
+          return "liked your post";
+        }
+        break;
+      case ActivityType.COMMENT:
+        {
+          return "commented on your post";
+        }
+        break;
+      default:
+        {
+          return "posted";
+        }
+        break;
     }
   }
 }
