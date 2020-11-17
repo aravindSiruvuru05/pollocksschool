@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/widgets/primary_button.dart';
+
+import 'config/size_config.dart';
+import 'config/styling.dart';
 
 class DialogPopUps {
   static void showCommonDialog(
@@ -24,5 +28,23 @@ class DialogPopUps {
             ],
           );
         });
+  }
+
+  static void showLoadingDialog(
+      {BuildContext context}) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return SpinKitWave(
+            color: Colors.white,
+            size: SizeConfig.heightMultiplier * 6,
+          );
+        });
+  }
+
+  static void removeLoadingDialog(
+      {BuildContext context}) {
+    Navigator.pop(context);
   }
 }

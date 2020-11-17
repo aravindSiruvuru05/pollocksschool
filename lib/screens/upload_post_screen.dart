@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
@@ -9,6 +11,11 @@ import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+import '../enums/enums.dart';
+import '../utils/dialod_popups.dart';
+import '../utils/dialod_popups.dart';
+import '../widgets/primary_button.dart';
 
 
 // ignore: must_be_immutable
@@ -73,7 +80,6 @@ class UploadPostScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-//            SvgPicture.asset('assets/images/upload.svg', height: 260.0),
           Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: RaisedButton(
@@ -115,8 +121,7 @@ class UploadPostScreen extends StatelessWidget {
             builder: (context, snapshot) {
               final enable = snapshot.data == LoadingState.NORMAL;
               return FlatButton(
-                onPressed: enable ?  () {
-                  FocusScope.of(context).requestFocus(new FocusNode());
+                onPressed: enable ?  () async{
                   final hasCaption = _captionController.value.text.isNotEmpty;
                   if(!_uploadBloc.isSectionSelected()){
                     DialogPopUps.showCommonDialog(text: "Please select section to Post",ok: () => Navigator.pop(context),context: context);
@@ -130,7 +135,12 @@ class UploadPostScreen extends StatelessWidget {
                     DialogPopUps.showCommonDialog(text: "Please add a caption",ok: () => Navigator.pop(context),context: context);
                     return;
                   }
-                  _uploadBloc.uploadPost(_captionController.value.text,_authBloc.getCurrentUser);
+                  DialogPopUps.showLoadingDialog(context: context);
+                  final bool uploaded = await _uploadBloc.uploadPost(_captionController.value.text,_authBloc.getCurrentUser);
+                  Timer(Duration(milliseconds: 500),(){
+                    DialogPopUps.removeLoadingDialog(context: context);
+                    _uploadBloc.isfileExistSink(!uploaded);
+                  });
                   _captionController.clear();
                 } : null,
                 child: Text(
@@ -148,18 +158,6 @@ class UploadPostScreen extends StatelessWidget {
         },
         child: ListView(
           children: <Widget>[
-            StreamBuilder<LoadingState>(
-                stream: _uploadBloc.postbuttonStateStream,
-                initialData: LoadingState.NORMAL,
-                builder: (context, snapshot) {
-                  final state = snapshot.data == LoadingState.LOADING ;
-                  return state
-                      ? LinearProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
-                    backgroundColor: Colors.white,)
-                      : SizedBox.shrink();
-                }
-            ),
             Container(
               height: 220.0,
               width: MediaQuery.of(context).size.width * 0.8,

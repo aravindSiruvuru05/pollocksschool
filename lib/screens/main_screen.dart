@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen>
         // ignore: missing_return
         onMessage: (Map<String,dynamic> map) {
           // ignore: missing_return
-          CustomFlushBar.customFlushBar(message: "new Post arrived !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
+          CustomFlushBar.customFlushBar(message: "new Post in your timeline !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
         }
     );
   }
@@ -85,7 +85,7 @@ class _MainScreenState extends State<MainScreen>
         ),
         MenuScreen(),
         DashboardScreen(),
-        MenuScreen(),
+        ActivityScreen(),
         ProfileScreen()
       ];
     else
@@ -100,9 +100,7 @@ class _MainScreenState extends State<MainScreen>
           create: (_) => UploadBloc(),
           child: UploadPostScreen(),
         ),
-        MenuScreen(
-          key: PageStorageKey("MenuScreen"),
-        ),
+        ActivityScreen(),
 //        SideBarLayout()
         ProfileScreen(
           key: PageStorageKey("ProfileScreen"),

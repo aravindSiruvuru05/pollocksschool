@@ -94,7 +94,7 @@ class UploadBloc extends Bloc {
     _selectedBranch = branch;
   }
 
-   uploadPost(String caption, UserModel user) async{
+   Future<bool> uploadPost(String caption, UserModel user) async{
     _caption = caption;
     _user = user;
     postbuttonStateSink(LoadingState.LOADING);
@@ -104,11 +104,9 @@ class UploadBloc extends Bloc {
     caption = null;
     postbuttonStateSink(LoadingState.DONE);
     file = null;
-    final fileExist = file != null;
     postId = Uuid().v4();
-    Timer(Duration(milliseconds: 500),(){
-      isfileExistSink(fileExist);
-    });
+    //retun true if file uploaded and removed ref
+    return file == null;
   }
 
 

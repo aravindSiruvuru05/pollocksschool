@@ -41,7 +41,7 @@ class SecondaryButton extends StatelessWidget {
       );
     } else {
       return Icon(
-        Icons.check_circle,
+        Icons.check,
         color: AppTheme.primaryColor,
         size:  SizeConfig.heightMultiplier * 5,
       );

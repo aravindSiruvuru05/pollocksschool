@@ -42,14 +42,14 @@ class AppTheme {
   );
 
   static final TextStyle otpsubtitle = TextStyle(
-    color: AppTheme.accentColor,
+    color: AppTheme.primaryshadeColor,
     fontSize: 2 * SizeConfig.textMultiplier,
     fontWeight: FontWeight.w500
   );
 
   static final TextStyle _buttonLight = TextStyle(
     color: Colors.black87,
-    fontSize: 2.6 * SizeConfig.textMultiplier,
+    fontSize: 2.5 * SizeConfig.textMultiplier,
   );
 
   static final TextStyle _textFieldLabelLight = TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pollocksschool/blocs/activity_bloc.dart';
 import 'package:pollocksschool/blocs/auth_bloc.dart';
 import 'package:pollocksschool/blocs/profile_bloc.dart';
 import 'package:pollocksschool/blocs/timeline_bloc.dart';
@@ -23,6 +24,8 @@ class AuthToggleScreen extends StatelessWidget {
             providers: [
               Provider<TimelineBloc>(
                   create: (_) => TimelineBloc(currentUser: currentUser)),
+              Provider<ActivityBloc>(
+                  create: (_) => ActivityBloc(currentUser: currentUser)),
               Provider<ProfileBloc>(
                   create: (_) => ProfileBloc(currentUser: currentUser)),
             ],

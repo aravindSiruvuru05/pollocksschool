@@ -5,6 +5,7 @@ import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 
 import '../utils/config/size_config.dart';
+import '../utils/config/styling.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -26,7 +27,7 @@ class PrimaryButton extends StatelessWidget {
             ? EdgeInsets.all(SizeConfig.heightMultiplier * 1.7)
             : null,
         decoration: BoxDecoration(
-          color: LoadingState.LOADING == state ? null : AppTheme.primaryColor,
+          color: LoadingState.NORMAL != state ? null : AppTheme.primaryColor,
           borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 3),
         ),
         child: buildPrimaryButtonChild(),
@@ -49,8 +50,8 @@ class PrimaryButton extends StatelessWidget {
       );
     } else {
       return Icon(
-        Icons.check_circle,
-        color: Colors.white,
+        Icons.check,
+        color: AppTheme.primaryColor,
         size: SizeConfig.heightMultiplier * 5,
       );
     }

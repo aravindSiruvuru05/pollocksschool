@@ -8,7 +8,10 @@ import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/utils.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'config/size_config.dart';
 import 'config/styling.dart';
+import 'config/styling.dart';
+import 'constants.dart';
 
 class PhoneAuthenticationManager {
   static Future<void> loginUser(String phonenumber, BuildContext context) async {
@@ -61,13 +64,24 @@ class PhoneAuthenticationManager {
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("auto retreving OTP ...",style: AppTheme.otpsubtitle,),
+                    Row(
+                      children: [
+                        SizedBox(
+                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),strokeWidth: 2,),
+                          height: 10.0,
+                          width: 10.0,
+                        ),
+                        SizedBox(width: SizeConfig.heightMultiplier,),
+                        Text("Detecting OTP ...",style: AppTheme.otpsubtitle,),
+                      ],
+                    ),
                     SizedBox(height: 5,),
                     PinInputTextField(
                       controller: _codeController,
                       autoFocus: true,
-                      pinLength: 6,
+                      pinLength: Constants.getOtpLength,
                       keyboardType: TextInputType.number,
                       inputFormatter: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly

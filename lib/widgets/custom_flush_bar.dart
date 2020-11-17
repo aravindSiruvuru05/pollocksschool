@@ -39,7 +39,7 @@ class CustomFlushBar {
       barBlur: 5,
       animationDuration: Duration(milliseconds: 300),
       padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier * 4),
-      margin: EdgeInsets.all(SizeConfig.heightMultiplier * 3 ),
+      margin: EdgeInsets.all(SizeConfig.heightMultiplier ),
       borderRadius: SizeConfig.heightMultiplier *3,
       messageText:  Text(message,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
       duration:  Duration(seconds: 3),

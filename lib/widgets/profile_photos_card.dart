@@ -7,6 +7,8 @@ import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../utils/config/size_config.dart';
+
 class ProfilePostsPhotosGrid extends StatelessWidget {
   const ProfilePostsPhotosGrid({
     Key key,
@@ -18,7 +20,11 @@ class ProfilePostsPhotosGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(SizeConfig.heightMultiplier * 2),
+      padding: EdgeInsets.only(
+          top:SizeConfig.heightMultiplier * 2
+          ,left: SizeConfig.heightMultiplier * 2
+          ,right: SizeConfig.heightMultiplier * 2
+          ,bottom: SizeConfig.heightMultiplier * 6),
       child: MasonryGrid(
           column: 3,
           crossAxisSpacing: SizeConfig.heightMultiplier * 3,

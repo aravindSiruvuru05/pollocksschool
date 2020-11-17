@@ -8,3 +8,5 @@ export 'phone_auth_screen.dart';
 export 'timeline_screen.dart';
 export 'loading_screen.dart';
 export 'upload_post_screen.dart';
+export 'post_detail_screen.dart';
+export 'activity_screen.dart';

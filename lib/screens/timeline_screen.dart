@@ -23,6 +23,7 @@ class TimelineScreen extends StatelessWidget {
 
     return Scaffold(
       key: timelineScaffoldKey,
+      backgroundColor: Colors.white,
       body:  RefreshIndicator(
           onRefresh: () async{
             final snapshot = await _timelineBloc.getTimelineQuerySnapshot();
