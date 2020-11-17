@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 
 class Constants {
@@ -17,6 +18,9 @@ class Constants {
 
   static List<String> getMenuChoices = [getSettingString,getLogoutString];
   static List<String> getCommentMenuChoices = [getDeleteString];
+
+
+  static GlobalKey<ScaffoldState> mainScreenScaffoldKey = GlobalKey<ScaffoldState>();
 
 
 }

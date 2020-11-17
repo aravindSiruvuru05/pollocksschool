@@ -15,7 +15,6 @@ import 'package:pollocksschool/utils/constants.dart';
 import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-GlobalKey<ScaffoldState> mainScreenScaffoldKey = GlobalKey<ScaffoldState>();
 
 class MainScreen extends StatefulWidget {
   MainScreen({this.currentuser}) : super();
@@ -54,7 +53,7 @@ class _MainScreenState extends State<MainScreen>
         // ignore: missing_return
         onMessage: (Map<String,dynamic> map) {
           // ignore: missing_return
-          CustomFlushBar.customFlushBar(message: "new Post in your timeline !", scaffoldKey: mainScreenScaffoldKey, type: FlushBarType.UPDATE);
+          CustomFlushBar.customFlushBar(message: "new Post in your timeline !", type: FlushBarType.UPDATE);
         }
     );
   }
@@ -131,7 +130,7 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      key: mainScreenScaffoldKey,
+      key: Constants.mainScreenScaffoldKey,
       extendBody: true,
       resizeToAvoidBottomPadding: false,
       body: PageStorage(

@@ -161,6 +161,7 @@ class TimelineBloc extends Bloc {
   }
 
   addLikeToActivityFeed(PostModel post) {
+    print("d");
     // add a notification to the postOwner's activity feed only if comment made by OTHER user (to avoid getting notification for our own like)
     bool isNotPostOwner = currentUser.id != post.ownerId;
     if (isNotPostOwner) {
@@ -169,7 +170,8 @@ class TimelineBloc extends Bloc {
           .collection("feedItems")
           .doc(post.postId)
           .set({
-        "type": "like",
+        "type": "LIKE",
+        "caption": "",
         "username": "${currentUser.firstname} ${currentUser.lastname}",
         "userId": currentUser.id,
         "userProfileImg": currentUser.photourl,

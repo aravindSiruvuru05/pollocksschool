@@ -86,24 +86,24 @@ class UploadBloc extends Bloc {
   }
 
    Future<bool> uploadPost(String caption, UserModel user) async{
+    bool isUploaded = false;
     _caption = caption;
     _user = user;
     postbuttonStateSink(LoadingState.LOADING);
     await compressImage();
     String mediaUrl = await uploadImage();
-    await createPostInFirestore(mediaUrl);
-    await addFeed(mediaUrl);
+    isUploaded = await createPostInFirestore(mediaUrl);
+    if(isUploaded) await addFeed(mediaUrl);
     postbuttonStateSink(LoadingState.DONE);
     file = null;
     postId = Uuid().v4();
     //retun true if file uploaded and removed ref
-    return file == null;
+    return file == null && isUploaded;
   }
 
   Future<void> addFeed(String mediaUrl) async {
     final docId = '$_selectedBranch$_selectedSection';
     final id = "$_selectedBranch${_selectedSection}_$postId";
-    print(id);
     await _activityFeedRef.doc(docId).collection('feedItems').add({
       "type": "post",
       "caption": _caption,
@@ -114,13 +114,15 @@ class UploadBloc extends Bloc {
       "userProfileImg": _user.photourl,
       "mediaUrl": mediaUrl,
     });
+    print(id);
   }
 
   // ignore: missing_return
-  Future<void> createPostInFirestore(String mediaUrl) {
+  Future<bool> createPostInFirestore(String mediaUrl) async{
+    bool isSuccess = false;
     final id = "$_selectedBranch${_selectedSection}_$postId";
     final classId = "$_selectedBranch$_selectedSection";
-    _postCollectionRef.doc(_user.id).collection("userPosts").doc(id).set({
+   await _postCollectionRef.doc(_user.id).collection("userPosts").doc(id).set({
       "postId": id,
       "ownerId": _user.id,
       "ownerProfileImgUrl": _user.photourl,
@@ -131,7 +133,11 @@ class UploadBloc extends Bloc {
       "timestamp": DateTime.now(),
       "commentsCount": 0,
       "likes": {}
-    });
+    }).then((value) => isSuccess = true)
+      .catchError((onError) => isSuccess= false);
+   print(isSuccess);
+    return isSuccess;
+
   }
 
   handleTakePhoto() async {

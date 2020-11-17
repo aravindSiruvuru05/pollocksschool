@@ -15,9 +15,6 @@ import '../utils/config/size_config.dart';
 import '../utils/config/styling.dart';
 
 
-GlobalKey<ScaffoldState> postDetailScaffoldKey = GlobalKey<ScaffoldState>();
-
-
 // ignore: must_be_immutable
 class PostDetailScreen extends StatelessWidget {
   final PostModel post;
@@ -36,7 +33,6 @@ class PostDetailScreen extends StatelessWidget {
     isLiked = post.likes[currentUser.id] == null ? false : post.likes[currentUser.id];
     commentsRef = FirebaseFirestore.instance.collection("comment");
     return Scaffold(
-      key: postDetailScaffoldKey,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppTheme.appBackgroundColor,
@@ -72,8 +68,8 @@ class PostDetailScreen extends StatelessWidget {
 
                       final List<CommentModel> finalComments = comments.docs.map((
                           doc) => CommentModel.fromDocument(doc)).toList();
-                      final List<Container> commentBlocks = finalComments.map<Container>((e) =>
-                          buildCommentTile(e)).toList();
+                      final List<Widget> commentBlocks = finalComments.map<Widget>((e) =>
+                          CommonShadowCard(child: buildCommentTile(e))).toList();
                       return Column(
                         children: [
                           CommonShadowCard(child: buildCountContainer(finalComments.length)),
@@ -98,70 +94,52 @@ class PostDetailScreen extends StatelessWidget {
     );
   }
 
-
-
-  Container buildCommentTile(CommentModel comment) {
-    return Container(
-      margin: EdgeInsets.only(left: SizeConfig.heightMultiplier * 2,
-          right: SizeConfig.heightMultiplier * 2,top: SizeConfig.heightMultiplier * 1.5),
-      padding: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 1.5,vertical: SizeConfig.heightMultiplier / 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 2),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-              color: AppTheme.accentColor.withOpacity(0.3),
-              blurRadius: 15.0,
-              offset: Offset(0,0)
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
-        leading: CircleAvatar(
-                child: Text(comment.username[0]),),
-        title: RichText(
-          text: TextSpan(
-              text: "",
-              children: <TextSpan>[
-                TextSpan(text:comment.username,
-                  style: AppTheme.lightTextTheme.button
-                      .copyWith(fontFamily: Constants.getFreightSansFamily)),
-                TextSpan(text: "  "),
-                TextSpan(text: timeago.format(comment.timestamp.toDate()),
-                    style: AppTheme.lightTextTheme.subtitle2.copyWith(color: Colors.blue)
-                )
-              ]
-          ),
+  Widget buildCommentTile(CommentModel comment) {
+    return ListTile(
+      contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
+      leading: CircleAvatar(
+              child: Text(comment.username[0]),),
+      title: RichText(
+        text: TextSpan(
+            text: "",
+            children: <TextSpan>[
+              TextSpan(text:comment.username,
+                style: AppTheme.lightTextTheme.button
+                    .copyWith(fontFamily: Constants.getFreightSansFamily)),
+              TextSpan(text: "  "),
+              TextSpan(text: timeago.format(comment.timestamp.toDate()),
+                  style: AppTheme.lightTextTheme.subtitle2.copyWith(color: Colors.blue)
+              )
+            ]
         ),
-        subtitle: Text(comment.comment),
-        trailing: currentUser.id == comment.userid
-            ?  PopupMenuButton<String>(
-          onSelected: (value) async{
-            if (value == Constants.getDeleteString) {
-              await commentsRef
-                  .doc(post.postId)
-                  .collection('comments')
-                  .doc(comment.id)
-                  .get().then((value) => value.reference.delete());
-            }
-          },
-          icon: Icon(
-            Icons.more_vert,
-            color: AppTheme.accentColor,
-          ),
-          itemBuilder: (BuildContext context) {
-            return Constants.getCommentMenuChoices.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        )
-            : SizedBox.shrink(),
-
       ),
+      subtitle: Text(comment.comment),
+      trailing: currentUser.id == comment.userid
+          ?  PopupMenuButton<String>(
+        onSelected: (value) async{
+          if (value == Constants.getDeleteString) {
+            await commentsRef
+                .doc(post.postId)
+                .collection('comments')
+                .doc(comment.id)
+                .get().then((value) => value.reference.delete());
+          }
+        },
+        icon: Icon(
+          Icons.more_vert,
+          color: AppTheme.accentColor,
+        ),
+        itemBuilder: (BuildContext context) {
+          return Constants.getCommentMenuChoices.map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Text(choice),
+            );
+          }).toList();
+        },
+      )
+          : SizedBox.shrink(),
+
     );
   }
 
@@ -235,9 +213,9 @@ class PostDetailScreen extends StatelessWidget {
      padding: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 2),
      child: Row(
         children: [
-          Text("${likes} like${likeText}",style: AppTheme.lightTextTheme.button.copyWith(color: Colors.red),),
+          Text("$likes like$likeText",style: AppTheme.lightTextTheme.button.copyWith(color: Colors.red),),
           SizedBox(width: SizeConfig.heightMultiplier * 2,),
-          Text("${count} comment${commnetCount}",style: AppTheme.lightTextTheme.button.copyWith(color: AppTheme.primaryColor),)
+          Text("$count comment$commnetCount",style: AppTheme.lightTextTheme.button.copyWith(color: AppTheme.primaryColor),)
         ],
       ),
    );

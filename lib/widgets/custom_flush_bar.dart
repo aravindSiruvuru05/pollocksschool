@@ -6,10 +6,11 @@ import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import '../utils/config/size_config.dart';
 
 class CustomFlushBar {
 
-  static Flushbar customFlushBar({@required String message,@required GlobalKey scaffoldKey,@required FlushBarType type}) {
+  static Flushbar customFlushBar({@required String message,@required FlushBarType type}) {
     IconData icon;
     LinearGradient gradient;
     switch(type){
@@ -21,28 +22,28 @@ class CustomFlushBar {
       case FlushBarType.FAILURE:{
         icon = Icons.error_outline;
         gradient =  LinearGradient(
-            colors: [Color(0xFFA71D31), Color(0xFF3F0D12)]);
-      } break;
+        colors: [ Color(0xFF3F0D12),Color(0xFFA71D31)]);
+    } break;
       case FlushBarType.UPDATE:{
         icon = Icons.update;
         gradient =  LinearGradient(
             colors: [AppTheme.primaryColor, Color(0xFF5F0A87)]);
       } break;
       default:{
-        icon = Icons.update;
+        icon = Icons.info_outline;
         gradient =  LinearGradient(
-            colors: [Color(0xFFB91372), Color(0xFF6B0F1A)]);
+          colors: [ Color(0xFF3F0D12),Color(0xFFA71D31)]);
       }
     }
     return Flushbar(
     flushbarPosition: FlushbarPosition.TOP,
       barBlur: 5,
-      animationDuration: Duration(milliseconds: 300),
-      padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier * 4),
-      margin: EdgeInsets.all(SizeConfig.heightMultiplier ),
+      animationDuration: Duration(milliseconds: 200),
+      padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier * 2),
+      margin: EdgeInsets.all(SizeConfig.heightMultiplier * 1),
       borderRadius: SizeConfig.heightMultiplier *3,
       messageText:  Text(message,style: AppTheme.lightTextTheme.button.copyWith(color: Colors.white,fontFamily: Constants.getFreightSansFamily),),
-      duration:  Duration(seconds: 3),
+      duration:  Duration(milliseconds: 2000),
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       backgroundGradient: gradient,
       boxShadows: [
@@ -51,6 +52,6 @@ class CustomFlushBar {
               spreadRadius: 5.0)
       ],
       icon: Icon(icon, color: Colors.white,),
-    )..show(scaffoldKey.currentContext);
+    )..show(Constants.mainScreenScaffoldKey.currentContext);
   }
 }

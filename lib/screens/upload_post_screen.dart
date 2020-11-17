@@ -2,20 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pollocksschool/blocs/auth_bloc.dart';
-import 'package:pollocksschool/blocs/upload_bloc.dart';
+import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/enums/enums.dart';
 import 'package:pollocksschool/models/models.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/strings.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/utils.dart';
+import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-
 import '../enums/enums.dart';
 import '../utils/dialod_popups.dart';
-import '../utils/dialod_popups.dart';
-import '../widgets/primary_button.dart';
 
 
 // ignore: must_be_immutable
@@ -122,7 +119,11 @@ class UploadPostScreen extends StatelessWidget {
               final enable = snapshot.data == LoadingState.NORMAL;
               return FlatButton(
                 onPressed: enable ?  () async{
-                  final hasCaption = _captionController.value.text.isNotEmpty;
+//                  final hasCaption = _captionController.value.text.isNotEmpty;
+                  if(!await InternetConnectivity.isConnectedToInternet()) {
+                    CustomFlushBar.customFlushBar(message: "Please make sure your are Connected to internet", type: FlushBarType.INFO);
+                    return;
+                  }
                   if(!_uploadBloc.isSectionSelected()){
                     DialogPopUps.showCommonDialog(text: "Please select section to Post",ok: () => Navigator.pop(context),context: context);
                     return;
@@ -131,15 +132,20 @@ class UploadPostScreen extends StatelessWidget {
                     DialogPopUps.showCommonDialog(text: "Please select branch to Post",ok: () => Navigator.pop(context),context: context);
                     return;
                   }
-                  if(!hasCaption){
-                    DialogPopUps.showCommonDialog(text: "Please add a caption",ok: () => Navigator.pop(context),context: context);
-                    return;
-                  }
+//                  if(!hasCaption){
+//                    DialogPopUps.showCommonDialog(text: "Please add a caption",ok: () => Navigator.pop(context),context: context);
+//                    return;
+//                  }
                   DialogPopUps.showLoadingDialog(context: context);
-                  final bool uploaded = await _uploadBloc.uploadPost(_captionController.value.text,_authBloc.getCurrentUser);
+                  final uploaded = await _uploadBloc.uploadPost(_captionController.value.text,_authBloc.getCurrentUser);
                   Timer(Duration(milliseconds: 500),(){
                     DialogPopUps.removeLoadingDialog(context: context);
-                    _uploadBloc.isfileExistSink(!uploaded);
+                    if(uploaded){
+                      CustomFlushBar.customFlushBar(message: "Uploaded Successfully !", type: FlushBarType.SUCCESS);
+                    } else {
+                      CustomFlushBar.customFlushBar(message: "Upload Failed !", type: FlushBarType.FAILURE);
+                    }
+                    _uploadBloc.isfileExistSink(false);
                   });
                   _captionController.clear();
                 } : null,

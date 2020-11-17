@@ -10,7 +10,6 @@ import 'package:pollocksschool/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'config/size_config.dart';
 import 'config/styling.dart';
-import 'config/styling.dart';
 import 'constants.dart';
 
 class PhoneAuthenticationManager {
