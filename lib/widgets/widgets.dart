@@ -11,3 +11,4 @@ export 'custom_flush_bar.dart';
 export 'comment_box.dart';
 export 'common_shadow_card.dart';
 export 'profile_photo_icon.dart';
+export 'header_curved_container.dart';

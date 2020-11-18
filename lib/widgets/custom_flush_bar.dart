@@ -50,7 +50,7 @@ class CustomFlushBar {
       borderRadius: SizeConfig.heightMultiplier * 3,
       messageText: Text(
         message,
-        style: AppTheme.lightTextTheme.subtitle2.copyWith(
+        style: AppTheme.lightTextTheme.button.copyWith(
             color: Colors.white, fontFamily: Constants.getFreightSansFamily),
       ),
       duration: Duration(milliseconds: 2000),
