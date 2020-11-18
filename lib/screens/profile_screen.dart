@@ -120,8 +120,13 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: SizeConfig.heightMultiplier * 2,
                     ),
-                    CircleAvatar(
-                      radius: SizeConfig.heightMultiplier * 5,
+                    Container(
+                      padding: EdgeInsets.all(SizeConfig.heightMultiplier / 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(SizeConfig.heightMultiplier * 6)
+                      ),
+                      child:ProfilePhotoIcon(photoUrl: _authBloc.getCurrentUser.photourl,username: _authBloc.getCurrentUser.firstname,radius: SizeConfig.heightMultiplier * 6,),
                     ),
                     Padding(
                       padding: EdgeInsets.all(SizeConfig.heightMultiplier * 3),

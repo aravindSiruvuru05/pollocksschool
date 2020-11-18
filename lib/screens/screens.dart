@@ -11,3 +11,4 @@ export 'upload_post_screen.dart';
 export 'post_detail_screen.dart';
 export 'activity_screen.dart';
 export 'no_internet_screen.dart';
+export 'add_profile_photo_screen.dart';

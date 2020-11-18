@@ -46,7 +46,7 @@ class CustomFlushBar {
       barBlur: 5,
       animationDuration: Duration(milliseconds: 200),
       padding: EdgeInsets.symmetric(vertical: SizeConfig.heightMultiplier * 2),
-      margin: EdgeInsets.all(SizeConfig.heightMultiplier * 1),
+      margin: EdgeInsets.symmetric(horizontal: SizeConfig.heightMultiplier * 1,vertical: SizeConfig.heightMultiplier * 3),
       borderRadius: SizeConfig.heightMultiplier * 3,
       messageText: Text(
         message,
@@ -65,6 +65,6 @@ class CustomFlushBar {
         icon,
         color: Colors.white,
       ),
-    )..show(Constants.mainScreenScaffoldKey.currentContext);
+    )..show(Constants.authToggleScreenScaffoldKey.currentContext);
   }
 }

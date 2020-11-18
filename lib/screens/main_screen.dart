@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen>
     super.initState();
   }
 
-  void init() {
+  void init(){
     _firebaseMessaging = FirebaseMessaging();
     fcmConfiguration();
     _populatePagesAndbottomBarItemsData();
@@ -139,7 +139,6 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      key: Constants.mainScreenScaffoldKey,
       extendBody: true,
       resizeToAvoidBottomPadding: false,
       body: PageStorage(

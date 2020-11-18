@@ -20,7 +20,7 @@ class Constants {
   static List<String> getCommentMenuChoices = [getDeleteString];
 
 
-  static GlobalKey<ScaffoldState> mainScreenScaffoldKey = GlobalKey<ScaffoldState>();
+  static GlobalKey<ScaffoldState> authToggleScreenScaffoldKey = GlobalKey<ScaffoldState>();
 
 
 }

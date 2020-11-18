@@ -32,8 +32,7 @@ class _CommentBoxState extends State<CommentBox> {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
-      leading: CircleAvatar(
-        child: Text(widget.currentUser.firstname[0 ]),),
+      leading: ProfilePhotoIcon(photoUrl: widget.currentUser.photourl,username: widget.currentUser.firstname),
       title: TextField(
         controller: controller,
         onChanged: (val){

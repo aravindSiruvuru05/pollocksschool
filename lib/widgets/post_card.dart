@@ -9,6 +9,7 @@ import 'package:pollocksschool/screens/post_detail_screen.dart';
 import 'package:pollocksschool/utils/config/size_config.dart';
 import 'package:pollocksschool/utils/config/styling.dart';
 import 'package:pollocksschool/utils/constants.dart';
+import 'package:pollocksschool/widgets/profile_photo_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -23,6 +24,7 @@ class PostCard extends StatelessWidget {
   PostCard({@required this.post});
 
   buildPostHeader() {
+    print(post.ownerProfileImgUrl);
     return Card(
       color: Colors.white,
       borderOnForeground: true,
@@ -32,14 +34,10 @@ class PostCard extends StatelessWidget {
         contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
         leading: Hero(
           tag: post,
-          child: CircleAvatar(
+          child: ProfilePhotoIcon(photoUrl: post.ownerProfileImgUrl,
             radius: SizeConfig.heightMultiplier * 3,
-            backgroundImage: post.mediaUrl != null
-                ? CachedNetworkImageProvider(post.mediaUrl)
-                : null,
-            backgroundColor: Colors.grey,
-            child: post.mediaUrl == null ? Text(post.username[0]) : null,
-          ),
+            username: post.username,
+          )
         ),
         title: GestureDetector(
           onTap: () => print('showing profile'),
@@ -51,7 +49,6 @@ class PostCard extends StatelessWidget {
             ),
           ),
         ),
-//          subtitle: Text(location),
         trailing: IconButton(
           onPressed: () => print('deleting post'),
           icon: Icon(Icons.more_vert),

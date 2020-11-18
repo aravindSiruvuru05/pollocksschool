@@ -79,9 +79,7 @@ class ActivityScreen extends StatelessWidget {
       onTap: () => print('d'),
       child: CommonShadowCard(
         child: ListTile(
-          leading: CircleAvatar(
-            child: Text(activityModel.username[0]),
-          ),
+          leading: ProfilePhotoIcon(photoUrl: activityModel.userProfileImg,username: activityModel.username),
           title: RichText(
             text: TextSpan(text: "", children: <TextSpan>[
               TextSpan(

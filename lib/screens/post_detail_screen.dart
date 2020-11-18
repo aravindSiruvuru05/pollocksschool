@@ -151,14 +151,7 @@ class PostDetailScreen extends StatelessWidget {
                     contentPadding: EdgeInsets.only(left: SizeConfig.heightMultiplier),
                     leading: Hero(
                       tag: post,
-                      child: CircleAvatar(
-                        radius: SizeConfig.heightMultiplier * 4,
-                        backgroundImage: post.mediaUrl != null
-                            ? CachedNetworkImageProvider(post.mediaUrl)
-                            : null,
-                        backgroundColor: Colors.grey,
-                        child: post.mediaUrl == null ? Text(post.username[0]) : null,
-                      ),
+                      child: ProfilePhotoIcon(username: post.username,radius: SizeConfig.heightMultiplier * 4,photoUrl: post.ownerProfileImgUrl,)
                     ),
                     title: Hero(
                       tag: post.mediaUrl,

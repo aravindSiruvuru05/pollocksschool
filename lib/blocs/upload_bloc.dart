@@ -16,12 +16,13 @@ class UploadBloc extends Bloc {
   String dropdownValue;
   String _caption;
   ImagePicker _imagePicker;
-  String postId;
+  String rand_id;
   StorageReference _storageRef;
   CollectionReference _postCollectionRef;
+  CollectionReference _userCollectionRef;
   CollectionReference _activityFeedRef;
 
-  UserModel _user;
+  UserModel _currentUser;
 
   ImagePicker get imagePicker => _imagePicker;
 
@@ -53,23 +54,24 @@ class UploadBloc extends Bloc {
   UploadBloc() {
     _storageRef = FirebaseStorage.instance.ref();
     _activityFeedRef = FirebaseFirestore.instance.collection("feed");
+    _userCollectionRef = FirebaseFirestore.instance.collection("user");
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
     _imagePicker = ImagePicker();
-    postId = Uuid().v4();
+    rand_id = Uuid().v4();
   }
 
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$postId.jpg')
+    final compressedImageFile = File('$path/img_$rand_id.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
     file = compressedImageFile;
   }
 
-  Future<String> uploadImage() async {
+  Future<String> uploadImage(String id) async {
     StorageUploadTask uploadTask =
-        _storageRef.child("post_$postId.jpg").putFile(file);
+        _storageRef.child(id).putFile(file);
     StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
@@ -85,48 +87,77 @@ class UploadBloc extends Bloc {
     _selectedBranch = branch;
   }
 
-   Future<bool> uploadPost(String caption, UserModel user) async{
+   Future<bool> uploadPost(String caption, UserModel curentUser) async{
     bool isUploaded = false;
     _caption = caption;
-    _user = user;
+    _currentUser = curentUser;
     postbuttonStateSink(LoadingState.LOADING);
     await compressImage();
-    String mediaUrl = await uploadImage();
+    String mediaUrl = await uploadImage("post_$rand_id.jpg");
     isUploaded = await createPostInFirestore(mediaUrl);
     if(isUploaded) await addFeed(mediaUrl);
     postbuttonStateSink(LoadingState.DONE);
     file = null;
-    postId = Uuid().v4();
+    rand_id = Uuid().v4();
     //retun true if file uploaded and removed ref
     return file == null && isUploaded;
   }
 
+
+  Future<bool> uploadProfilePhoto(UserModel user) async{
+    bool isUploaded = false;
+    _currentUser = user;
+//    postbuttonStateSink(LoadingState.LOADING);
+    await compressImage();
+    String mediaUrl = await uploadImage("profile_photo_$rand_id.jpg");
+    print(mediaUrl);
+    isUploaded = await createProfilePhotoInFirestore(mediaUrl);
+//    postbuttonStateSink(LoadingState.DONE);
+    file = null;
+    rand_id = Uuid().v4();
+    //retun true if file uploaded and removed ref
+    return file == null && isUploaded;
+  }
+
+
+
   Future<void> addFeed(String mediaUrl) async {
     final docId = '$_selectedBranch$_selectedSection';
-    final id = "$_selectedBranch${_selectedSection}_$postId";
+    final id = "$_selectedBranch${_selectedSection}_$rand_id";
     await _activityFeedRef.doc(docId).collection('feedItems').add({
       "type": "post",
       "caption": _caption,
       "timestamp": DateTime.now(),
       "postId": id,
-      "userId": _user.id,
-      "username": "${_user.firstname} ${_user.lastname}",
-      "userProfileImg": _user.photourl,
+      "userId": _currentUser.id,
+      "username": "${_currentUser.firstname} ${_currentUser.lastname}",
+      "userProfileImg": _currentUser.photourl,
       "mediaUrl": mediaUrl,
     });
     print(id);
   }
 
   // ignore: missing_return
+  Future<bool> createProfilePhotoInFirestore(String mediaUrl) async{
+    bool isSuccess = false;
+   await _userCollectionRef.doc(_currentUser.id).update({
+      'photourl' : mediaUrl
+    }).then((value) => isSuccess = true)
+      .catchError((onError) => isSuccess= false);
+   print(isSuccess);
+    return isSuccess;
+
+  }
+
   Future<bool> createPostInFirestore(String mediaUrl) async{
     bool isSuccess = false;
-    final id = "$_selectedBranch${_selectedSection}_$postId";
+    final id = "$_selectedBranch${_selectedSection}_$rand_id";
     final classId = "$_selectedBranch$_selectedSection";
-   await _postCollectionRef.doc(_user.id).collection("userPosts").doc(id).set({
+    await _postCollectionRef.doc(_currentUser.id).collection("userPosts").doc(id).set({
       "postId": id,
-      "ownerId": _user.id,
-      "ownerProfileImgUrl": _user.photourl,
-      "username": "${_user.firstname} ${_user.lastname}",
+      "ownerId": _currentUser.id,
+      "ownerProfileImgUrl": _currentUser.photourl,
+      "username": "${_currentUser.firstname} ${_currentUser.lastname}",
       "mediaUrl": mediaUrl,
       "description": _caption,
       "classId": classId,
@@ -134,8 +165,8 @@ class UploadBloc extends Bloc {
       "commentsCount": 0,
       "likes": {}
     }).then((value) => isSuccess = true)
-      .catchError((onError) => isSuccess= false);
-   print(isSuccess);
+        .catchError((onError) => isSuccess= false);
+    print(isSuccess);
     return isSuccess;
 
   }
