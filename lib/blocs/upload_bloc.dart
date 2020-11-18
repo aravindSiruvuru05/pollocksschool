@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pollocksschool/blocs/blocs.dart';
 import 'package:pollocksschool/enums/enums.dart';
@@ -157,6 +158,7 @@ class UploadBloc extends Bloc {
       "postId": id,
       "ownerId": _currentUser.id,
       "ownerProfileImgUrl": _currentUser.photourl,
+      "ownerType": describeEnum(_currentUser.userType),
       "username": "${_currentUser.firstname} ${_currentUser.lastname}",
       "mediaUrl": mediaUrl,
       "description": _caption,

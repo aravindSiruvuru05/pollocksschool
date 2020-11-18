@@ -3,12 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pollocksschool/blocs/bloc.dart';
-import 'package:pollocksschool/enums/user_type.dart';
 import 'package:pollocksschool/models/models.dart';
 
 class TimelineBloc extends Bloc {
   CollectionReference timelineCollectionRef;
-  CollectionReference postCollectionRef;
+  CollectionReference bookmarkCollectionRef;
   CollectionReference activityFeedRef;
 
 
@@ -32,53 +31,31 @@ class TimelineBloc extends Bloc {
   TimelineBloc({@required this.currentUser}) {
     timelineCollectionRef = FirebaseFirestore.instance.collection("timeline");
     activityFeedRef = FirebaseFirestore.instance.collection("feed");
-    postCollectionRef = FirebaseFirestore.instance.collection("post");
+    bookmarkCollectionRef = FirebaseFirestore.instance.collection("bookmark");
     _init();
     timelineCollectionRef.doc("intilli3A").collection('classPosts')
         .orderBy('timestamp', descending: true).snapshots().listen((querySnapshot) {
       updateTimeline(querySnapshot);
     });
-//    getAdminTimeline();
   }
 
-//  getAdminTimeline() async{
-//
-//    FirebaseFirestoreeFirestore.instance.collection("user")
-//        .where("classIds",arrayContains: "intilli3A")
-//        .where("pushToken",isGreaterThan: "")
-//        .get()
-//        .then((val){
-//      print(val.docs.length);
-//    });
-//
-//
-////    List<QuerySnapshot> snapsList = [];
-////   QuerySnapshot timelineSnap = await timelineCollectionRef.get();
-////   timelineSnap.docs.forEach((doc) async{
-////     final a = await doc.reference.collection("classPosts").get();
-////     snapsList.add(a);
-////   });
-////   return snapsList.length;
-//  }
-
   _init() async{
-   if(currentUser.userType == UserType.STUDENT){
-     QuerySnapshot snap = await postCollectionRef.doc(currentUser.id).collection("userPosts").get();
+     QuerySnapshot snap = await bookmarkCollectionRef.doc(currentUser.id).collection("bookmarks").get();
      snap.docs.forEach((doc) {
        savedPostsIds.add(doc.id);
      });
-   }
     final snapshot = await getTimelineQuerySnapshot();
     updateTimeline(snapshot);
   }
 
   Future<QuerySnapshot> getTimelineQuerySnapshot() async{
-    return await timelineCollectionRef.doc("intilli3A").collection('classPosts')
-        .orderBy('timestamp', descending: true).get();
+    return await timelineCollectionRef.doc("intilli3A")
+        .collection('classPosts')
+        .orderBy('timestamp', descending: true)
+        .get();
   }
 
   Future<void> updateTimeline(QuerySnapshot snapshot) async{
-
     timelinePosts = snapshot.docs.map<PostModel>((doc) => PostModel.fromDocument(doc)).toList();
     timelinePosts = timelinePosts == null ? [] : timelinePosts;
     timelinePostsStateSink(timelinePosts);
@@ -86,9 +63,9 @@ class TimelineBloc extends Bloc {
 
   Future<void> toggleSaveToPostCollection(PostModel post,bool isSaved) async{
     if(isSaved){
-      await postCollectionRef
+      await bookmarkCollectionRef
           .doc(currentUser.id)
-          .collection("userPosts")
+          .collection("bookmarks")
           .doc(post.postId)
           .get()
           .then( (doc) {
@@ -101,9 +78,9 @@ class TimelineBloc extends Bloc {
           });
     }else{
       final postMap = post.toMap();
-      await postCollectionRef
+      await bookmarkCollectionRef
           .doc(currentUser.id)
-          .collection("userPosts")
+          .collection("bookmarks")
           .doc(post.postId)
           .set(postMap)
           .then((value) {
