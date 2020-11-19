@@ -191,7 +191,7 @@ class PostCard extends StatelessWidget {
                         ? Icon(Icons.bookmark,
                         size: Constants.commonIconSize, color: Colors.black87)
                         :  Icon(Icons.bookmark_border,
-                        size: Constants.commonIconSize, color: Colors.black87),
+                        size: Constants.commonIconSize, color: Colors.black26),
                     onPressed: (){
                       timelineBloc.toggleSaveToPostCollection(post,isSaved);
                     },
