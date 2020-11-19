@@ -186,7 +186,7 @@ class PostCard extends StatelessWidget {
               timelineBloc.currentUser.id != post.ownerId ? Row(
                 children: [
                   IconButton(
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.all(2),
                     icon: isSaved
                         ? Icon(Icons.bookmark,
                         size: Constants.commonIconSize, color: Colors.black87)
