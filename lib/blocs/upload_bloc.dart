@@ -17,7 +17,7 @@ class UploadBloc extends Bloc {
   String dropdownValue;
   String _caption;
   ImagePicker _imagePicker;
-  String rand_id;
+  String randId;
   StorageReference _storageRef;
   CollectionReference _postCollectionRef;
   CollectionReference _userCollectionRef;
@@ -58,14 +58,14 @@ class UploadBloc extends Bloc {
     _userCollectionRef = FirebaseFirestore.instance.collection("user");
     _postCollectionRef = FirebaseFirestore.instance.collection("post");
     _imagePicker = ImagePicker();
-    rand_id = Uuid().v4();
+    randId = Uuid().v4();
   }
 
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$rand_id.jpg')
+    final compressedImageFile = File('$path/img_$randId.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
     file = compressedImageFile;
   }
@@ -94,12 +94,12 @@ class UploadBloc extends Bloc {
     _currentUser = curentUser;
     postbuttonStateSink(LoadingState.LOADING);
     await compressImage();
-    String mediaUrl = await uploadImage("post_$rand_id.jpg");
+    String mediaUrl = await uploadImage("post_$randId.jpg");
     isUploaded = await createPostInFirestore(mediaUrl);
     if(isUploaded) await addFeed(mediaUrl);
     postbuttonStateSink(LoadingState.DONE);
     file = null;
-    rand_id = Uuid().v4();
+    randId = Uuid().v4();
     //retun true if file uploaded and removed ref
     return file == null && isUploaded;
   }
@@ -110,12 +110,12 @@ class UploadBloc extends Bloc {
     _currentUser = user;
 //    postbuttonStateSink(LoadingState.LOADING);
     await compressImage();
-    String mediaUrl = await uploadImage("profile_photo_$rand_id.jpg");
+    String mediaUrl = await uploadImage("profile_photo_$randId.jpg");
     print(mediaUrl);
     isUploaded = await createProfilePhotoInFirestore(mediaUrl);
 //    postbuttonStateSink(LoadingState.DONE);
     file = null;
-    rand_id = Uuid().v4();
+    randId = Uuid().v4();
     //retun true if file uploaded and removed ref
     return file == null && isUploaded;
   }
@@ -124,7 +124,7 @@ class UploadBloc extends Bloc {
 
   Future<void> addFeed(String mediaUrl) async {
     final docId = '$_selectedBranch$_selectedSection';
-    final id = "$_selectedBranch${_selectedSection}_$rand_id";
+    final id = "$_selectedBranch${_selectedSection}_$randId";
     await _activityFeedRef.doc(docId).collection('feedItems').add({
       "type": "post",
       "caption": _caption,
@@ -152,7 +152,7 @@ class UploadBloc extends Bloc {
 
   Future<bool> createPostInFirestore(String mediaUrl) async{
     bool isSuccess = false;
-    final id = "$_selectedBranch${_selectedSection}_$rand_id";
+    final id = "$_selectedBranch${_selectedSection}_$randId";
     final classId = "$_selectedBranch$_selectedSection";
     await _postCollectionRef.doc(_currentUser.id).collection("userPosts").doc(id).set({
       "postId": id,
@@ -174,20 +174,26 @@ class UploadBloc extends Bloc {
   }
 
   handleTakePhoto() async {
+//    final LostData response =
+//    await _imagePicker.getLostData();
+//    print(response.file.path);
     try {
-      PickedFile file = await _imagePicker.getImage(
+      print(this.file);
+      PickedFile file = await ImagePicker().getImage(
         source: ImageSource.camera,
-        maxHeight: 675,
-        maxWidth: 960,
-      );
+      ).catchError((onError) => print(onError));
+      print(file);
       this.file = File(file.path);
       toggleUploadPage();
     } catch (e) {
+      print("======================");
       print(e);
     }
   }
 
   handleChooseFromGallery() async {
+    file = null;
+
     try {
       PickedFile file =
           await _imagePicker.getImage(source: ImageSource.gallery);

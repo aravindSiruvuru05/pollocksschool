@@ -18,7 +18,6 @@ class AddProfilePhotoScreen extends StatelessWidget {
   UploadBloc _uploadBloc;
   AuthBloc _authBloc;
 
-  final TextEditingController _captionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     _uploadBloc = Provider.of<UploadBloc>(context);

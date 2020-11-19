@@ -183,7 +183,7 @@ class PostCard extends StatelessWidget {
                 ],
               ),
               Spacer(),
-              timelineBloc.currentUser.userType == UserType.STUDENT ? Row(
+              timelineBloc.currentUser.id != post.ownerId ? Row(
                 children: [
                   IconButton(
                     padding: EdgeInsets.all(0),
