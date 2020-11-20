@@ -100,6 +100,7 @@ class UploadPostScreen extends StatelessWidget {
 
   Scaffold buildUploadForm(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white70,
         leading: IconButton(
@@ -266,7 +267,8 @@ class UploadPostScreen extends StatelessWidget {
                             ),
                           );
                         }
-                    )
+                    ),
+                    SizedBox(height: SizeConfig.heightMultiplier * 5,)
                   ],
                 ),
               ),
